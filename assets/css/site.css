@@ -63,6 +63,7 @@
 
   /* layout */
   --container:1320px;
+  --container-pad:clamp(20px, 4vw, 40px);
   --measure:68ch;
   --topbar-h:38px;
   --header-h:72px;
@@ -134,7 +135,7 @@ p:last-child{margin-bottom:0;}
 /* ---------- 5. LAYOUT ---------- */
 .container{
   width:100%;max-width:var(--container);
-  margin-inline:auto;padding-inline:clamp(20px,4vw,40px);
+  margin-inline:auto;padding-inline:var(--container-pad);
 }
 .container--narrow{max-width:900px;}
 .section{padding-block:var(--sp-section);}
@@ -261,6 +262,8 @@ p:last-child{margin-bottom:0;}
   display:flex;align-items:center;gap:28px;
   height:var(--header-h);
   transition:height var(--dur) ease;
+  /* containing block for the mega menu, so it stays inside the container */
+  position:relative;
 }
 .masthead__logo{flex:none;display:block;}
 /* The logo artwork is gold + white on a transparent ground — it is drawn FOR
@@ -272,7 +275,9 @@ p:last-child{margin-bottom:0;}
 }
 .nav{margin-right:auto;}
 .nav__list{display:flex;gap:26px;list-style:none;margin:0;padding:0;align-items:center;}
-.nav__list > li{position:relative;}
+/* static, so the mega menu below resolves against .masthead__inner (the
+   container) instead of the narrow <li> it hangs off */
+.nav__list > li{position:static;}
 .nav__link{
   display:flex;align-items:center;gap:5px;
   padding:8px 0;font-size:15px;font-weight:500;
@@ -284,10 +289,21 @@ p:last-child{margin-bottom:0;}
 .nav__link[aria-current="page"]{color:#fff;font-weight:600;border-bottom-color:var(--gold);}
 .nav__caret{width:11px;height:11px;opacity:.55;}
 
-/* mega menu — absorbs the retired third bar */
+/* Mega menu — absorbs the retired third bar.
+
+   It is anchored to the header container, NOT to the "Krabičky" item. When it
+   was centred on that item (left:50% + translateX(-50%)) it reached 162px past
+   the left edge of the window, and body{overflow-x:clip} cut the whole left
+   column off — three programmes were simply invisible. Anchoring to the
+   container means the panel can never leave it, at any width. */
 .nav__panel{
-  position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(-6px);
-  width:min(880px,88vw);background:#fff;color:var(--ink);
+  position:absolute;top:calc(100% + 10px);
+  /* absolute positioning resolves against the padding box, so offset by the
+     container padding to line the panel up with the logo, not the screen edge */
+  left:var(--container-pad);
+  transform:translateY(-6px);
+  width:min(880px, calc(100% - 2 * var(--container-pad)));
+  background:#fff;color:var(--ink);
   border-radius:var(--r-card);box-shadow:var(--shadow-lg);
   padding:26px;opacity:0;visibility:hidden;
   transition:opacity var(--dur) ease,transform var(--dur) var(--ease),visibility var(--dur);
@@ -295,7 +311,7 @@ p:last-child{margin-bottom:0;}
 }
 .nav__list > li:hover .nav__panel,
 .nav__list > li:focus-within .nav__panel{
-  opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);
+  opacity:1;visibility:visible;transform:translateY(0);
 }
 .nav__panel .label{margin-bottom:12px;}
 .nav__progs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;list-style:none;margin:0;padding:0;}
