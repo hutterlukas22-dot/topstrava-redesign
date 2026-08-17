@@ -1,8 +1,21 @@
 /* Shared chrome for every page. One source, so the header and footer
    cannot drift apart across the site. */
 
-/* Cache-buster for CSS/JS. Bump when you change either file. */
-const VERSION = Date.now().toString(36);
+/* Cache-buster for CSS/JS, derived from the contents of those two files.
+   Content-addressed on purpose: a timestamp would move the stamp on every
+   build, so `node build.js` would dirty all eight pages even when nothing
+   changed. This keeps the build reproducible — the stamp moves only when
+   the CSS or JS actually does. */
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+const VERSION = (() => {
+  const root = path.join(__dirname, '..', 'assets');
+  const css = fs.readFileSync(path.join(root, 'css', 'site.css'));
+  const js = fs.readFileSync(path.join(root, 'js', 'site.js'));
+  return crypto.createHash('sha256').update(css).update(js).digest('hex').slice(0, 8);
+})();
 
 const icon = {
   check: '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8 14.2 4.3 10.5l1.4-1.4L8 11.4l6.3-6.3 1.4 1.4z"/></svg>',
