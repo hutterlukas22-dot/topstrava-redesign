@@ -19,3 +19,15 @@ for (const p of pages) {
   count++;
 }
 console.log('\nBuilt ' + count + ' pages.');
+
+/* Image problems are reported here rather than silently producing a page
+   full of broken <img> tags. */
+const warnings = [...new Set(L.imageWarnings)];
+if (warnings.length) {
+  console.log('\n!! Obrázky — ' + warnings.length + ' problém(ov):');
+  warnings.forEach(w => console.log('   - ' + w));
+  console.log('');
+  process.exitCode = 1;
+} else {
+  console.log('Obrázky: ' + L.imageIndex.size + ' súborov, všetky odkazy sedia.');
+}

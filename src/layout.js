@@ -17,6 +17,69 @@ const VERSION = (() => {
   return crypto.createHash('sha256').update(css).update(js).digest('hex').slice(0, 8);
 })();
 
+/* ---------------------------------------------------------------------------
+   Images are referenced by BASE NAME only — img('meal1'), not 'meal1.webp'.
+
+   Two problems this solves:
+
+   1. Swapping meal1.webp for meal1.jpg used to break the page, because the
+      filename changed with the extension. The build now finds whatever
+      meal1.* actually exists.
+   2. Overwriting a file kept showing the old picture, because the browser
+      caches by URL. Each URL now carries ?v=<hash of the file>, so new bytes
+      mean a new URL and the browser always refetches.
+
+   Missing or ambiguous names are reported by build.js rather than failing
+   silently.
+   --------------------------------------------------------------------------- */
+const IMG_DIR = path.join(__dirname, '..', 'assets', 'img');
+/* first match wins when several extensions share a base name */
+const IMG_PREFERENCE = ['.avif', '.webp', '.jpg', '.jpeg', '.png', '.gif', '.svg'];
+
+const imageWarnings = [];
+
+const imageIndex = (() => {
+  const map = new Map();
+  let files = [];
+  try { files = fs.readdirSync(IMG_DIR); } catch (e) {
+    imageWarnings.push('Priecinok assets/img/ sa nedá čítať.');
+    return map;
+  }
+  for (const file of files) {
+    const ext = path.extname(file).toLowerCase();
+    if (!IMG_PREFERENCE.includes(ext)) continue;
+    const base = path.basename(file, path.extname(file));
+    const rank = IMG_PREFERENCE.indexOf(ext);
+    const prev = map.get(base);
+    if (prev) {
+      const keep = prev.rank <= rank ? prev.file : file;
+      const drop = prev.rank <= rank ? file : prev.file;
+      imageWarnings.push(
+        `"${base}" existuje viackrát (${prev.file} aj ${file}). Používam ${keep}, ` +
+        `${drop} sa ignoruje — zmažte ho, nech je jasné, ktorý platí.`
+      );
+      if (prev.rank <= rank) continue;
+    }
+    const buf = fs.readFileSync(path.join(IMG_DIR, file));
+    map.set(base, {
+      file,
+      rank,
+      hash: crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8)
+    });
+  }
+  return map;
+})();
+
+function img(name) {
+  const base = name.replace(/\.[A-Za-z0-9]+$/, '');
+  const hit = imageIndex.get(base);
+  if (!hit) {
+    imageWarnings.push(`Chýba obrázok "${base}" — v assets/img/ nie je žiadny ${base}.*`);
+    return `assets/img/${name}`;
+  }
+  return `assets/img/${hit.file}?v=${hit.hash}`;
+}
+
 const icon = {
   check: '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8 14.2 4.3 10.5l1.4-1.4L8 11.4l6.3-6.3 1.4 1.4z"/></svg>',
   arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"/></svg>',
@@ -148,7 +211,7 @@ ${megaAside.map(a => `                  <li><a href="${a.href}">${a.label}</a></
   <header class="masthead">
     <div class="container masthead__inner">
       <a class="masthead__logo" href="index.html" aria-label="TopStrava — domov">
-        <img src="assets/img/logo.png" alt="TopStrava" width="118" height="46">
+        <img src="${img('logo')}" alt="TopStrava" width="118" height="46">
       </a>
 
       <nav class="nav" id="nav" aria-label="Hlavná navigácia">
@@ -177,7 +240,7 @@ function footer() {
     <div class="container">
       <div class="footer__grid">
         <div>
-          <div class="footer__logo"><img src="assets/img/logo.png" alt="TopStrava" width="132" height="52"></div>
+          <div class="footer__logo"><img src="${img('logo')}" alt="TopStrava" width="132" height="52"></div>
           <p>Krabičková strava pripravená na mieru. Pravidelne, zdravo a chutne — už od roku 2024.</p>
         </div>
         <div>
@@ -220,7 +283,7 @@ ${programs.slice(0, 6).map(p => `            <li><a href="programy.html#${p.slug
 /* Reusable sections shared by several pages. */
 function bandDelivery() {
   return `  <section class="band" id="rozvoz">
-    <div class="band__bg"><img src="assets/img/band-food.webp" alt="" aria-hidden="true"></div>
+    <div class="band__bg"><img src="${img('band-food')}" alt="" aria-hidden="true"></div>
     <div class="container band__inner on-dark">
       <p class="label" style="color:var(--gold)">Rozvoz</p>
       <h2>Chcete vedieť, kam rozvážame naše krabičky?</h2>
@@ -259,7 +322,7 @@ ${list.map(p => programCard(p)).join('\n')}
 
 function programCard(p) {
   return `        <a class="card" href="programy.html#${p.slug}" id="${p.slug}">
-          <div class="card__media"><img src="assets/img/${p.img}" alt="${p.name} — ukážka jedál" loading="lazy" width="600" height="375"></div>
+          <div class="card__media"><img src="${img(p.img)}" alt="${p.name} — ukážka jedál" loading="lazy" width="600" height="375"></div>
           <div class="card__body">
             <p class="card__meta"><span class="hi">Program</span><span class="dot"></span>${p.kcal} kcal<span class="dot"></span>${p.meals} jedál denne</p>
             <h3 class="card__title">${p.name}</h3>
@@ -303,8 +366,8 @@ function reelsSlider() {
             <div class="reels__bars" aria-hidden="true"></div>
 ${reels.map((r, i) => `            <article class="reel${i === 0 ? ' is-active' : ''}" data-src="assets/video/${r.file}"
                      aria-label="${r.tag}: ${r.title}"${i === 0 ? '' : ' aria-hidden="true"'}>
-              <img class="reel__poster" src="assets/img/${r.poster}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" width="1080" height="1920">
-              <video class="reel__video" muted playsinline preload="none" poster="assets/img/${r.poster}"></video>
+              <img class="reel__poster" src="${img(r.poster)}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" width="1080" height="1920">
+              <video class="reel__video" muted playsinline preload="none" poster="${img(r.poster)}"></video>
               <div class="reel__caption"><b>${r.title}</b><span>${r.tag}</span></div>
             </article>`).join('\n')}
             <button class="reels__nav reels__nav--prev" type="button" data-reels-prev aria-label="Predchádzajúce video">${icon.chevronLeft}</button>
@@ -322,5 +385,6 @@ ${reels.map((r, i) => `            <article class="reel${i === 0 ? ' is-active' 
 
 module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels,
-  page, bandDelivery, sectionPrograms, programCard, reelsSlider
+  page, bandDelivery, sectionPrograms, programCard, reelsSlider,
+  img, imageWarnings, imageIndex
 };

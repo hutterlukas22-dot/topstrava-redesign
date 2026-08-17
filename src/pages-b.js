@@ -121,7 +121,7 @@ ${pickupPoints.map(c => `              <li>${c}</li>`).join('\n')}
             <a class="btn btn--text" href="faq.html">Časté otázky ${icon.arrow}</a>
           </div>
         </div>
-        <div class="split__media"><img src="assets/img/hero-funguje.webp" alt="Príprava krabičiek v kuchyni TopStrava" loading="lazy" width="800" height="600"></div>
+        <div class="split__media"><img src="${L.img('hero-funguje')}" alt="Príprava krabičiek v kuchyni TopStrava" loading="lazy" width="800" height="600"></div>
       </div>
     </div>
   </section>
@@ -290,7 +290,7 @@ const oNas = {
           <p>Predstavte si, že sa každý deň venujete ľuďom, pomáhate im zlepšiť kondíciu vo fitness centre a cítite ich nadšenie. No zároveň sledujete, ako sa im vo výsledkoch často nedarí naplno pretaviť svoje snaženie do vytúženého cieľa.</p>
           <p>Peter Benko, tréner s vášňou pre zdravý životný štýl, si všimol jednu zásadnú vec — <strong>ľudia strácajú nadšenie pre cvičenie a pohyb práve kvôli nesprávnemu stravovaniu.</strong></p>
         </div>
-        <div class="split__media"><img src="assets/img/hero-onas.webp" alt="Tím TopStrava v kuchyni" loading="lazy" width="800" height="600"></div>
+        <div class="split__media"><img src="${L.img('hero-onas')}" alt="Tím TopStrava v kuchyni" loading="lazy" width="800" height="600"></div>
       </div>
     </div>
   </section>
@@ -330,7 +330,7 @@ const oNas = {
   <section class="section">
     <div class="container">
       <div class="split split--media-first">
-        <div class="split__media"><img src="assets/img/band-a.webp" alt="Krabičky TopStrava pripravené na rozvoz" loading="lazy" width="800" height="600"></div>
+        <div class="split__media"><img src="${L.img('band-a')}" alt="Krabičky TopStrava pripravené na rozvoz" loading="lazy" width="800" height="600"></div>
         <div class="prose">
           <p class="label label--gold">Vznik TOPSTRAVA</p>
           <h2 style="margin-bottom:16px">Chutne, zdravo a pravidelne</h2>
