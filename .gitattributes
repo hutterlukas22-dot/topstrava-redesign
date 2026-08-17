@@ -1,0 +1,8 @@
+# Text files are stored with LF in the repo and checked out natively.
+* text=auto eol=lf
+
+# Binary assets must never be line-ending converted.
+*.webp binary
+*.png  binary
+*.jpg  binary
+*.woff2 binary
