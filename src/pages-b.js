@@ -295,7 +295,9 @@ const oNas = {
     </div>
   </section>
 
-  <section class="section section--tint">
+  <section class="section section--tint has-deco">
+${L.deco('plody', 'bl', { w: '260px', o: '.34', y: '-70px', x: '-90px' })}
+${L.deco('koriandr', 'tr', { w: '140px', r: '-20deg', y: '-20px', x: '-30px', o: '.5' })}
     <div class="container">
       <div class="section-head">
         <p class="label label--gold">Hlavná prekážka</p>
@@ -343,7 +345,9 @@ const oNas = {
     </div>
   </section>
 
-  <section class="section section--cream" id="referencie">
+  <section class="section section--cream has-deco" id="referencie">
+${L.deco('papricka', 'l', { w: '180px', r: '15deg', y: '30%', x: '-60px', o: '.34' })}
+${L.deco('kopr', 'br', { w: '160px', r: '-45deg', y: '-40px', x: '-40px', o: '.5' })}
     <div class="container">
       <div class="section-head section-head--center">
         <p class="label label--gold">Naša vášeň, váš úspech</p>
@@ -449,7 +453,9 @@ const faq = {
     </div>
   </section>
 
-  <section class="section">
+  <section class="section has-deco">
+${L.deco('zelenina', 'r', { w: '270px', o: '.3', y: '6%', x: '-110px' })}
+${L.deco('polnicek', 'bl', { w: '190px', r: '12deg', y: '-30px', x: '-50px', o: '.45' })}
     <div class="container">
       <div class="grid grid--faq">
         <aside>
@@ -516,7 +522,9 @@ const kontakt = {
     </div>
   </section>
 
-  <section class="section">
+  <section class="section has-deco">
+${L.deco('plody', 'tr', { w: '230px', o: '.3', y: '-70px', x: '-80px' })}
+${L.deco('kopr', 'bl', { w: '155px', r: '28deg', y: '-40px', x: '-35px', o: '.48' })}
     <div class="container">
       <div class="grid grid--3" style="margin-bottom:56px">
         <a class="card card--link" href="tel:+421904264951">

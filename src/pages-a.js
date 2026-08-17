@@ -187,7 +187,9 @@ ${L.bandDelivery()}
         </a>
       </div>
     </div>
-  </section>`
+  </section>
+
+${L.newsletter()}`
 };
 
 /* ============================ KRABIČKY / PROGRAMY ============================ */
@@ -227,7 +229,9 @@ ${programs.map(p => L.programCard(p)).join('\n')}
     </div>
   </section>
 
-  <section class="section section--tint" id="cennik">
+  <section class="section section--tint has-deco" id="cennik">
+${L.deco('papricky', 'r', { w: '250px', o: '.32', y: '18%', x: '-90px' })}
+${L.deco('kopr', 'bl', { w: '150px', r: '40deg', y: '-30px', x: '-30px', o: '.5' })}
     <div class="container">
       <div class="section-head">
         <p class="label label--gold">Cenník</p>
@@ -310,7 +314,8 @@ ${programs.map(p => {
     </div>
   </section>
 
-  <section class="section section--cream" id="poukazy">
+  <section class="section section--cream has-deco" id="poukazy">
+${L.deco('ostruziny', 'tr', { w: '230px', o: '.34', y: '-60px', x: '-70px' })}
     <div class="container">
       <div class="split split--media-first">
         <div class="split__media"><img src="${L.img('meal2')}" alt="Darčekové poukážky TopStrava" loading="lazy" width="800" height="600"></div>

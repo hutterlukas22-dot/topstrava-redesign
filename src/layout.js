@@ -40,33 +40,41 @@ const imageWarnings = [];
 
 const imageIndex = (() => {
   const map = new Map();
-  let files = [];
-  try { files = fs.readdirSync(IMG_DIR); } catch (e) {
-    imageWarnings.push('Priecinok assets/img/ sa nedá čítať.');
-    return map;
-  }
-  for (const file of files) {
-    const ext = path.extname(file).toLowerCase();
-    if (!IMG_PREFERENCE.includes(ext)) continue;
-    const base = path.basename(file, path.extname(file));
-    const rank = IMG_PREFERENCE.indexOf(ext);
-    const prev = map.get(base);
-    if (prev) {
-      const keep = prev.rank <= rank ? prev.file : file;
-      const drop = prev.rank <= rank ? file : prev.file;
-      imageWarnings.push(
-        `"${base}" existuje viackrát (${prev.file} aj ${file}). Používam ${keep}, ` +
-        `${drop} sa ignoruje — zmažte ho, nech je jasné, ktorý platí.`
-      );
-      if (prev.rank <= rank) continue;
+
+  /* walks subfolders too, so img('deco/kopr') and img('pay/visa') resolve */
+  const walk = (dir, prefix = '') => {
+    let entries = [];
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch (e) {
+      imageWarnings.push(`Priečinok assets/img/${prefix} sa nedá čítať.`);
+      return;
     }
-    const buf = fs.readFileSync(path.join(IMG_DIR, file));
-    map.set(base, {
-      file,
-      rank,
-      hash: crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8)
-    });
-  }
+    for (const entry of entries) {
+      if (entry.isDirectory()) { walk(path.join(dir, entry.name), prefix + entry.name + '/'); continue; }
+      const ext = path.extname(entry.name).toLowerCase();
+      if (!IMG_PREFERENCE.includes(ext)) continue;
+      const key = prefix + path.basename(entry.name, path.extname(entry.name));
+      const rel = prefix + entry.name;
+      const rank = IMG_PREFERENCE.indexOf(ext);
+      const prev = map.get(key);
+      if (prev) {
+        const keep = prev.rank <= rank ? prev.file : rel;
+        const drop = prev.rank <= rank ? rel : prev.file;
+        imageWarnings.push(
+          `"${key}" existuje viackrát (${prev.file} aj ${rel}). Používam ${keep}, ` +
+          `${drop} sa ignoruje — zmažte ho, nech je jasné, ktorý platí.`
+        );
+        if (prev.rank <= rank) continue;
+      }
+      const buf = fs.readFileSync(path.join(dir, entry.name));
+      map.set(key, {
+        file: rel,
+        rank,
+        hash: crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8)
+      });
+    }
+  };
+
+  walk(IMG_DIR);
   return map;
 })();
 
@@ -272,9 +280,21 @@ ${programs.slice(0, 6).map(p => `            <li><a href="programy.html#${p.slug
           </address>
         </div>
       </div>
+      <div class="footer__pay">
+        <h3>Možnosti platby</h3>
+        <ul class="pay">
+${payMethods.map(m => `          <li><img src="${img('pay/' + m.file)}" alt="${m.label}" loading="lazy"></li>`).join('\n')}
+        </ul>
+      </div>
       <div class="footer__bottom">
         <p>© <span data-year>2026</span> TopStrava. Všetky práva vyhradené.</p>
         <p>Obchodné podmienky · Spracovanie osobných údajov · Mapa stránok</p>
+        <p class="footer__credit">
+          <span>by</span>
+          <a href="https://www.impnet.cz/" target="_blank" rel="noopener noreferrer">
+            <img src="${img('IMPnet-logo-white-monochrome_horizontal')}" alt="IMPnet" loading="lazy" width="59" height="16">
+          </a>
+        </p>
       </div>
     </div>
   </footer>`;
@@ -303,7 +323,10 @@ function bandDelivery() {
 
 function sectionPrograms(limit) {
   const list = limit ? programs.slice(0, limit) : programs;
-  return `  <section class="section">
+  return `  <section class="section has-deco">
+${deco('zelenina', 'bl', { w: '330px', o: '.38', y: '-70px', x: '-110px' })}
+${deco('kopr', 'tr', { w: '160px', r: '-32deg', y: '10px', x: '-20px' })}
+${deco('koriandr', 'l', { w: '130px', r: '24deg', y: '12%', x: '-45px', o: '.5' })}
     <div class="container">
       <div class="section-head">
         <p class="label label--gold">Krabičky podľa vášho gusta</p>
@@ -359,6 +382,52 @@ ${footer()}
 `;
 }
 
+/* Blurred herb/vegetable cut-outs, taken from topstrava.sk so the rebuild
+   carries the same brand texture. Purely decorative: aria-hidden, never
+   focusable, and skipped entirely below 900px via CSS. */
+function deco(name, spot, opts = {}) {
+  const kind = ['zelenina', 'plody', 'ostruziny', 'papricky'].includes(name) ? 'veg' : 'herb';
+  const style = Object.entries(opts)
+    .map(([k, v]) => `--deco-${k}:${v}`).join(';');
+  return `      <img class="deco deco--${spot} deco--${kind}" src="${img('deco/' + name)}" alt=""` +
+         ` aria-hidden="true" loading="lazy"${style ? ` style="${style}"` : ''}>`;
+}
+
+/* Payment methods accepted at checkout. */
+const payMethods = [
+  { file: 'visa', label: 'Visa' },
+  { file: 'mastercard', label: 'Mastercard' },
+  { file: 'applepay', label: 'Apple Pay' },
+  { file: 'gpay', label: 'Google Pay' },
+  { file: 'thepay', label: 'ThePay' }
+];
+
+function newsletter() {
+  return `  <section class="newsletter gradient-warm has-deco">
+${deco('kopr', 'tr', { w: '170px', r: '18deg', o: '.5' })}
+${deco('polnicek', 'bl', { w: '210px', r: '-8deg', o: '.45' })}
+    <div class="container">
+      <div class="newsletter__grid">
+        <div>
+          <h2>Novinky od TopStravy</h2>
+          <p>Chcete získať informácie o nových jedlách a jedálničkoch? Píšeme len keď máme čo povedať.</p>
+        </div>
+        <form class="newsletter__form" novalidate>
+          <div class="newsletter__row">
+            <label class="sr-only" for="nl-mail">E-mail</label>
+            <input id="nl-mail" name="email" type="email" placeholder="Zadajte váš e-mail" autocomplete="email" required>
+            <button class="btn" type="submit">Prihlásiť sa</button>
+          </div>
+          <label class="check">
+            <input type="checkbox" name="nl-gdpr" required>
+            <span>Súhlasím so <a href="#">spracovaním osobných údajov</a></span>
+          </label>
+        </form>
+      </div>
+    </div>
+  </section>`;
+}
+
 /* The hero's vertical Instagram player. */
 function reelsSlider() {
   return `        <div class="reels" data-reels tabindex="-1">
@@ -386,5 +455,5 @@ ${reels.map((r, i) => `            <article class="reel${i === 0 ? ' is-active' 
 module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels,
   page, bandDelivery, sectionPrograms, programCard, reelsSlider,
-  img, imageWarnings, imageIndex
+  img, imageWarnings, imageIndex, deco, newsletter, payMethods
 };
