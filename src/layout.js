@@ -132,7 +132,7 @@ ${megaAside.map(a => `                  <li><a href="${a.href}">${a.label}</a></
   <header class="masthead">
     <div class="container masthead__inner">
       <a class="masthead__logo" href="index.html" aria-label="TopStrava — domov">
-        <img src="assets/img/logo.png" alt="TopStrava" width="118" height="42">
+        <img src="assets/img/logo.png" alt="TopStrava" width="118" height="46">
       </a>
 
       <nav class="nav" id="nav" aria-label="Hlavná navigácia">
@@ -161,7 +161,7 @@ function footer() {
     <div class="container">
       <div class="footer__grid">
         <div>
-          <div class="footer__logo"><img src="assets/img/logo.png" alt="TopStrava" width="132" height="47"></div>
+          <div class="footer__logo"><img src="assets/img/logo.png" alt="TopStrava" width="132" height="52"></div>
           <p>Krabičková strava pripravená na mieru. Pravidelne, zdravo a chutne — už od roku 2024.</p>
         </div>
         <div>
