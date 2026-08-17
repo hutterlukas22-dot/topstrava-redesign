@@ -496,11 +496,17 @@ a.card:hover .card__cta svg,.card--link:hover .card__cta svg{transform:translate
 .hero__proof div b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1;}
 .hero__proof div span{font-size:13.5px;color:rgba(255,255,255,.65);}
 .hero__media{border-radius:var(--r-card);overflow:hidden;box-shadow:var(--shadow-lg);}
-.hero__media img{width:100%;aspect-ratio:4/3;object-fit:cover;}
+/* direct child only — the reels posters are nested deeper and must keep 9:16 */
+.hero__media > img{width:100%;aspect-ratio:4/3;object-fit:cover;}
+/* the reels frame carries its own radius and shadow, so the wrapper is bare */
+.hero__media--reels{
+  border-radius:0;overflow:visible;box-shadow:none;
+  display:flex;justify-content:center;
+}
 @media(max-width:900px){
   .hero__grid{grid-template-columns:1fr;padding-block:40px;}
   .hero__media{order:-1;}
-  .hero__media img{aspect-ratio:16/10;}
+  .hero__media > img{aspect-ratio:16/10;}
 }
 
 /* ---------- 10. BAND (full-bleed CTA strip) ---------- */
@@ -684,4 +690,111 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
   *,*::before,*::after{
     transition-duration:.01ms !important;animation-duration:.01ms !important;
   }
+}
+
+/* ---------- 15. REELS SLIDER (hero) ----------
+   Vertical 9:16 player: auto-advances when a clip ends, arrows, sound
+   toggle, and a link out to the full Instagram profile.
+
+   Drop real exports into assets/video/ as reel-1.mp4 … reel-5.mp4 and they
+   play automatically. Until a file exists the slide shows its poster and
+   advances on a timer instead, so the component works either way. */
+.reels{display:flex;flex-direction:column;gap:16px;align-items:center;width:100%;}
+.reels__frame{
+  position:relative;width:100%;max-width:340px;aspect-ratio:9/16;
+  border-radius:var(--r-card);overflow:hidden;background:#000;
+  box-shadow:var(--shadow-lg);
+  isolation:isolate;
+}
+.reel{
+  position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity var(--dur) ease,visibility var(--dur);
+}
+.reel.is-active{opacity:1;visibility:visible;}
+.reel__video,.reel__poster{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;
+}
+.reel__poster{z-index:0;}
+.reel__video{z-index:1;background:transparent;}
+/* Poster-only mode: no video file yet, so hide the empty <video> box */
+.reel.is-still .reel__video{display:none;}
+
+/* gradient so the chrome stays legible over any frame */
+.reels__frame::after{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(to bottom,
+    rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 26%,
+    rgba(0,0,0,0) 58%, rgba(0,0,0,.72) 100%);
+}
+.reel__caption{
+  position:absolute;left:0;right:0;bottom:0;z-index:3;
+  padding:18px 18px 20px;color:#fff;pointer-events:none;
+}
+.reel__caption b{
+  display:block;font-size:15.5px;font-weight:700;line-height:1.35;
+  letter-spacing:-.01em;margin-bottom:3px;text-wrap:balance;
+}
+.reel__caption span{
+  font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.72);
+}
+
+/* story-style progress bars */
+.reels__bars{
+  position:absolute;top:11px;left:11px;right:11px;z-index:4;
+  display:flex;gap:4px;
+}
+.reels__bar{
+  flex:1;height:3px;border-radius:99px;background:rgba(255,255,255,.32);
+  overflow:hidden;
+}
+.reels__bar i{
+  display:block;height:100%;width:0;border-radius:99px;background:#fff;
+}
+.reels__bar.is-done i{width:100%;}
+
+/* controls */
+.reels__nav,.reels__sound{
+  position:absolute;z-index:5;display:grid;place-items:center;
+  width:38px;height:38px;border-radius:var(--r-pill);cursor:pointer;
+  background:rgba(18,17,15,.5);color:#fff;border:1px solid rgba(255,255,255,.24);
+  backdrop-filter:blur(6px);
+  transition:background-color var(--dur) ease,border-color var(--dur) ease,
+             transform var(--dur) ease,opacity var(--dur) ease;
+}
+.reels__nav:hover,.reels__sound:hover{
+  background:rgba(18,17,15,.78);border-color:rgba(255,255,255,.5);
+}
+.reels__nav:active,.reels__sound:active{transform:scale(.94);}
+.reels__nav svg,.reels__sound svg{width:18px;height:18px;}
+.reels__nav--prev{left:10px;top:50%;transform:translateY(-50%);}
+.reels__nav--next{right:10px;top:50%;transform:translateY(-50%);}
+.reels__nav--prev:active,.reels__nav--next:active{transform:translateY(-50%) scale(.94);}
+.reels__sound{top:28px;right:10px;}
+/* The arrows stay visible, just quiet, and come forward on hover/focus.
+   Hiding them at opacity:0 until hover looked tidier but left keyboard users
+   with no visible target — and on a marketing page plenty of visitors never
+   hover at all. */
+.reels__nav{opacity:.6;}
+.reels__frame:hover .reels__nav,
+.reels__frame:focus-within .reels__nav,
+.reels__nav:focus-visible{opacity:1;}
+
+.reels__cta{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:14.5px;font-weight:700;color:#fff;text-decoration:none;
+  padding:10px 16px;border-radius:var(--r-btn);
+  border:1.5px solid rgba(255,255,255,.28);
+  transition:background-color var(--dur) ease,border-color var(--dur) ease;
+}
+.reels__cta:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.55);}
+.reels__cta svg{width:18px;height:18px;flex:none;}
+.reels__cta span{opacity:.72;font-weight:500;}
+
+@media(max-width:900px){
+  .reels__frame{max-width:300px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .reels__bar i{transition:none !important;}
 }

@@ -34,8 +34,24 @@ const icon = {
   leaf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20c0-8 5-14 16-15 0 10-5 15-11 15a5 5 0 0 1-5-5z"/><path d="M9 15c2-3 5-5 8-6"/></svg>',
   info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8h.01"/></svg>',
   star: '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="m10 1.6 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>',
-  box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.5 12 3.5l8.5 4v9L12 20.5l-8.5-4z"/><path d="M3.5 7.5 12 11.5l8.5-4M12 11.5v9"/></svg>'
+  box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.5 12 3.5l8.5 4v9L12 20.5l-8.5-4z"/><path d="M3.5 7.5 12 11.5l8.5-4M12 11.5v9"/></svg>',
+  chevronLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>',
+  soundOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="m16 9.5 4 5M20 9.5l-4 5"/></svg>',
+  soundOn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.1" cy="6.9" r="1.1" fill="currentColor" stroke="none"/></svg>'
 };
+
+/* Instagram clips shown in the hero.
+   `file` is looked for in assets/video/ — drop the real export there and it
+   plays. Missing file => the poster shows and the slider advances on a timer.
+   Replace `title` with the real caption of each post. */
+const reels = [
+  { file: 'reel-1.mp4', poster: 'blog4.webp', title: 'Takto vyzerá týždeň krabičiek', tag: 'Jedálniček' },
+  { file: 'reel-2.mp4', poster: 'meal6.webp', title: 'Ráno v kuchyni: príprava 5 chodov', tag: 'Zo zákulisia' },
+  { file: 'reel-3.mp4', poster: 'meal7.webp', title: 'Šokové schladenie a vákuové balenie', tag: 'Čerstvosť 72 h' },
+  { file: 'reel-4.mp4', poster: 'blog1.webp', title: 'Rozvoz až k dverám, deň vopred', tag: 'Rozvoz' },
+  { file: 'reel-5.mp4', poster: 'meal9.webp', title: 'Čo dostanete v jednom dni', tag: 'Unboxing' }
+];
 
 /* The nine programs — names, calories and prices as published on the live site. */
 const programs = [
@@ -280,7 +296,31 @@ ${footer()}
 `;
 }
 
+/* The hero's vertical Instagram player. */
+function reelsSlider() {
+  return `        <div class="reels" data-reels tabindex="-1">
+          <div class="reels__frame">
+            <div class="reels__bars" aria-hidden="true"></div>
+${reels.map((r, i) => `            <article class="reel${i === 0 ? ' is-active' : ''}" data-src="assets/video/${r.file}"
+                     aria-label="${r.tag}: ${r.title}"${i === 0 ? '' : ' aria-hidden="true"'}>
+              <img class="reel__poster" src="assets/img/${r.poster}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" width="1080" height="1920">
+              <video class="reel__video" muted playsinline preload="none" poster="assets/img/${r.poster}"></video>
+              <div class="reel__caption"><b>${r.title}</b><span>${r.tag}</span></div>
+            </article>`).join('\n')}
+            <button class="reels__nav reels__nav--prev" type="button" data-reels-prev aria-label="Predchádzajúce video">${icon.chevronLeft}</button>
+            <button class="reels__nav reels__nav--next" type="button" data-reels-next aria-label="Ďalšie video">${icon.chevron}</button>
+            <button class="reels__sound" type="button" data-reels-sound aria-pressed="false" aria-label="Zapnúť zvuk">
+              <span data-icon-muted>${icon.soundOff}</span>
+              <span data-icon-loud hidden>${icon.soundOn}</span>
+            </button>
+          </div>
+          <a class="reels__cta" href="https://www.instagram.com/topstrava/" target="_blank" rel="noopener noreferrer">
+            ${icon.instagram}@topstrava<span>· celý profil</span>
+          </a>
+        </div>`;
+}
+
 module.exports = {
-  icon, programs, deliveryCities, pickupPoints,
-  page, bandDelivery, sectionPrograms, programCard
+  icon, programs, deliveryCities, pickupPoints, reels,
+  page, bandDelivery, sectionPrograms, programCard, reelsSlider
 };

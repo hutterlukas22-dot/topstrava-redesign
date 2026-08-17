@@ -177,3 +177,186 @@
     el.textContent = new Date().getFullYear();
   });
 })();
+
+/* ============================================================
+   REELS SLIDER (hero)
+   Vertical player for the Instagram clips. Advances when a clip ends,
+   arrows for manual control, one sound toggle, CTA out to the profile.
+
+   Instagram's own <iframe> embed cannot do this: it is cross-origin, so the
+   page can neither detect that a clip finished nor mute/unmute it. That is
+   why this plays self-hosted files. Until a file exists in assets/video/,
+   the slide falls back to its poster and advances on a timer, so the
+   component behaves the same either way.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var root = document.querySelector('[data-reels]');
+  if (!root) return;
+
+  var STILL_MS = 5000;   // how long a poster-only slide stays up
+  var slides = [].slice.call(root.querySelectorAll('.reel'));
+  if (!slides.length) return;
+
+  var barsWrap = root.querySelector('.reels__bars');
+  var soundBtn = root.querySelector('[data-reels-sound]');
+  var prevBtn = root.querySelector('[data-reels-prev]');
+  var nextBtn = root.querySelector('[data-reels-next]');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var index = 0;
+  var muted = true;
+  var stillTimer = null;
+  var rafId = null;
+  var inView = true;
+
+  /* one progress bar per slide */
+  var bars = slides.map(function () {
+    var b = document.createElement('span');
+    b.className = 'reels__bar';
+    b.appendChild(document.createElement('i'));
+    barsWrap.appendChild(b);
+    return b;
+  });
+
+  function videoOf(slide) { return slide.querySelector('.reel__video'); }
+
+  /* Point each <video> at its file. A missing file flips the slide to
+     poster-only mode rather than leaving an empty black box. */
+  slides.forEach(function (slide) {
+    var v = videoOf(slide);
+    var src = slide.getAttribute('data-src');
+    if (!v || !src) { slide.classList.add('is-still'); return; }
+    v.muted = true;
+    v.playsInline = true;
+    v.preload = 'metadata';
+    v.addEventListener('error', function () { slide.classList.add('is-still'); }, { once: true });
+    v.addEventListener('loadedmetadata', function () { slide.classList.remove('is-still'); });
+    v.src = src;
+    v.addEventListener('ended', function () {
+      if (slide.classList.contains('is-active')) go(index + 1);
+    });
+  });
+
+  function clearTimers() {
+    if (stillTimer) { clearTimeout(stillTimer); stillTimer = null; }
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  }
+
+  function paintBars(activeFraction) {
+    bars.forEach(function (bar, i) {
+      var fill = bar.firstChild;
+      bar.classList.toggle('is-done', i < index);
+      if (i < index) { fill.style.transition = 'none'; fill.style.width = '100%'; }
+      else if (i > index) { fill.style.transition = 'none'; fill.style.width = '0%'; }
+      else {
+        fill.style.transition = 'none';
+        fill.style.width = (activeFraction * 100).toFixed(2) + '%';
+      }
+    });
+  }
+
+  function trackVideo(v) {
+    function step() {
+      if (!v.duration || !isFinite(v.duration)) { rafId = requestAnimationFrame(step); return; }
+      paintBars(Math.min(1, v.currentTime / v.duration));
+      if (!v.paused && !v.ended) rafId = requestAnimationFrame(step);
+    }
+    step();
+  }
+
+  function runStill() {
+    var start = Date.now();
+    function step() {
+      var f = Math.min(1, (Date.now() - start) / STILL_MS);
+      paintBars(f);
+      if (f < 1) rafId = requestAnimationFrame(step);
+    }
+    step();
+    if (!reduce) stillTimer = setTimeout(function () { go(index + 1); }, STILL_MS);
+  }
+
+  function go(next) {
+    clearTimers();
+
+    var prev = slides[index];
+    var pv = videoOf(prev);
+    if (pv) { try { pv.pause(); pv.currentTime = 0; } catch (e) {} }
+    prev.classList.remove('is-active');
+
+    index = ((next % slides.length) + slides.length) % slides.length;
+
+    var slide = slides[index];
+    slide.classList.add('is-active');
+    paintBars(0);
+
+    var v = videoOf(slide);
+    var isStill = slide.classList.contains('is-still') || !v;
+
+    if (isStill || !inView) { if (inView && !reduce) runStill(); return; }
+
+    /* Someone who asked for reduced motion does not want a clip starting by
+       itself. Show the poster and let the arrows do the work. */
+    if (reduce) { slide.classList.add('is-still'); return; }
+
+    v.muted = muted;
+    var p = v.play();
+    if (p && typeof p.catch === 'function') {
+      /* autoplay refused (or no decodable file) — fall back to the timer */
+      p.catch(function () { slide.classList.add('is-still'); runStill(); });
+    }
+    trackVideo(v);
+  }
+
+  /* --- controls --- */
+  if (prevBtn) prevBtn.addEventListener('click', function () { go(index - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { go(index + 1); });
+
+  if (soundBtn) {
+    soundBtn.addEventListener('click', function () {
+      muted = !muted;
+      slides.forEach(function (s) { var v = videoOf(s); if (v) v.muted = muted; });
+      soundBtn.setAttribute('aria-pressed', String(!muted));
+      soundBtn.setAttribute('aria-label', muted ? 'Zapnúť zvuk' : 'Vypnúť zvuk');
+      soundBtn.querySelector('[data-icon-muted]').hidden = !muted;
+      soundBtn.querySelector('[data-icon-loud]').hidden = muted;
+      /* unmuting is a user gesture, so a clip blocked from autoplaying can start now */
+      var v = videoOf(slides[index]);
+      if (v && !muted && v.paused && !slides[index].classList.contains('is-still')) {
+        v.play().catch(function () {});
+      }
+    });
+  }
+
+  root.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(index - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(index + 1); }
+  });
+
+  /* Don't play to an empty room: pause offscreen and on a hidden tab. */
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      inView = entries[0].isIntersecting;
+      var v = videoOf(slides[index]);
+      if (!inView) {
+        clearTimers();
+        if (v) { try { v.pause(); } catch (e) {} }
+      } else {
+        go(index);
+      }
+    }, { threshold: 0.25 }).observe(root);
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    var v = videoOf(slides[index]);
+    if (document.hidden) {
+      clearTimers();
+      if (v) { try { v.pause(); } catch (e) {} }
+    } else if (inView) {
+      go(index);
+    }
+  });
+
+  go(0);
+})();

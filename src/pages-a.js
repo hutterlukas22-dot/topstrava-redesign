@@ -24,8 +24,8 @@ const home = {
           <div><b>72 h</b><span>garancia čerstvosti</span></div>
         </div>
       </div>
-      <div class="hero__media">
-        <img src="assets/img/meal5.webp" alt="Ukážka denného menu TopStrava" width="800" height="600">
+      <div class="hero__media hero__media--reels">
+${L.reelsSlider()}
       </div>
     </div>
   </section>
