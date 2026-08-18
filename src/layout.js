@@ -337,10 +337,7 @@ function bandDelivery() {
 
 function sectionPrograms(limit) {
   const list = limit ? programs.slice(0, limit) : programs;
-  return `  <section class="section has-deco">
-${deco('zelenina', 'bl', { w: '330px', o: '.38', y: '-70px', x: '-110px' })}
-${deco('kopr', 'tr', { w: '160px', r: '-32deg', y: '10px', x: '-20px' })}
-${deco('koriandr', 'l', { w: '130px', r: '24deg', y: '12%', x: '-45px', o: '.5' })}
+  return `  <section class="section">
     <div class="container">
       <div class="section-head">
         <p class="label label--gold">Krabičky podľa vášho gusta</p>
@@ -401,17 +398,6 @@ ${js.map(f => `<script src="assets/js/${f}?v=${VERSION}"></script>`).join('\n')}
 `;
 }
 
-/* Blurred herb/vegetable cut-outs, taken from topstrava.sk so the rebuild
-   carries the same brand texture. Purely decorative: aria-hidden, never
-   focusable, and skipped entirely below 900px via CSS. */
-function deco(name, spot, opts = {}) {
-  const kind = ['zelenina', 'plody', 'ostruziny', 'papricky'].includes(name) ? 'veg' : 'herb';
-  const style = Object.entries(opts)
-    .map(([k, v]) => `--deco-${k}:${v}`).join(';');
-  return `      <img class="deco deco--${spot} deco--${kind}" src="${img('deco/' + name)}" alt=""` +
-         ` aria-hidden="true" loading="lazy"${style ? ` style="${style}"` : ''}>`;
-}
-
 /* Payment methods accepted at checkout. */
 const payMethods = [
   { file: 'visa', label: 'Visa', doc: true },
@@ -422,9 +408,7 @@ const payMethods = [
 ];
 
 function newsletter() {
-  return `  <section class="newsletter gradient-warm has-deco">
-${deco('kopr', 'tr', { w: '170px', r: '18deg', o: '.5' })}
-${deco('polnicek', 'bl', { w: '210px', r: '-8deg', o: '.45' })}
+  return `  <section class="newsletter gradient-warm">
     <div class="container">
       <div class="newsletter__grid">
         <div>
@@ -474,5 +458,5 @@ ${reels.map((r, i) => `            <article class="reel${i === 0 ? ' is-active' 
 module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels,
   page, bandDelivery, sectionPrograms, programCard, reelsSlider,
-  img, imageWarnings, imageIndex, deco, newsletter, payMethods
+  img, imageWarnings, imageIndex, newsletter, payMethods
 };

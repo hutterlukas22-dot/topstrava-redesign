@@ -837,37 +837,6 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
     linear-gradient(90deg, #DEB350 7.55%, rgba(255,150,0,.65) 21.81%, #DEB350 48.03%);
 }
 
-/* Decorative herbs and vegetables sitting at the edges of a section.
-   Blurred and behind the content, so they read as depth rather than clutter —
-   and so nothing has to line up perfectly. */
-.has-deco{position:relative;overflow:clip;}
-.has-deco > .container{position:relative;z-index:1;}
-
-.deco{
-  position:absolute;z-index:0;
-  pointer-events:none;user-select:none;
-  width:var(--deco-w,190px);height:auto;
-  opacity:var(--deco-o,.5);
-  filter:blur(var(--deco-b,3px));
-  transform:rotate(var(--deco-r,0deg));
-}
-/* corners — the offsets are negative so shapes bleed off the edge */
-.deco--tl{top:var(--deco-y,-40px);left:var(--deco-x,-60px);}
-.deco--tr{top:var(--deco-y,-40px);right:var(--deco-x,-60px);}
-.deco--bl{bottom:var(--deco-y,-50px);left:var(--deco-x,-70px);}
-.deco--br{bottom:var(--deco-y,-50px);right:var(--deco-x,-70px);}
-.deco--l{top:var(--deco-y,38%);left:var(--deco-x,-70px);}
-.deco--r{top:var(--deco-y,30%);right:var(--deco-x,-70px);}
-
-/* Big soft vegetable clusters vs. small crisp herb sprigs. */
-.deco--veg{--deco-w:300px;--deco-o:.42;--deco-b:9px;}
-.deco--herb{--deco-w:150px;--deco-o:.62;--deco-b:1.5px;}
-
-/* Decoration is desktop-only: it is worth ~1.2 MB and adds nothing on a
-   narrow screen, where the edges are exactly where content needs the room. */
-@media(max-width:900px){.deco{display:none;}}
-@media(prefers-reduced-motion:reduce){.deco{filter:blur(var(--deco-b,3px));}}
-
 /* ---------- 17. NEWSLETTER ---------- */
 .newsletter{padding-block:clamp(56px,7vw,92px);}
 .newsletter__grid{
