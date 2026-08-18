@@ -19,7 +19,6 @@
     </p>
     <dl class="factgrid">
       <div class="fact"><dt>Rozsah</dt><dd>Hlavička, typo, karty,<br>tlačidlá, rytmus</dd></div>
-      <div class="fact"><dt>Odhad</dt><dd>14 hodín</dd></div>
       <div class="fact"><dt>Povaha zásahu</dt><dd>~80 % iba CSS</dd></div>
       <div class="fact"><dt>Nemení sa</dt><dd>Obsah, štruktúra,<br>e-shop logika</dd></div>
     </dl>
@@ -36,7 +35,6 @@
     <li><a href="#tlacidla"><span class="num">06</span>Tlačidlá</a></li>
     <li><a href="#rytmus"><span class="num">07</span>Rytmus</a></li>
     <li><a href="#ton"><span class="num">08</span>Tón</a></li>
-    <li><a href="#plan"><span class="num">09</span>Plán</a></li>
   </ol>
 </nav>
 
@@ -217,7 +215,7 @@
         naprieč celým webom. Preto navrhujem <strong>jeden opatrný krok 42 % → 46 % (+9,5 %)</strong>,
         nie prepis na 62,5 %, a súčasne pevné <code>px</code> minimá priamo v nových komponentoch
         (telo textu, navigácia, meta v kartách). Po zmene treba prejsť kôš, detail produktu
-        a checkout — je to zarátané v pláne ako samostatná položka.
+        a checkout.
       </p>
     </div>
   </div>
@@ -832,55 +830,6 @@
         WebGL ani 3D. Jediný pohyb na webe zostane hover na kartách a tlačidlách
         (200 ms) a kompresia hlavičky pri scrolle. Všetko rešpektuje
         <code>prefers-reduced-motion</code>.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== 09 PLÁN ===================== -->
-<section id="plan">
-  <div class="wrap">
-    <div class="shead"><span class="n">09</span><h2>Plán na 14 hodín</h2></div>
-    <p class="lede">
-      Zoradené podľa pomeru dopad / náklad. Ak čas dôjde skôr, všetko od položky 7 nižšie
-      sa dá odložiť bez toho, aby výsledok pôsobil nedokončene.
-    </p>
-
-    <div class="tablewrap">
-      <table>
-        <thead>
-          <tr><th class="num">#</th><th>Úloha</th><th>Povaha</th><th class="num">Hodiny</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="num">1</td><td><strong>Tokeny</strong> — prepísať <code>--brand-*</code> na zlatú, doplniť <code>--r-card</code>, <code>--r-btn</code>, <code>--sp-*</code>; zrušiť oranžovú <code>#FF9600</code></td><td class="dim">iba CSS</td><td class="num">0,5</td></tr>
-          <tr><td class="num">2</td><td><strong>Tlačidlá</strong> — tri úrovne, zjednotiť <code>.button</code> aj <code>.btn--*</code> na jednu sadu; oddeliť <code>.chip</code> od tlačidiel</td><td class="dim">iba CSS</td><td class="num">1,5</td></tr>
-          <tr><td class="num">3</td><td><strong>Typografia</strong> — škála H1–H6 + text + popisky, odstrániť Montserrat / Inter / Roboto, obmedziť šírku riadku</td><td class="dim">CSS + zmazať 3 <code>@font-face</code></td><td class="num">1,5</td></tr>
-          <tr><td class="num">4</td><td><strong>Kartový jazyk</strong> — jedna trieda <code>.card</code>, prepojiť na <code>.blogBox</code>, <code>.menuBox</code>, <code>.workBox</code>, <code>.testimonialCard</code>, <code>.placesPack</code></td><td class="dim">CSS + drobné úpravy šablón</td><td class="num">3,0</td></tr>
-          <tr><td class="num">5</td><td><strong>Hlavička</strong> — 2 pruhy, redukcia menu, CTA, počítadlo košíka, ikona účtu, sticky s kompresiou a tieňom</td><td class="dim">CSS + šablóna hlavičky</td><td class="num">3,0</td></tr>
-          <tr><td class="num">6</td><td><strong>Vertikálny rytmus</strong> — jedno odsadenie sekcií, zjednotiť medzery mriežok a odstupy nadpisov</td><td class="dim">iba CSS</td><td class="num">1,0</td></tr>
-          <tr><td class="num">7</td><td><strong>Karty programov</strong> — sekcia „Krabičky podľa Vášho gusta“ z textových odkazov na karty s fotkou, kcal a cenou</td><td class="dim">CSS + šablóna sekcie</td><td class="num">1,5</td></tr>
-          <tr><td class="num">8</td><td><strong>Kontajner a mierka</strong> — strop 1320 px, krok <code>:root</code> 42 % → 46 %, px minimá</td><td class="dim">CSS</td><td class="num">0,5</td></tr>
-          <tr><td class="num">9</td><td><strong>Kontrola</strong> — mobil, kôš, detail produktu, checkout, kontrast, focus stavy</td><td class="dim">QA</td><td class="num">1,5</td></tr>
-          <tr style="background:var(--surface-2)"><td></td><td><strong>Spolu</strong></td><td></td><td class="num"><strong>14,0</strong></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>Prvé tri hodiny zmenia najviac</h3>
-    <p>
-      Položky 1–3 sú čisté CSS bez dotyku šablón, dajú sa nasadiť samostatne a už samy
-      o sebe odstránia väčšinu nesúladu: jedna primárna farba, jedno písmo, jedna sada
-      tlačidiel, čitateľné veľkosti. Zvyšok stavia na tomto základe.
-    </p>
-
-    <div class="callout">
-      <span class="tag">Čo do 14 hodín nevojde</span>
-      <p>
-        Prepis <code>:root</code> na <code>62.5%</code> a plný prechod z <code>rem</code>
-        na <code>px</code> naprieč témou (odhad 8–12 h navyše, vyžaduje regresné testovanie
-        celého e-shopu). Redizajn detailu produktu a checkoutu. Nové fotografie programov —
-        karty programov v položke 7 predpokladajú, že fotky viete dodať; ak nie, karta má
-        funkčný variant s tónovaným pozadím a ikonou, ako pri kartách rozvozu vyššie.
       </p>
     </div>
   </div>
