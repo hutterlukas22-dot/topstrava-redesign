@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const L = require('./src/layout');
 
-const pages = [].concat(require('./src/pages-a'), require('./src/pages-b'));
+const pages = [].concat(require('./src/pages-a'), require('./src/pages-b'), require('./src/pages-c'));
 
 let count = 0;
 for (const p of pages) {
@@ -12,7 +12,10 @@ for (const p of pages) {
     title: p.title,
     description: p.description,
     active: p.active,
-    body: p.body
+    body: p.body,
+    css: p.css,
+    js: p.js,
+    bodyEnd: p.bodyEnd
   });
   fs.writeFileSync(path.join(__dirname, p.file), html, 'utf8');
   console.log('  ' + p.file.padEnd(32) + (html.length / 1024).toFixed(1) + ' KB');

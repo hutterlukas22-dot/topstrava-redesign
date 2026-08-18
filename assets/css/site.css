@@ -90,6 +90,9 @@ body{
      break position:sticky on the masthead */
   overflow-x:clip;
 }
+/* Author display rules outrank the UA sheet, so a class with display:block
+   silently defeats the hidden attribute. This puts it back. */
+[hidden]{display:none !important;}
 img,picture,svg,video{display:block;max-width:100%;}
 img{height:auto;}
 a{color:inherit;}

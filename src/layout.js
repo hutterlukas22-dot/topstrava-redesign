@@ -192,7 +192,7 @@ function header(active) {
               <div>
                 <p class="label label--gold">Naša ponuka</p>
                 <ul class="nav__progs">
-${programs.map(p => `                  <li><a href="programy.html#${p.slug}">${p.name}<span>${p.kcal} kcal · ${p.meals} jedál</span></a></li>`).join('\n')}
+${programs.map(p => `                  <li><a href="program.html?program=${p.slug}">${p.name}<span>${p.kcal} kcal · ${p.meals} jedál</span></a></li>`).join('\n')}
                 </ul>
               </div>
               <div class="nav__aside">
@@ -259,7 +259,7 @@ function footer() {
         <div>
           <h3>Krabičky</h3>
           <ul>
-${programs.slice(0, 6).map(p => `            <li><a href="programy.html#${p.slug}">${p.name}</a></li>`).join('\n')}
+${programs.slice(0, 6).map(p => `            <li><a href="program.html?program=${p.slug}">${p.name}</a></li>`).join('\n')}
             <li><a href="programy.html">Všetky programy</a></li>
           </ul>
         </div>
@@ -358,7 +358,7 @@ ${list.map(p => programCard(p)).join('\n')}
 }
 
 function programCard(p) {
-  return `        <a class="card" href="programy.html#${p.slug}" id="${p.slug}">
+  return `        <a class="card" href="program.html?program=${p.slug}" id="${p.slug}">
           <div class="card__media"><img src="${img(p.img)}" alt="${p.name} — ukážka jedál" loading="lazy" width="600" height="375"></div>
           <div class="card__body">
             <p class="card__meta"><span class="hi">Program</span><span class="dot"></span>${p.kcal} kcal<span class="dot"></span>${p.meals} jedál denne</p>
@@ -370,7 +370,9 @@ function programCard(p) {
         </a>`;
 }
 
-function page({ title, description, active, body }) {
+/* `css` and `js` carry extra bundles for pages that need them, so the other
+   pages never download the program configurator. */
+function page({ title, description, active, body, css = [], js = [], bodyEnd = '' }) {
   return `<!doctype html>
 <html lang="sk">
 <head>
@@ -381,6 +383,7 @@ function page({ title, description, active, body }) {
 <link rel="preload" href="assets/fonts/epilogue-regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/epilogue-800.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/site.css?v=${VERSION}">
+${css.map(f => `<link rel="stylesheet" href="assets/css/${f}?v=${VERSION}">`).join('\n')}
 </head>
 <body>
 ${header(active)}
@@ -390,7 +393,9 @@ ${body}
 </main>
 
 ${footer()}
+${bodyEnd}
 <script src="assets/js/site.js?v=${VERSION}"></script>
+${js.map(f => `<script src="assets/js/${f}?v=${VERSION}"></script>`).join('\n')}
 </body>
 </html>
 `;
