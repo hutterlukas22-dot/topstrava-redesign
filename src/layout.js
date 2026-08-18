@@ -289,7 +289,7 @@ ${programs.slice(0, 6).map(p => `            <li><a href="programy.html#${p.slug
         <h3>Možnosti platby</h3>
         <ul class="pay">
 ${payMethods.map(m => {
-  const tag = `<img src="${img('pay/' + m.file)}" alt="${m.label}" loading="lazy"${m.invert ? ' data-invert' : ''}>`;
+  const tag = `<img src="${img('pay/' + m.file)}" alt="${m.label}" loading="lazy">`;
   /* The Visa mark doubles as the way into the design document. Sighted
      visitors just see a payment logo. The aria-label keeps it honest for
      anyone on a screen reader, who would otherwise be told the link goes
@@ -411,7 +411,7 @@ function deco(name, spot, opts = {}) {
 const payMethods = [
   { file: 'visa', label: 'Visa', doc: true },
   { file: 'mastercard', label: 'Mastercard' },
-  { file: 'applepay', label: 'Apple Pay', invert: true },
+  { file: 'applepay', label: 'Apple Pay' },
   { file: 'gpay', label: 'Google Pay' },
   { file: 'thepay', label: 'ThePay' }
 ];

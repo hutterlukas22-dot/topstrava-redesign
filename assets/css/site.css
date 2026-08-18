@@ -893,10 +893,9 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .pay{display:flex;flex-wrap:wrap;gap:18px;align-items:center;list-style:none;margin:14px 0 0;padding:0;}
 .pay li{display:grid;place-items:center;}
 .pay img{max-height:22px;width:auto;display:block;}
-/* Apple Pay ships as a dark mark: a fifth of it falls under 2:1 against this
-   footer and simply disappears. Apple's own dark-background variant is the
-   white one, which is what this produces. */
-.pay img[data-invert]{filter:brightness(0) invert(1);}
+/* applepay.png shipped as Apple’s black badge — a white mark on a flat dark
+   plate. The plate is now keyed out of the file itself, so no filter is
+   needed and no rectangle shows behind the mark. */
 
 .footer__credit{display:flex;align-items:center;gap:9px;white-space:nowrap;}
 .footer__credit span{color:rgba(255,255,255,.5);} /* .45 composites to 4.40:1 on this footer, just under the 4.5 small text needs */
