@@ -1,6 +1,12 @@
 /* Shared chrome for every page. One source, so the header and footer
    cannot drift apart across the site. */
 
+/* The visual-direction document this rebuild was based on. Deliberately
+   discreet in the footer — it is for the client and the team, not visitors.
+   NOTE: this artifact is private by default; it has to be shared from its own
+   share menu or the link 404s for everyone except its owner. */
+const UI_DIRECTION_URL = 'https://claude.ai/code/artifact/91cb3846-0049-4c15-aa3b-d0e98db6ecb7';
+
 /* Cache-buster for CSS/JS, derived from the contents of those two files.
    Content-addressed on purpose: a timestamp would move the stamp on every
    build, so `node build.js` would dirty all eight pages even when nothing
@@ -283,7 +289,7 @@ ${programs.slice(0, 6).map(p => `            <li><a href="programy.html#${p.slug
       <div class="footer__pay">
         <h3>Možnosti platby</h3>
         <ul class="pay">
-${payMethods.map(m => `          <li><img src="${img('pay/' + m.file)}" alt="${m.label}" loading="lazy"></li>`).join('\n')}
+${payMethods.map(m => `          <li><img src="${img('pay/' + m.file)}" alt="${m.label}" loading="lazy"${m.invert ? ' data-invert' : ''}></li>`).join('\n')}
         </ul>
       </div>
       <div class="footer__bottom">
@@ -296,6 +302,9 @@ ${payMethods.map(m => `          <li><img src="${img('pay/' + m.file)}" alt="${m
           </a>
         </p>
       </div>
+      <p class="footer__colophon">
+        <a href="${UI_DIRECTION_URL}" target="_blank" rel="noopener noreferrer">Vizuálny smer &amp; UI dokumentácia</a>
+      </p>
     </div>
   </footer>`;
 }
@@ -397,7 +406,7 @@ function deco(name, spot, opts = {}) {
 const payMethods = [
   { file: 'visa', label: 'Visa' },
   { file: 'mastercard', label: 'Mastercard' },
-  { file: 'applepay', label: 'Apple Pay' },
+  { file: 'applepay', label: 'Apple Pay', invert: true },
   { file: 'gpay', label: 'Google Pay' },
   { file: 'thepay', label: 'ThePay' }
 ];

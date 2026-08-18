@@ -890,18 +890,16 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 }
 
 /* ---------- 18. FOOTER: PAYMENTS + CREDIT ---------- */
-.pay{display:flex;flex-wrap:wrap;gap:8px;align-items:center;list-style:none;margin:14px 0 0;padding:0;}
-/* White chips: the supplied marks are inconsistent — applepay has a baked-in
-   background while the rest are transparent — and some are dark, which would
-   vanish on this footer. A chip normalises all of them. */
-.pay li{
-  display:grid;place-items:center;
-  height:30px;padding:0 9px;border-radius:6px;background:#fff;
-}
-.pay img{max-height:17px;width:auto;display:block;}
+.pay{display:flex;flex-wrap:wrap;gap:18px;align-items:center;list-style:none;margin:14px 0 0;padding:0;}
+.pay li{display:grid;place-items:center;}
+.pay img{max-height:22px;width:auto;display:block;}
+/* Apple Pay ships as a dark mark: a fifth of it falls under 2:1 against this
+   footer and simply disappears. Apple's own dark-background variant is the
+   white one, which is what this produces. */
+.pay img[data-invert]{filter:brightness(0) invert(1);}
 
 .footer__credit{display:flex;align-items:center;gap:9px;white-space:nowrap;}
-.footer__credit span{color:rgba(255,255,255,.45);}
+.footer__credit span{color:rgba(255,255,255,.5);} /* .45 composites to 4.40:1 on this footer, just under the 4.5 small text needs */
 .footer__credit a{display:inline-flex;align-items:center;opacity:.75;transition:opacity var(--dur) ease;}
 .footer__credit a:hover{opacity:1;}
 .footer__credit img{height:16px;width:auto;display:block;}
@@ -916,4 +914,20 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .footer__pay h3{margin-bottom:0;flex:none;}
 /* two classes, to outrank `.footer ul` which lays the nav lists out as a
    column — otherwise the chips stack one per line */
-.footer__pay .pay{margin:0;flex-direction:row;flex-wrap:wrap;gap:8px;}
+.footer__pay .pay{margin:0;flex-direction:row;flex-wrap:wrap;gap:22px;}
+
+/* Discreet link to the visual-direction document — for the client and the
+   team, not for visitors. Quiet by default, plainly a link on hover/focus. */
+.footer__colophon{
+  margin:18px 0 0;padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.08);
+  font-size:12.5px;text-align:right;
+}
+.footer__colophon a{
+  /* .34 looked right but composites to 3.13:1 on this footer, under the 4.5:1
+     small text needs; .5 lands at 5.15:1 and still reads as a quiet link */
+  color:rgba(255,255,255,.5);text-decoration:none;
+  transition:color var(--dur) ease;
+}
+.footer__colophon a:hover,.footer__colophon a:focus-visible{color:var(--gold);}
+@media(max-width:560px){.footer__colophon{text-align:left;}}
