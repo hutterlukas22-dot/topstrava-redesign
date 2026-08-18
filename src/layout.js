@@ -1,11 +1,10 @@
 /* Shared chrome for every page. One source, so the header and footer
    cannot drift apart across the site. */
 
-/* The visual-direction document this rebuild was based on. Deliberately
-   discreet in the footer — it is for the client and the team, not visitors.
-   NOTE: this artifact is private by default; it has to be shared from its own
-   share menu or the link 404s for everyone except its owner. */
-const UI_DIRECTION_URL = 'https://claude.ai/code/artifact/91cb3846-0049-4c15-aa3b-d0e98db6ecb7';
+/* The visual-direction document this rebuild was based on. It lives on this
+   site as a normal page, so anyone with the link can open it — no login, no
+   artifact. It is noindex, so it stays out of search results. */
+const UI_DIRECTION_URL = 'vizualny-smer.html';
 
 /* Cache-buster for CSS/JS, derived from the contents of those two files.
    Content-addressed on purpose: a timestamp would move the stamp on every
@@ -289,7 +288,16 @@ ${programs.slice(0, 6).map(p => `            <li><a href="programy.html#${p.slug
       <div class="footer__pay">
         <h3>Možnosti platby</h3>
         <ul class="pay">
-${payMethods.map(m => `          <li><img src="${img('pay/' + m.file)}" alt="${m.label}" loading="lazy"${m.invert ? ' data-invert' : ''}></li>`).join('\n')}
+${payMethods.map(m => {
+  const tag = `<img src="${img('pay/' + m.file)}" alt="${m.label}" loading="lazy"${m.invert ? ' data-invert' : ''}>`;
+  /* The Visa mark doubles as the way into the design document. Sighted
+     visitors just see a payment logo. The aria-label keeps it honest for
+     anyone on a screen reader, who would otherwise be told the link goes
+     to "Visa" and end up somewhere else entirely. */
+  return m.doc
+    ? `          <li><a class="pay__doc" href="${UI_DIRECTION_URL}" aria-label="Vizuálny smer a UI dokumentácia">${tag}</a></li>`
+    : `          <li>${tag}</li>`;
+}).join('\n')}
         </ul>
       </div>
       <div class="footer__bottom">
@@ -302,9 +310,6 @@ ${payMethods.map(m => `          <li><img src="${img('pay/' + m.file)}" alt="${m
           </a>
         </p>
       </div>
-      <p class="footer__colophon">
-        <a href="${UI_DIRECTION_URL}" target="_blank" rel="noopener noreferrer">Vizuálny smer &amp; UI dokumentácia</a>
-      </p>
     </div>
   </footer>`;
 }
@@ -404,7 +409,7 @@ function deco(name, spot, opts = {}) {
 
 /* Payment methods accepted at checkout. */
 const payMethods = [
-  { file: 'visa', label: 'Visa' },
+  { file: 'visa', label: 'Visa', doc: true },
   { file: 'mastercard', label: 'Mastercard' },
   { file: 'applepay', label: 'Apple Pay', invert: true },
   { file: 'gpay', label: 'Google Pay' },

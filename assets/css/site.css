@@ -931,3 +931,9 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 }
 .footer__colophon a:hover,.footer__colophon a:focus-visible{color:var(--gold);}
 @media(max-width:560px){.footer__colophon{text-align:left;}}
+
+/* The Visa mark is also the way into the design document. It gets a real
+   focus ring and a hit area, so keyboard users can reach it — hiding a link
+   is a presentation choice, not a reason to make it unusable. */
+.pay__doc{display:block;border-radius:4px;padding:2px;}
+.pay__doc:focus-visible{outline:2.5px solid var(--gold);outline-offset:2px;}

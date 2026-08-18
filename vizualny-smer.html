@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TopStrava — UI Refinement Direction</title>
+<meta name="description" content="Vizualny smer pre TopStravu - analyza sucasneho stavu a navrh zjednotenia hlavicky, typografie, kariet, tlacidiel a vertikalneho rytmu.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="assets/css/doc.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Vizuálny smer · UI refinement</p>
+    <h1>TopStrava: jeden jazyk pre <em>hlavičku, typografiu, karty a tlačidlá</em></h1>
+    <p class="standfirst">
+      Nie redesign. Konsolidácia. Web dnes beží na dvoch paralelných dizajnových
+      systémoch naraz — a väčšina práce je v tom, jeden z nich dokončiť a druhý vypnúť.
+    </p>
+    <dl class="factgrid">
+      <div class="fact"><dt>Rozsah</dt><dd>Hlavička, typo, karty,<br>tlačidlá, rytmus</dd></div>
+      <div class="fact"><dt>Odhad</dt><dd>14 hodín</dd></div>
+      <div class="fact"><dt>Povaha zásahu</dt><dd>~80 % iba CSS</dd></div>
+      <div class="fact"><dt>Nemení sa</dt><dd>Obsah, štruktúra,<br>e-shop logika</dd></div>
+    </dl>
+  </header>
+</div>
+
+<nav class="toc" aria-label="Obsah">
+  <ol>
+    <li><a href="#diagnoza"><span class="num">01</span>Diagnóza</a></li>
+    <li><a href="#zaklad"><span class="num">02</span>Základ</a></li>
+    <li><a href="#hlavicka"><span class="num">03</span>Hlavička</a></li>
+    <li><a href="#typografia"><span class="num">04</span>Typografia</a></li>
+    <li><a href="#karty"><span class="num">05</span>Karty</a></li>
+    <li><a href="#tlacidla"><span class="num">06</span>Tlačidlá</a></li>
+    <li><a href="#rytmus"><span class="num">07</span>Rytmus</a></li>
+    <li><a href="#ton"><span class="num">08</span>Tón</a></li>
+    <li><a href="#plan"><span class="num">09</span>Plán</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ===================== 01 DIAGNÓZA ===================== -->
+<section id="diagnoza">
+  <div class="wrap">
+    <div class="shead"><span class="n">01</span><h2>Čo som na webe skutočne našiel</h2></div>
+    <p class="lede">
+      Merané priamo v prehliadači na živom webe pri šírke 1280 px. Nie dojmy — vypočítané hodnoty.
+    </p>
+
+    <p>
+      Najdôležitejší nález nie je estetický, ale štrukturálny: <strong>na stránke koexistujú dva
+      dizajnové systémy.</strong> Starší (Epilogue, pilulkové tvary 33,6 px, oranžová
+      <code>#FF9600</code>, veľkosti v <code>rem</code>) a novší, rozpracovaný (Montserrat/Inter,
+      rádius 10 px, zlatá <code>#DEB350</code>, veľkosti v <code>px</code>). Novší systém má
+      v CSS už hotovú kompletnú sadu tokenov — a takmer sa nepoužíva.
+    </p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>Oblasť</th><th>Nameraný stav</th><th class="num">Počet variantov</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Písma</strong></td>
+            <td>Epilogue (6 rezov) + Montserrat (8) + Inter (2) + Roboto (2) — 18 súborov, 4 rodiny</td>
+            <td class="num was">4</td>
+          </tr>
+          <tr>
+            <td><strong>Tlačidlá</strong></td>
+            <td>Dve rôzne primárne farby (oranžová <code>#FF9600</code> aj zlatá <code>#DEB350</code>), dve výšky (35 / 46 px), dva rádiusy (33 / 10 px), dve písma</td>
+            <td class="num was">10</td>
+          </tr>
+          <tr>
+            <td><strong>Rádius kariet</strong></td>
+            <td>33,6 px (blog, menu) · 16 px (referencie) · 0 px (kroky, rozvoz)</td>
+            <td class="num was">6</td>
+          </tr>
+          <tr>
+            <td><strong>Tiene</strong></td>
+            <td><code>0 0 10px rgba(0,0,0,.25)</code> bez offsetu (blog) vs. <code>0 8px 26px rgba(30,30,30,.06)</code> (referencie)</td>
+            <td class="num was">2</td>
+          </tr>
+          <tr>
+            <td><strong>Nadpisy H3</strong></td>
+            <td>10,1 px / 12,1 px / 13,4 px / 16,1 px / 21,5 px, váhy 300–800</td>
+            <td class="num was">5</td>
+          </tr>
+          <tr>
+            <td><strong>Odsadenie sekcií</strong></td>
+            <td>84 / 63,8 / 6,7 / 60,5 / 107,5 / 40,3 / 80,6 / 73,2 / 100,8 px</td>
+            <td class="num was">9</td>
+          </tr>
+          <tr>
+            <td><strong>Navigácia v hlavičke</strong></td>
+            <td>3 pruhy nad sebou (zlatý → čierny → sivý), 13 odkazov, 0 primárnych CTA</td>
+            <td class="num was">3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Štyri veci, ktoré stoja za zmienku zvlášť</h3>
+
+    <div class="callout">
+      <span class="tag">Nález 1 — koreň problému s veľkosťou písma</span>
+      <p>
+        Téma zmenšuje celý dizajn cez <code>:root { font-size }</code>: 50 % nad 1700 px,
+        46 % pod 1699 px, <strong>42 % pod 1449 px</strong>. Zároveň <code>.container</code>
+        nemá pixelový strop — má <code>max-width: 95 %</code>. Web sa teda namiesto
+        vycentrovania do pevnej šírky <em>zmršťuje</em>. Dôsledok na bežnom notebooku:
+        <strong>bežný text 10,1 px, navigácia 10,1 px, popisky 8,7 px.</strong>
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="tag">Nález 2 — domovská stránka nemá H1</span>
+      <p>
+        Na homepage nie je ani jeden <code>&lt;h1&gt;</code>. Na podstránkach H1 existuje, ale má
+        presne tú istú veľkosť ako H2 (24,2 px / riadkovanie 48,4 px). Medzi prvou a druhou
+        úrovňou nadpisov teda vizuálne <strong>nie je žiadny rozdiel</strong>.
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="tag">Nález 3 — kontrast zlatej</span>
+      <p>
+        Zlatá <code>#DEB350</code> s bielym textom má kontrast <strong>1,97 : 1</strong> (WCAG
+        vyžaduje 4,5 : 1). S tmavým <code>#1E1E1E</code> má <strong>8,47 : 1</strong>. Vyplnené
+        tlačidlá to našťastie robia správne — treba to len zafixovať ako pravidlo, aby sa
+        biely text na zlatej nikdy neobjavil. Horšie je na tom <code>.btn--ghost</code>:
+        zlatý text <code>#D0A23C</code> na bielej má <strong>2,36 : 1</strong>. Preto v návrhu
+        textové CTA používajú tmavý text so zlatým podčiarknutím — zlatá zostáva viditeľná
+        ako signál, ale nenesie samotnú čitateľnosť.
+      </p>
+    </div>
+
+    <div class="callout">
+      <span class="tag">Nález 4 — programy nie sú karty</span>
+      <p>
+        Sekcia „Krabičky podľa Vášho gusta“ — hlavný vstup do produktu na domovskej stránke —
+        je slider <strong>holých textových odkazov</strong> v sivých pilulkách. Bez fotky, bez
+        ceny, bez kalórií, bez CTA. To je najväčší nepomer medzi obchodnou dôležitosťou
+        a vizuálnou váhou na celom webe.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 02 ZÁKLAD ===================== -->
+<section id="zaklad">
+  <div class="wrap">
+    <div class="shead"><span class="n">02</span><h2>Základ: zapnúť to, čo už v CSS je</h2></div>
+    <p class="lede">
+      Toto nie je nový dizajn systém. Je to systém, ktorý v štýloch webu už existuje —
+      len sa nepoužíva.
+    </p>
+
+    <p>
+      V stylesheete je kompletná sada premenných: <code>--ink-0…900</code>, <code>--r-sm…xl</code>,
+      <code>--s-1…24</code>, <code>--shadow-xs…lg</code>, <code>--container: 1320px</code>,
+      <code>--dur-*</code>, <code>--ease-*</code>. Je tam aj modrá <code>--brand-500: #2776bc</code>,
+      ktorá <strong>nepatrí k identite TopStravy</strong> a treba ju prepísať na zlatú.
+    </p>
+
+    <h4>Paleta — bez novej identity, len s určenými rolami</h4>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#DEB350"></div>
+        <div class="meta"><b>Zlatá</b><span>#DEB350</span><em>Iba primárne CTA a akcenty. Vždy s tmavým textom.</em></div></div>
+      <div class="sw"><div class="chip" style="background:#1E1E1E"></div>
+        <div class="meta"><b>Uhlová</b><span>#1E1E1E</span><em>Text, hlavička, pätička, sekundárne tlačidlá.</em></div></div>
+      <div class="sw"><div class="chip" style="background:#F8EDDE"></div>
+        <div class="meta"><b>Krémová</b><span>#F8EDDE</span><em>Tónované plochy a karty. Existuje, používa sa málo.</em></div></div>
+      <div class="sw"><div class="chip" style="background:#4A9128"></div>
+        <div class="meta"><b>Zelená</b><span>#4A9128</span><em>Už v tokenoch. Iba stavy: skladom, doručené, potvrdené.</em></div></div>
+      <div class="sw"><div class="chip" style="background:#F7F4EE"></div>
+        <div class="meta"><b>Podklad</b><span>#F7F4EE</span><em>Teplý neutrál namiesto studenej #F8F8F8.</em></div></div>
+      <div class="sw"><div class="chip" style="background:#FF9600;position:relative">
+        <span style="position:absolute;inset:0;display:grid;place-items:center;color:#1E1E1E;font-weight:800;font-size:22px">✕</span></div>
+        <div class="meta"><b>Oranžová</b><span>#FF9600</span><em>Zrušiť. Konkuruje zlatej, na webe len 4 výskyty.</em></div></div>
+    </div>
+
+    <p class="note">
+      <b>Prečo zrušiť oranžovú:</b> web má dnes dva „primárne“ odtiene, ktoré si na tej istej
+      obrazovke konkurujú. Oranžová je na webe len na 4 miestach — jej odstránenie je
+      päťminútová práca a okamžite dá zlatej výhradné právo znamenať „klikni sem“.
+    </p>
+
+    <h4>Konkrétne: prepísať tri riadky, nie prestavať tému</h4>
+<pre><code><span class="c-com">/* 1 — značka je zlatá, nie modrá */</span>
+<span class="c-sel">:root</span> {
+  <span class="c-prop">--brand-500</span>: #DEB350;   <span class="c-com">/* bolo #2776bc */</span>
+  <span class="c-prop">--brand-600</span>: #CFA23A;
+  <span class="c-prop">--brand-ink</span>: #1E1E1E;   <span class="c-com">/* text na zlatej — nikdy nie biely */</span>
+
+  <span class="c-com">/* 2 — jeden rádius pre karty, jeden pre tlačidlá */</span>
+  <span class="c-prop">--r-card</span>: 16px;         <span class="c-com">/* bolo 33.6 / 16 / 0 */</span>
+  <span class="c-prop">--r-btn</span>: 12px;
+
+  <span class="c-com">/* 3 — jeden vertikálny rytmus */</span>
+  <span class="c-prop">--sp-section</span>: clamp(56px, 7vw, 96px);
+  <span class="c-prop">--sp-head</span>: 40px;        <span class="c-com">/* nadpis sekcie → obsah */</span>
+  <span class="c-prop">--sp-grid</span>: 24px;        <span class="c-com">/* medzera v mriežke */</span>
+}
+
+<span class="c-com">/* 4 — prestať zmršťovať dizajn; dať kontajneru strop */</span>
+<span class="c-sel">.container</span> { <span class="c-prop">max-width</span>: var(--container); } <span class="c-com">/* 1320px, bolo 95% */</span>
+<span class="c-sel">@media</span> (max-width: 1449px) { <span class="c-sel">:root</span> { <span class="c-prop">font-size</span>: 46%; } } <span class="c-com">/* bolo 42% */</span></code></pre>
+
+    <div class="callout">
+      <span class="tag">Poznámka k riziku</span>
+      <p>
+        Zmena <code>:root { font-size }</code> zväčší <em>všetko</em>, čo je v <code>rem</code> —
+        naprieč celým webom. Preto navrhujem <strong>jeden opatrný krok 42 % → 46 % (+9,5 %)</strong>,
+        nie prepis na 62,5 %, a súčasne pevné <code>px</code> minimá priamo v nových komponentoch
+        (telo textu, navigácia, meta v kartách). Po zmene treba prejsť kôš, detail produktu
+        a checkout — je to zarátané v pláne ako samostatná položka.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 03 HLAVIČKA ===================== -->
+<section id="hlavicka">
+  <div class="wrap">
+    <div class="shead"><span class="n">03</span><h2>Hlavička a navigácia</h2></div>
+    <p class="lede">
+      Tri pruhy, tri pozadia, tri typografické štýly, 13 odkazov — a ani jedno tlačidlo,
+      ktoré by hovorilo „objednať“.
+    </p>
+  </div>
+
+  <div class="stage-wrap">
+    <div class="stage">
+      <div class="stage-title"><span class="pill before">Teraz</span> Skutočné hodnoty z webu</div>
+      <div class="scrollx">
+        <div class="vp">
+          <div class="m-top-before">
+            <ul><li>★ Pravidelne 👌</li><li>★ Zdravo 👌</li><li>★ Chutne 👌</li></ul>
+            <div style="display:flex;gap:16px"><span>☎ +421 904 264 951</span><span>✉ topstrava.info@gmail.com</span></div>
+          </div>
+          <div class="m-mid-before">
+            <div class="m-logo"></div>
+            <nav>
+              <a href="#">Krabičky ▾</a><a href="#">Max Nutrition</a><a href="#">Ako to funguje?</a>
+              <a href="#">Cenník</a><a href="#">Rozvoz</a><a href="#">O nás</a><a href="#">Referencie</a>
+              <a href="#">Často kladené dotazy</a><a href="#">Kontakty</a>
+            </nav>
+            <div class="m-util"><a href="#">🛒</a><a href="#">Prihlásiť sa</a></div>
+          </div>
+          <div class="m-bot-before">
+            <a href="#">Ako vybrať program?</a><a href="#">Vzorový jedálniček</a>
+            <a href="#">Nutričné poradenstvo</a><a href="#">🎁 Darčekové poukážky</a>
+          </div>
+          <div style="height:44px;background:#fff"></div>
+        </div>
+      </div>
+      <p class="note">
+        Zlatý pruh hore je najsilnejšia farba na obrazovke — a nesie najmenej dôležitý obsah.
+        Tým sa <b>spotrebuje akcentová farba skôr, než sa dostane k CTA</b>. Navigácia je
+        10,1 px vo váhe 800; spodný pruh 10,1 px verzálkami vo váhe 500. Tri odlišné
+        typografické režimy v jednom bloku. Košík je holá ikona bez počítadla.
+      </p>
+    </div>
+
+    <div class="stage">
+      <div class="stage-title"><span class="pill after">Návrh</span> Dva pruhy · 7 primárnych odkazov · jedno CTA</div>
+      <div class="scrollx">
+        <div class="vp" id="hdrDemo">
+          <div class="m-top-after">
+            <div class="m-claims">
+              <span><svg class="m-tick" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8 14.2 4.3 10.5l1.4-1.4L8 11.4l6.3-6.3 1.4 1.4z"/></svg>Pravidelne</span>
+              <span><svg class="m-tick" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8 14.2 4.3 10.5l1.4-1.4L8 11.4l6.3-6.3 1.4 1.4z"/></svg>Zdravo</span>
+              <span><svg class="m-tick" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8 14.2 4.3 10.5l1.4-1.4L8 11.4l6.3-6.3 1.4 1.4z"/></svg>Chutne</span>
+            </div>
+            <div class="m-contact">
+              <a href="#">+421 904 264 951</a>
+              <a href="#">topstrava.info@gmail.com</a>
+            </div>
+          </div>
+          <div class="m-mid-after">
+            <div class="m-logo-after"></div>
+            <nav>
+              <a href="#" class="is-active">Krabičky<span class="caret">▾</span></a>
+              <a href="#">Cenník</a>
+              <a href="#">Ako to funguje<span class="caret">▾</span></a>
+              <a href="#">Rozvoz</a>
+              <a href="#">Referencie</a>
+              <a href="#">Blog</a>
+              <a href="#">O nás<span class="caret">▾</span></a>
+            </nav>
+            <div class="m-actions">
+              <a href="#" class="m-icon" aria-label="Účet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/></svg>
+              </a>
+              <a href="#" class="m-icon" aria-label="Košík, 2 položky">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 7V5.6a3 3 0 0 1 6 0V7"/></svg>
+                <span class="m-badge">2</span>
+              </a>
+              <a href="#" class="m-cta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 7V5.6a3 3 0 0 1 6 0V7"/></svg>
+                Objednať krabičky
+              </a>
+            </div>
+          </div>
+          <div class="m-scrollbody">
+            <p>Obsah stránky…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-title">Sticky správanie</div>
+      <button class="toggle" id="stickyBtn" type="button" aria-pressed="false">
+        <span class="dot"></span>Simulovať odscrollovanie
+      </button>
+      <p class="note" style="margin:0 0 16px">
+        Tlačidlo prepne hlavičku vyššie do zalepeného stavu. Horný informačný pruh odíde,
+        tmavý pruh sa stiahne zo 72 na 60 px, logo sa zmenší a pribudne tieň, ktorý oddelí
+        hlavičku od obsahu. Dnes sa lepí len stredný pruh, bez tieňa a bez zmeny výšky —
+        preto pri scrollovaní „skočí“.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h3>Čo presne sa mení</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Prvok</th><th>Teraz</th><th>Návrh</th></tr></thead>
+        <tbody>
+          <tr><td>Pruhy</td><td class="was">3 (zlatý / čierny / sivý)</td><td class="now">2 (krémový / čierny)</td></tr>
+          <tr><td>Horný pruh</td><td class="was">Zlatý #DEB350, 10,1 px</td><td class="now">Krémový #F7F4EE, 13 px, akcent uvoľnený pre CTA</td></tr>
+          <tr><td>Odkazy v hlavnom menu</td><td class="was">9 · 10,1 px · váha 800</td><td class="now">7 · 15 px · váha 500, aktívny 600 + zlatá linka</td></tr>
+          <tr><td>Spodný pruh</td><td class="was">4 verzálkové odkazy</td><td class="now">Zrušený — obsah presunutý, nie odstránený</td></tr>
+          <tr><td>Košík</td><td class="was">Holá ikona, počet len v paneli</td><td class="now">Ikona + zlaté počítadlo, 42×42 klikacia plocha</td></tr>
+          <tr><td>Účet</td><td class="was">Text „Prihlásiť sa“</td><td class="now">Ikona v rovnakom rámčeku ako košík</td></tr>
+          <tr><td>Primárne CTA</td><td class="was">Žiadne</td><td class="now">„Objednať krabičky“ — jediná zlatá plocha v hlavičke</td></tr>
+          <tr><td>Sticky</td><td class="was">Bez tieňa, bez kompresie</td><td class="now">72 → 60 px, tieň, horný pruh sa skryje</td></tr>
+          <tr><td>Výška celkom</td><td class="was">111 px</td><td class="now">110 px → 60 px po scrolle</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="tag">Nič sa nestráca</span>
+      <p>
+        Štyri odkazy zo spodného pruhu a dva vyradené z hlavného menu <strong>nezanikajú</strong>.
+        „Ako vybrať program?“, „Vzorový jedálniček“ a „Nutričné poradenstvo“ idú do pravého
+        pomocného stĺpca mega-menu „Krabičky“, kde majú aj vecne najväčší zmysel.
+        „Darčekové poukážky“, „Max Nutrition“, „FAQ“ a „Kontakty“ idú do rozbaľovacieho
+        menu „O nás“ a zostávajú v pätičke. Cieľ je zredukovať <em>vizuálny šum</em>,
+        nie funkčnosť.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 04 TYPOGRAFIA ===================== -->
+<section id="typografia">
+  <div class="wrap">
+    <div class="shead"><span class="n">04</span><h2>Typografia</h2></div>
+    <p class="lede">
+      Jedna rodina namiesto štyroch, šesť definovaných rolí namiesto pätnástich náhodných
+      veľkostí, a spodná hranica čitateľnosti.
+    </p>
+
+    <p>
+      Web načítava <strong>18 súborov písiem v štyroch rodinách</strong>. Epilogue už pokrýva
+      rezy 300–800 a je najvýraznejšia a najlepšie sadená z nich — navrhujem ponechať
+      <strong>iba ju</strong> a Montserrat, Inter aj Roboto odstrániť. Ušetrí to približne
+      12 sieťových požiadaviek a zároveň to odstráni najviditeľnejší nesúlad: tlačidlá
+      dnes majú iné písmo než text okolo nich.
+    </p>
+  </div>
+
+  <div class="stage-wrap">
+    <div class="stage">
+      <div class="stage-title"><span class="pill before">Teraz</span> Skutočné vykreslené hodnoty pri 1280 px</div>
+      <div class="vp" style="padding:22px 26px">
+        <div class="typespec">
+          <div class="typerow"><div class="k">H1<em>chýba na HP</em></div><div class="sample b-h1">Krabičková strava</div></div>
+          <div class="typerow"><div class="k">H2<em>24,2 / 48,4 px</em></div><div class="sample b-h2">Krabičky podľa Vášho gusta</div></div>
+          <div class="typerow"><div class="k">H3<em>10,1 px · váha 300</em></div><div class="sample b-h3">Vyberte si svoj obľúbený variant</div></div>
+          <div class="typerow"><div class="k">Text<em>10,1 / 13,4 px</em></div><div class="sample b-body">Overte si, či rozvážame aj k Vám — chutné krabičky doručíme priamo až domov.</div></div>
+          <div class="typerow"><div class="k">Popisok<em>8,7 px</em></div><div class="sample b-label">Meno a priezvisko</div></div>
+          <div class="typerow"><div class="k">Navigácia<em>10,1 px · váha 800</em></div><div class="sample b-nav">Ako to funguje?</div></div>
+        </div>
+      </div>
+      <p class="note">
+        Tri problémy naraz. <b>H1 a H2 sú identické</b> — hierarchia neexistuje.
+        <b>H3 je vo váhe 300</b>, teda ľahší než bežný text, takže nadpis je slabší než
+        odstavec pod ním. A <b>riadkovanie H2 je 48,4 px pri veľkosti 24,2 px</b> — pomer
+        2,0, čo pri dvojriadkovom nadpise vytvorí dieru uprostred vety.
+      </p>
+    </div>
+
+    <div class="stage">
+      <div class="stage-title"><span class="pill after">Návrh</span> Jedna rodina · šesť rolí · pevné px minimá</div>
+      <div class="vp" style="padding:22px 26px">
+        <div class="typespec">
+          <div class="typerow"><div class="k">H1<em>44 / 1,08 · 800</em></div><div class="sample a-h1">Krabičková strava</div></div>
+          <div class="typerow"><div class="k">H2<em>32 / 1,18 · 800</em></div><div class="sample a-h2">Krabičky podľa Vášho gusta</div></div>
+          <div class="typerow"><div class="k">H3<em>20 / 1,3 · 700</em></div><div class="sample a-h3">Vyberte si svoj obľúbený variant</div></div>
+          <div class="typerow"><div class="k">Text<em>16,5 / 1,65 · 400</em></div><div class="sample a-body">Overte si, či rozvážame aj k Vám — chutné krabičky doručíme priamo až domov, alebo na jedno z dvanástich odberných miest.</div></div>
+          <div class="typerow"><div class="k">Popisok<em>12 · 600 · +0,09em</em></div><div class="sample a-label">Meno a priezvisko</div></div>
+          <div class="typerow"><div class="k">Navigácia<em>15 / 1,4 · 500</em></div><div class="sample a-nav">Ako to funguje?</div></div>
+        </div>
+      </div>
+      <p class="note">
+        Rozstupy medzi úrovňami sú ~1,4× (44 → 32 → 20 → 16,5), takže hierarchia je čitateľná
+        aj periférnym pohľadom. Riadkovanie klesá s rastúcou veľkosťou (1,08 → 1,65) — to je
+        celý „editoriálny rytmus“. Text je obmedzený na <b>65–70 znakov na riadok</b>;
+        dnes sa pri <code>max-width: 95%</code> naťahuje aj cez 130 znakov.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap">
+<pre><code><span class="c-com">/* Jedna rodina. Ostatné tri @font-face bloky zmazať. */</span>
+<span class="c-sel">:root</span> {
+  <span class="c-prop">--font-display</span>: 'Epilogue', system-ui, sans-serif;
+  <span class="c-prop">--font-body</span>:    'Epilogue', system-ui, sans-serif;
+}
+
+<span class="c-com">/* Pevné px — nezmršťujú sa spolu s :root font-size */</span>
+<span class="c-sel">h1</span> { <span class="c-prop">font-size</span>: clamp(30px, 4.2vw, 46px); <span class="c-prop">line-height</span>: 1.08; <span class="c-prop">font-weight</span>: 800;
+     <span class="c-prop">letter-spacing</span>: -.025em; <span class="c-prop">text-wrap</span>: balance; }
+<span class="c-sel">h2</span> { <span class="c-prop">font-size</span>: clamp(24px, 3vw, 34px);  <span class="c-prop">line-height</span>: 1.18; <span class="c-prop">font-weight</span>: 800;
+     <span class="c-prop">letter-spacing</span>: -.02em;  <span class="c-prop">text-wrap</span>: balance; }
+<span class="c-sel">h3</span> { <span class="c-prop">font-size</span>: 20px; <span class="c-prop">line-height</span>: 1.3; <span class="c-prop">font-weight</span>: 700; }
+<span class="c-sel">body, p, li</span> { <span class="c-prop">font-size</span>: 16.5px; <span class="c-prop">line-height</span>: 1.65; <span class="c-prop">font-weight</span>: 400; }
+<span class="c-sel">.label, .card__meta</span> { <span class="c-prop">font-size</span>: 12px; <span class="c-prop">font-weight</span>: 600;
+     <span class="c-prop">letter-spacing</span>: .09em; <span class="c-prop">text-transform</span>: uppercase; }
+
+<span class="c-com">/* Šírka riadku — jediná zmena s najväčším dopadom na „upokojenie“ */</span>
+<span class="c-sel">.text p, .content p, article p</span> { <span class="c-prop">max-width</span>: 68ch; }</code></pre>
+  </div>
+</section>
+
+<!-- ===================== 05 KARTY ===================== -->
+<section id="karty">
+  <div class="wrap">
+    <div class="shead"><span class="n">05</span><h2>Jeden kartový jazyk</h2></div>
+    <p class="lede">
+      Dobrá správa: správnu kartu už na webe máte. Je na stránke Referencie a stačí ju
+      povýšiť na štandard.
+    </p>
+
+    <p>
+      <code>.testimonialCard</code> má rádius 16 px, mäkký vrstvený tieň
+      <code>0 8px 26px rgba(30,30,30,.06)</code> a vnútorné odsadenie 26/24 px. Je to
+      najnovší a najlepší komponent na webe. Oproti tomu <code>.blogBox</code> má rádius
+      33,6 px a tieň <code>0 0 10px rgba(0,0,0,.25)</code> — bez posunu a so štvornásobnou
+      hustotou, čo vytvára okolo karty sivý „opar“ namiesto dojmu nadvihnutia.
+    </p>
+  </div>
+
+  <div class="stage-wrap">
+    <div class="stage">
+      <div class="stage-title"><span class="pill before">Teraz</span> Tri rôzne jazyky na jednej stránke</div>
+      <div class="vp" style="padding:24px;background:#fff">
+        <div class="cardgrid">
+          <a href="#" class="c-before">
+            <div class="ph" style="background-image:url(assets/img/blog1.webp)"></div>
+            <div class="body">
+              <p class="date">20. 6. 2026</p>
+              <h5>Prečo je pri krabičkovej strave dôležitý chladený rozvoz?</h5>
+              <span class="cta">Prečítať článok →</span>
+            </div>
+          </a>
+          <div style="border-radius:0;padding:0">
+            <div style="height:132px;background:url(assets/img/blog3.webp) center/cover;border-radius:0"></div>
+            <div style="padding:14px 0">
+              <p style="font-size:10.1px;line-height:15.5px;font-weight:300;margin:0">Vyberte si svoj obľúbený variant</p>
+            </div>
+            <p style="font-size:11px;color:#A8443A;margin:8px 0 0;font-weight:600">.workBox — 0 px rádius, 0 tieň, 0 odsadenie</p>
+          </div>
+          <div style="background:#fff;border-radius:16px;box-shadow:0 8px 26px rgba(30,30,30,.06);padding:26px 24px">
+            <p style="font-size:14px;line-height:1.6;color:#3A362F;margin:0 0 14px">„Schudla som 12 kg a konečne neriešim, čo budem variť.“</p>
+            <p style="font-size:13px;color:#6E695F;margin:0;font-weight:600">Zuzana K. · Žilina</p>
+            <p style="font-size:11px;color:#4A7B24;margin:12px 0 0;font-weight:600">.testimonialCard — 16 px, mäkký tieň ✓</p>
+          </div>
+        </div>
+        <div style="margin-top:26px;padding-top:20px;border-top:1px solid rgba(27,26,23,.08)">
+          <p style="font-size:11px;color:#A8443A;margin:0 0 10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Programy krabičiek — dnes bez karty</p>
+          <div class="m-progs-before">
+            <a href="#">3 chody Žena</a><a href="#">3 chody Muž</a><a href="#">Slim</a>
+            <a href="#">Slim+</a><a href="#">Balance</a><a href="#">Balance+</a>
+            <a href="#">Active body</a><a href="#">Max energy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-title"><span class="pill after">Návrh</span> Jedna karta · päť použití</div>
+      <div class="vp" style="padding:26px;background:#FBFAF7">
+        <div class="cardgrid">
+
+          <a href="#" class="card">
+            <div class="card__media"><div class="im" style="background-image:url(assets/img/blog4.webp)"></div></div>
+            <div class="card__body">
+              <p class="card__meta"><span class="hi">Program</span><span class="dot"></span>1 400 kcal<span class="dot"></span>5 chodov</p>
+              <h5>Balance</h5>
+              <p class="card__text">Vyvážený jedálniček na každý deň — bez počítania a bez varenia.</p>
+              <div class="price"><b>13,90 €</b><span>/ deň</span></div>
+              <span class="card__cta">Zobraziť program
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+
+          <a href="#" class="card">
+            <div class="card__media"><div class="im" style="background-image:url(assets/img/blog1.webp)"></div></div>
+            <div class="card__body">
+              <p class="card__meta"><span class="hi">Blog</span><span class="dot"></span>20. 6. 2026<span class="dot"></span>4 min</p>
+              <h5>Prečo je pri krabičkovej strave dôležitý chladený rozvoz?</h5>
+              <p class="card__text">V lete rozhoduje chladiaci reťazec o kvalite aj bezpečnosti jedla.</p>
+              <span class="card__cta">Prečítať článok
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+
+          <div class="card card--quote">
+            <div class="card__body">
+              <div class="stars" aria-label="5 z 5">
+                <svg viewBox="0 0 20 20" fill="currentColor"><path d="m10 1.6 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path d="m10 1.6 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path d="m10 1.6 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path d="m10 1.6 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>
+                <svg viewBox="0 0 20 20" fill="currentColor"><path d="m10 1.6 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></svg>
+              </div>
+              <p class="card__quote">„Schudla som 12 kg a konečne neriešim, čo budem variť. Chuťovo je to úplne inde, než som čakala.“</p>
+              <div class="who">
+                <span class="av">ZK</span>
+                <span><b>Zuzana K.</b><span>Žilina · program Slim+</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card--tint">
+            <div class="card__body">
+              <span class="card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11v9H2zM13 11h4.5l3.5 3.5V17h-8z"/><circle cx="6" cy="18.6" r="1.7"/><circle cx="17" cy="18.6" r="1.7"/></svg>
+              </span>
+              <p class="card__meta"><span class="hi">Rozvoz na adresu</span></p>
+              <h5>13 miest po celom Slovensku</h5>
+              <ul class="taglist">
+                <li>Žilina</li><li>Trenčín</li><li>Košice</li><li>Poprad</li>
+                <li>Martin</li><li>Púchov</li><li>+7 ďalších</li>
+              </ul>
+              <span class="card__cta">Overiť moju adresu
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="card card--tint">
+            <div class="card__body">
+              <span class="card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.7-7.5-10.2A7.5 7.5 0 0 1 12 3.3a7.5 7.5 0 0 1 7.5 7.5C19.5 16.3 12 21 12 21z"/><circle cx="12" cy="10.6" r="2.6"/></svg>
+              </span>
+              <p class="card__meta"><span class="hi">Odberné miesta</span></p>
+              <h5>12 partnerských prevádzok</h5>
+              <p class="card__text">Fitness centrá a kaviarne, kde si krabičky vyzdvihnete cestou domov.</p>
+              <span class="card__cta">Zobraziť miesta
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="card card--tint">
+            <div class="card__body">
+              <span class="card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 0 1 2 2v13H6a2 2 0 0 1-2-2z"/><path d="M8 9h6M8 13h6"/></svg>
+              </span>
+              <p class="card__meta"><span class="hi">Ako to funguje</span><span class="dot"></span>Krok 1 z 5</p>
+              <h5>Vyberte si svoj obľúbený variant</h5>
+              <p class="card__text">Deväť programov od 3 chodov po Max energy. Neviete si vybrať? Máme na to test.</p>
+              <span class="card__cta">Chcem zistiť svoj program
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <p class="note">
+        Prejdite myšou po kartách — zdvih o 3 px, tieň sa prehĺbi, okraj sa jemne zozlatne
+        a fotka sa priblíži o 4 %. Trvanie 200 ms, jedna krivka <code>--ease-out</code>,
+        ktorá už v tokenoch existuje. Žiadny nový JavaScript.
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h3>Pravidlá karty — platia pre všetkých päť použití</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Vlastnosť</th><th>Hodnota</th><th>Teraz nesúlad</th></tr></thead>
+        <tbody>
+          <tr><td>Rádius</td><td class="now">16 px</td><td class="was">33,6 / 16 / 0 px</td></tr>
+          <tr><td>Vnútorné odsadenie</td><td class="now">20 px 22 px 22 px</td><td class="was">0 / 14–18 / 26–24 px</td></tr>
+          <tr><td>Okraj</td><td class="now">1 px <code>rgba(27,26,23,.08)</code></td><td class="was">žiadny</td></tr>
+          <tr><td>Tieň</td><td class="now"><code>0 1px 2px /.04 + 0 8px 24px /.06</code></td><td class="was"><code>0 0 10px rgba(0,0,0,.25)</code></td></tr>
+          <tr><td>Obrázok</td><td class="now">pomer 16:10, <code>object-fit: cover</code>, orez zhora</td><td class="was">pevná výška 132 px, rôzne pomery</td></tr>
+          <tr><td>Meta</td><td class="now">12 px · 600 · verzálky · oddeľovač ·</td><td class="was">10,1 px · 300 · len dátum</td></tr>
+          <tr><td>Nadpis</td><td class="now">H3 18 px / 1,33 · 700 · <code>text-wrap: balance</code></td><td class="was">13,4 px, inde 10,1 px váha 300</td></tr>
+          <tr><td>CTA</td><td class="now">Textový odkaz + SVG šípka, zarovnaný na spodok</td><td class="was"><code>&lt;button&gt;</code> vnorený v <code>&lt;a&gt;</code> + PNG šípka</td></tr>
+          <tr><td>Hover</td><td class="now"><code>translateY(-3px)</code>, tieň, zlatý okraj, zoom 1,04</td><td class="was">žiadny</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <span class="tag">Drobnosť, ktorú treba opraviť pri tom</span>
+      <p>
+        <code>.blogBox</code> je <code>&lt;a&gt;</code>, ktorý obsahuje <code>&lt;button&gt;</code>.
+        Vnorený interaktívny prvok — čítačky obrazovky ho ohlásia dvakrát a v HTML je
+        neplatný. Pri prepise karty stačí <code>&lt;button&gt;</code> zmeniť na
+        <code>&lt;span class="card__cta"&gt;</code>. Rovnako <code>news-arrow.png</code>
+        nahradí inline SVG — o jednu sieťovú požiadavku menej a šípka sa dá prefarbiť.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 06 TLAČIDLÁ ===================== -->
+<section id="tlacidla">
+  <div class="wrap">
+    <div class="shead"><span class="n">06</span><h2>Tlačidlá: tri úrovne, nie desať štýlov</h2></div>
+    <p class="lede">
+      Na domovskej stránke som napočítal desať vizuálne odlišných tlačidiel. Dve z nich
+      sa tvária ako primárne.
+    </p>
+  </div>
+
+  <div class="stage-wrap">
+    <div class="stage">
+      <div class="stage-title"><span class="pill before">Teraz</span> Skutočné štýly z jednej stránky</div>
+      <div class="btnstage on-light">
+        <span class="zlabel">Dve „primárne“ tlačidlá vedľa seba</span>
+        <button class="z1">OBJEDNAŤ TERAZ</button>
+        <button class="z3">Objednať teraz</button>
+        <span class="zlabel" style="margin-top:14px">…a osem ďalších variantov</span>
+        <span class="z2">Zistiť viac</span>
+        <button class="z4">Uložiť nastavenia</button>
+        <button class="z5">3 chody Žena</button>
+        <button class="z6">Zobraziť</button>
+        <button class="z7">Odoslať</button>
+      </div>
+      <p class="note">
+        Oranžová pilulka (35 px, Epilogue 10 px, rádius 33 px) a zlatý obdĺžnik (46 px,
+        Montserrat 13 px, rádius 10 px) sú <b>obe primárne CTA</b> — líšia sa farbou,
+        výškou, tvarom aj písmom. Používateľ nemá ako vedieť, ktoré je dôležitejšie.
+      </p>
+    </div>
+
+    <div class="stage">
+      <div class="stage-title"><span class="pill after">Návrh</span> Tri jasné úrovne</div>
+      <div class="btnstage on-light" style="gap:16px">
+        <span class="zlabel">Na svetlom podklade</span>
+        <a href="#" class="btn btn--primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 7V5.6a3 3 0 0 1 6 0V7"/></svg>
+          Objednať krabičky
+        </a>
+        <a href="#" class="btn btn--secondary">Zistiť svoj program</a>
+        <a href="#" class="btn btn--text"><u>Zobraziť jedálniček</u>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="btnstage on-dark" style="gap:16px;margin-top:16px">
+        <span class="zlabel" style="color:rgba(255,255,255,.5)">Na tmavom podklade — rovnaké tri úrovne</span>
+        <a href="#" class="btn btn--primary">Objednať krabičky</a>
+        <a href="#" class="btn btn--secondary">Zistiť svoj program</a>
+        <a href="#" class="btn btn--text"><u>Zobraziť jedálniček</u>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="btnstage on-light" style="gap:14px;margin-top:16px">
+        <span class="zlabel">Tri veľkosti, jeden štýl</span>
+        <a href="#" class="btn btn--primary btn--sm">Malé · 40 px</a>
+        <a href="#" class="btn btn--primary">Základ · 48 px</a>
+        <a href="#" class="btn btn--primary btn--lg">Veľké · 56 px</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Úroveň</th><th>Vzhľad</th><th>Kedy</th><th>Koľko na stránku</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Primárne</strong></td><td>Zlatá <code>#DEB350</code>, text <code>#1E1E1E</code>, rádius 12 px</td><td>Objednať, Vložiť do košíka, Odoslať</td><td class="num"><strong>Max. 1 na obrazovku</strong></td></tr>
+          <tr><td><strong>Sekundárne</strong></td><td>Priehľadné, okraj 1,5 px <code>#1E1E1E</code>, na hover invertuje</td><td>Zistiť program, Zobraziť viac</td><td class="num">1–2</td></tr>
+          <tr><td><strong>Textové</strong></td><td>Text + zlaté podčiarknutie + šípka</td><td>CTA v kartách, „Všetky články“</td><td class="num">bez limitu</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Sivé pilulky <code>#F8F8F8</code> (25 výskytov) <b>nie sú tlačidlá</b> — sú to filtre
+      a štítky. Dostanú vlastnú triedu <code>.chip</code> s rádiusom 10 px, aby sa
+      s tlačidlami vizuálne nemiešali. To je jediný dôvod, prečo ich dnes vidíme ako
+      „ďalší štýl tlačidla“.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== 07 RYTMUS ===================== -->
+<section id="rytmus">
+  <div class="wrap">
+    <div class="shead"><span class="n">07</span><h2>Vertikálny rytmus</h2></div>
+    <p class="lede">
+      Deväť sekcií na domovskej stránke má deväť rôznych odsadení. Žiadne z nich nie je
+      okrúhle číslo — všetky vznikli prepočtom z <code>rem</code>.
+    </p>
+
+    <div class="rhythm">
+      <div class="rcol">
+        <h4><span class="pill before">Teraz</span></h4>
+        <div class="rstack">
+          <div class="rblock">Slideshow</div>
+          <div class="rgap bad"><span>24 → 84</span></div>
+          <div class="rblock">Oblasti rozvozov</div>
+          <div class="rgap bad"><span>63,8 → 6,7</span></div>
+          <div class="rblock">Krabičky podľa gusta</div>
+          <div class="rgap bad"><span>60,5 → 0</span></div>
+          <div class="rblock">Ako to funguje</div>
+          <div class="rgap bad"><span>107,5 → 0</span></div>
+          <div class="rblock">Banner programu</div>
+          <div class="rgap bad"><span>0 → 40,3</span></div>
+          <div class="rblock">Rozvoz</div>
+          <div class="rgap bad"><span>80,6 → 0</span></div>
+          <div class="rblock">Blog</div>
+          <div class="rgap bad"><span>73,2 → 0</span></div>
+          <div class="rblock">Kontakt</div>
+          <div class="rgap bad"><span>80,6 → 80,6</span></div>
+          <div class="rblock">Newsletter</div>
+        </div>
+      </div>
+      <div class="rcol">
+        <h4><span class="pill after">Návrh</span></h4>
+        <div class="rstack">
+          <div class="rblock">Slideshow</div>
+          <div class="rgap good"><span>96</span></div>
+          <div class="rblock">Oblasti rozvozov</div>
+          <div class="rgap good"><span>96</span></div>
+          <div class="rblock">Krabičky podľa gusta</div>
+          <div class="rgap good"><span>96</span></div>
+          <div class="rblock">Ako to funguje</div>
+          <div class="rgap good"><span>96</span></div>
+          <div class="rblock">Banner programu</div>
+          <div class="rgap good"><span>96</span></div>
+          <div class="rblock">Rozvoz</div>
+          <div class="rgap good"><span>96</span></div>
+          <div class="rblock">Blog</div>
+          <div class="rgap good"><span>96</span></div>
+          <div class="rblock">Kontakt</div>
+          <div class="rgap good"><span>96</span></div>
+          <div class="rblock">Newsletter</div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:26px">
+      Jedno pravidlo nahradí osemnásť hodnôt. Pri sekciách s farebným pozadím sa medzera
+      nezdvojuje — pozadie samo oddeľuje, takže odsadenie zostáva rovnaké a rytmus sa
+      neláme.
+    </p>
+
+<pre><code><span class="c-com">/* Jeden rytmus pre všetky sekcie */</span>
+<span class="c-sel">.slideshow, .places, .boxesTaste, .work, .programBanner,
+.contentDelivery, .blogExtract, .contactPack, .newsletterPanel</span> {
+  <span class="c-prop">padding-block</span>: var(--sp-section);   <span class="c-com">/* clamp(56px, 7vw, 96px) */</span>
+}
+
+<span class="c-com">/* Nadpis sekcie → obsah: vždy rovnako */</span>
+<span class="c-sel">.text, .testimonialsHead</span> { <span class="c-prop">margin-bottom</span>: var(--sp-head); }  <span class="c-com">/* 40px */</span>
+
+<span class="c-com">/* Mriežky: jedna medzera */</span>
+<span class="c-sel">.cardgrid, .blogExtract .uk-grid</span> { <span class="c-prop">gap</span>: var(--sp-grid); }     <span class="c-com">/* 24px */</span></code></pre>
+  </div>
+</section>
+
+<!-- ===================== 08 TÓN ===================== -->
+<section id="ton">
+  <div class="wrap">
+    <div class="shead"><span class="n">08</span><h2>Vizuálny tón</h2></div>
+    <p class="lede">
+      „Prémiovo, ale dostupne“ nevzniká pridaním ozdôb. Vzniká odobratím konkurencie
+      medzi prvkami.
+    </p>
+
+    <p>Štyri pravidlá, ktoré držia celý tón — a všetky sú v podstate o zdržanlivosti:</p>
+
+    <ol>
+      <li>
+        <strong>Zlatá je vzácna.</strong> Dnes je zlatý celý horný pruh, teda najväčšia
+        farebná plocha na obrazovke nesie najmenej dôležitý obsah. Po zmene je zlatá
+        len na primárnom CTA, počítadle košíka, aktívnej položke menu a podčiarknutí
+        textových odkazov. Akcent, ktorý je všade, prestáva byť akcentom.
+      </li>
+      <li>
+        <strong>Neutrály sú teplé.</strong> Web dnes mieša studenú <code>#F8F8F8</code>
+        s krémovou <code>#F8EDDE</code>. Zjednotiť na teplý rad <code>#F7F4EE</code> /
+        <code>#EFEAE0</code> — pri jedle je teplý neutrál rozdiel medzi „chutné“
+        a „klinické“.
+      </li>
+      <li>
+        <strong>Fotka jedla je hrdina.</strong> Karty programov dnes fotku nemajú vôbec.
+        Pomer 16:10, orez zhora, žiadne farebné prekryvy ani gradienty cez jedlo.
+        Toto je jediná zmena v celom dokumente, ktorá pridáva vizuálny prvok —
+        všetky ostatné odoberajú.
+      </li>
+      <li>
+        <strong>Dôvera sa ukazuje, netvrdí.</strong> „Pravidelne 👌 Zdravo 👌 Chutne 👌“
+        v 10 px nikto neprečíta. Emoji nahradiť konzistentnou ikonou a namiesto
+        prísľubov ukázať čísla, ktoré na webe už sú: 13 miest rozvozu, 12 odberných
+        miest, 9 programov, reálne recenzie s menom a mestom.
+      </li>
+    </ol>
+
+    <div class="callout">
+      <span class="tag">Čo zámerne nerobím</span>
+      <p>
+        Žiadne nové logo, žiadna nová farebná identita, žiadne scroll animácie, parallax,
+        WebGL ani 3D. Jediný pohyb na webe zostane hover na kartách a tlačidlách
+        (200 ms) a kompresia hlavičky pri scrolle. Všetko rešpektuje
+        <code>prefers-reduced-motion</code>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 09 PLÁN ===================== -->
+<section id="plan">
+  <div class="wrap">
+    <div class="shead"><span class="n">09</span><h2>Plán na 14 hodín</h2></div>
+    <p class="lede">
+      Zoradené podľa pomeru dopad / náklad. Ak čas dôjde skôr, všetko od položky 7 nižšie
+      sa dá odložiť bez toho, aby výsledok pôsobil nedokončene.
+    </p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th class="num">#</th><th>Úloha</th><th>Povaha</th><th class="num">Hodiny</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">1</td><td><strong>Tokeny</strong> — prepísať <code>--brand-*</code> na zlatú, doplniť <code>--r-card</code>, <code>--r-btn</code>, <code>--sp-*</code>; zrušiť oranžovú <code>#FF9600</code></td><td class="dim">iba CSS</td><td class="num">0,5</td></tr>
+          <tr><td class="num">2</td><td><strong>Tlačidlá</strong> — tri úrovne, zjednotiť <code>.button</code> aj <code>.btn--*</code> na jednu sadu; oddeliť <code>.chip</code> od tlačidiel</td><td class="dim">iba CSS</td><td class="num">1,5</td></tr>
+          <tr><td class="num">3</td><td><strong>Typografia</strong> — škála H1–H6 + text + popisky, odstrániť Montserrat / Inter / Roboto, obmedziť šírku riadku</td><td class="dim">CSS + zmazať 3 <code>@font-face</code></td><td class="num">1,5</td></tr>
+          <tr><td class="num">4</td><td><strong>Kartový jazyk</strong> — jedna trieda <code>.card</code>, prepojiť na <code>.blogBox</code>, <code>.menuBox</code>, <code>.workBox</code>, <code>.testimonialCard</code>, <code>.placesPack</code></td><td class="dim">CSS + drobné úpravy šablón</td><td class="num">3,0</td></tr>
+          <tr><td class="num">5</td><td><strong>Hlavička</strong> — 2 pruhy, redukcia menu, CTA, počítadlo košíka, ikona účtu, sticky s kompresiou a tieňom</td><td class="dim">CSS + šablóna hlavičky</td><td class="num">3,0</td></tr>
+          <tr><td class="num">6</td><td><strong>Vertikálny rytmus</strong> — jedno odsadenie sekcií, zjednotiť medzery mriežok a odstupy nadpisov</td><td class="dim">iba CSS</td><td class="num">1,0</td></tr>
+          <tr><td class="num">7</td><td><strong>Karty programov</strong> — sekcia „Krabičky podľa Vášho gusta“ z textových odkazov na karty s fotkou, kcal a cenou</td><td class="dim">CSS + šablóna sekcie</td><td class="num">1,5</td></tr>
+          <tr><td class="num">8</td><td><strong>Kontajner a mierka</strong> — strop 1320 px, krok <code>:root</code> 42 % → 46 %, px minimá</td><td class="dim">CSS</td><td class="num">0,5</td></tr>
+          <tr><td class="num">9</td><td><strong>Kontrola</strong> — mobil, kôš, detail produktu, checkout, kontrast, focus stavy</td><td class="dim">QA</td><td class="num">1,5</td></tr>
+          <tr style="background:var(--surface-2)"><td></td><td><strong>Spolu</strong></td><td></td><td class="num"><strong>14,0</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Prvé tri hodiny zmenia najviac</h3>
+    <p>
+      Položky 1–3 sú čisté CSS bez dotyku šablón, dajú sa nasadiť samostatne a už samy
+      o sebe odstránia väčšinu nesúladu: jedna primárna farba, jedno písmo, jedna sada
+      tlačidiel, čitateľné veľkosti. Zvyšok stavia na tomto základe.
+    </p>
+
+    <div class="callout">
+      <span class="tag">Čo do 14 hodín nevojde</span>
+      <p>
+        Prepis <code>:root</code> na <code>62.5%</code> a plný prechod z <code>rem</code>
+        na <code>px</code> naprieč témou (odhad 8–12 h navyše, vyžaduje regresné testovanie
+        celého e-shopu). Redizajn detailu produktu a checkoutu. Nové fotografie programov —
+        karty programov v položke 7 predpokladajú, že fotky viete dodať; ak nie, karta má
+        funkčný variant s tónovaným pozadím a ikonou, ako pri kartách rozvozu vyššie.
+      </p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+      Vizuálny smer pre <strong>topstrava.braveshop.cz</strong>. Všetky uvedené „teraz“
+      hodnoty sú namerané priamo v prehliadači na živom webe pri šírke 1280 px.
+      Ukážky vyššie používajú pôvodné písmo Epilogue, pôvodné logo aj pôvodné fotografie
+      z webu — nejde o novú identitu, ale o jej dôslednejšie použitie.
+    </p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('stickyBtn');
+    var demo = document.getElementById('hdrDemo');
+    if (!btn || !demo) return;
+    btn.addEventListener('click', function () {
+      var on = btn.getAttribute('aria-pressed') === 'true';
+      btn.setAttribute('aria-pressed', String(!on));
+      demo.classList.toggle('m-sticky-demo', !on);
+      btn.lastChild.nodeValue = on ? 'Simulovať odscrollovanie' : 'Späť na začiatok stránky';
+    });
+  })();
+</script>
+</body>
+</html>
