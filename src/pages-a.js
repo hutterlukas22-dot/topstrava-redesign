@@ -120,7 +120,7 @@ ${pickupPoints.map(c => `              <li>${c}</li>`).join('\n')}
             <div class="card__stars" aria-label="5 z 5 hviezdičiek">${icon.star.repeat(5)}</div>
             <p class="card__quote">„Schudla som 12 kg a konečne neriešim, čo budem variť. Chuťovo je to úplne inde, než som čakala.“</p>
             <div class="card__who">
-              <span class="card__avatar" aria-hidden="true">ZK</span>
+              <img class="card__avatar" src="${L.img('profile_pics/zuzana')}" alt="" loading="lazy" width="38" height="38">
               <span><b>Zuzana K.</b><span>Žilina · program Slim+</span></span>
             </div>
           </div>
@@ -130,7 +130,7 @@ ${pickupPoints.map(c => `              <li>${c}</li>`).join('\n')}
             <div class="card__stars" aria-label="5 z 5 hviezdičiek">${icon.star.repeat(5)}</div>
             <p class="card__quote">„Pracujem na zmeny a nikdy som nestíhal jesť poriadne. Teraz mám celý deň vyriešený dopredu.“</p>
             <div class="card__who">
-              <span class="card__avatar" aria-hidden="true">MH</span>
+              <img class="card__avatar" src="${L.img('profile_pics/martin')}" alt="" loading="lazy" width="38" height="38">
               <span><b>Martin H.</b><span>Trenčín · program Active body</span></span>
             </div>
           </div>
@@ -140,7 +140,7 @@ ${pickupPoints.map(c => `              <li>${c}</li>`).join('\n')}
             <div class="card__stars" aria-label="5 z 5 hviezdičiek">${icon.star.repeat(5)}</div>
             <p class="card__quote">„Naberám svalovú hmotu a Max energy mi presne sadol. Oceňujem, že si viem vyradiť potraviny, ktoré nejem.“</p>
             <div class="card__who">
-              <span class="card__avatar" aria-hidden="true">PB</span>
+              <img class="card__avatar" src="${L.img('profile_pics/peter')}" alt="" loading="lazy" width="38" height="38">
               <span><b>Peter B.</b><span>Košice · program Max energy</span></span>
             </div>
           </div>
