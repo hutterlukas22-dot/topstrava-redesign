@@ -944,13 +944,17 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
   display:block;font-size:13.5px;font-weight:500;
   color:rgba(255,255,255,.72);margin-top:4px;
 }
-.nav__promo-go{
-  margin-left:auto;flex:none;display:grid;place-items:center;
+/* Qualified for the same reason as the tag above: .nav__progs span is
+   (0,1,1) and sets display:block, colour and a margin for the small program
+   tiles. Unqualified, it beat display:grid here — which silently killed
+   place-items and parked the arrow 10px above the middle of its circle. */
+.nav__progs .nav__promo .nav__promo-go{
+  margin:0 0 0 auto;flex:none;display:grid;place-items:center;
   width:38px;height:38px;border-radius:var(--r-pill);
   background:var(--gold);color:var(--ink);
   transition:transform var(--dur) var(--ease);
 }
-.nav__promo-go svg{width:18px;height:18px;}
+.nav__progs .nav__promo .nav__promo-go svg{width:18px;height:18px;}
 .nav__progs .nav__promo a:hover .nav__promo-go{transform:translateX(3px);}
 
 /* --- homepage teaser --- */
@@ -1015,7 +1019,7 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
   .nav__progs .nav__promo a:hover{background:var(--gold-600);border-color:var(--gold-600);}
   .nav__progs .nav__promo .nav__promo-tag{color:rgba(30,30,30,.72);}
   .nav__progs .nav__promo .nav__promo-sub{color:rgba(30,30,30,.78);}
-  .nav__promo-go{background:var(--ink);color:var(--gold);}
+  .nav__progs .nav__promo .nav__promo-go{background:var(--ink);color:var(--gold);}
 }
 
 /* The portion-size cards reuse the step slot for M / L / XL, and "XL" does
