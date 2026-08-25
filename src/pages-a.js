@@ -74,6 +74,8 @@ ${L.reelsSlider()}
 
 ${L.sectionPrograms(6)}
 
+${L.sectionMaxNutrition()}
+
   <section class="section section--tint" id="oblasti">
     <div class="container">
       <div class="section-head">

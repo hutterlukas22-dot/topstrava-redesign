@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const L = require('./src/layout');
 
-const pages = [].concat(require('./src/pages-a'), require('./src/pages-b'), require('./src/pages-c'));
+const pages = [].concat(require('./src/pages-a'), require('./src/pages-b'), require('./src/pages-c'),
+  require('./src/pages-max-nutrition'));
 
 let count = 0;
 for (const p of pages) {

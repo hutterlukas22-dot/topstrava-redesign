@@ -151,6 +151,45 @@ const programs = [
     desc: 'Najvyšší program – ideálny pre športovcov, fyzicky pracujúcich alebo na naberanie svalovej hmoty.' }
 ];
 
+/* MAX NUTRITION stands apart from the nine weekly programs above and is
+   deliberately modelled as its own thing, not a tenth entry in `programs`:
+   it is à la carte (lunches and dinners, not a five-day box), sized by
+   portion instead of by calorie target, and delivered three times a week
+   rather than five. Mixing it into `programs` would put it in the pricing
+   table, the configurator and the calorie calculator, where none of those
+   columns apply. It gets a promo slot in the mega-menu and its own page. */
+const maxNutrition = {
+  href: 'max-nutrition.html',
+  name: 'MAX NUTRITION',
+  eyebrow: 'Špeciálny program',
+  claim: 'Nutrične vyvážené jedlá pre každého, kto to myslí vážne',
+  short: 'Obedy a večere · veľkosti M / L / XL · rozvoz 3× týždenne',
+  lede: 'Obedy a večere navrhnuté tak, aby pokryli všetky nutričné potreby — ' +
+        'aj pre profesionálnych športovcov. Vyberáte si jedlá aj veľkosť porcie, ' +
+        'nie týždenný balík.',
+  sizes: [
+    { code: 'M', desc: 'Pre ľudí s nižším energetickým výdajom' },
+    { code: 'L', desc: 'Ideál pre aktívnych jednotlivcov' },
+    { code: 'XL', desc: 'Pre športovcov s vysokou potrebou energie' }
+  ],
+  /* delivery runs three times a week instead of the five-day box cycle */
+  days: ['Nedeľa', 'Utorok', 'Štvrtok'],
+  /* Named dishes only — no photos. Every meal1..meal9 asset has a calorie
+     figure burned into the artwork ("2000 kcal"), which belongs to a box
+     program and would be plain wrong beside a MAX NUTRITION dish. These are
+     listed as text until real per-dish photography exists. */
+  meals: [
+    'Kurací steak s kurkumovou ryžou a grilovaným ananásom',
+    'Turkey meatballs, paradajková omáčka s opekaným zemiakom',
+    'Teriyaki rezančeky z roštenky s brokolicou a ryžou',
+    'Beef bolognese rice pasta'
+  ],
+  /* clean, kcal-free photography for the hero and teaser */
+  photoHero: 'blog1',
+  photoWide: 'hero-funguje',
+  photoTeaser: 'band-menu'
+};
+
 const deliveryCities = ['Žilina', 'Považská Bystrica', 'Púchov', 'Kysucké Nové Mesto', 'Bytča',
   'Martin', 'Čadca', 'Spišská Nová Ves', 'Levoča', 'Liptovský Mikuláš', 'Poprad', 'Trenčín', 'Košice'];
 
@@ -192,6 +231,16 @@ function header(active) {
               <div>
                 <p class="label label--gold">Naša ponuka</p>
                 <ul class="nav__progs">
+                  <li class="nav__promo">
+                    <a href="${maxNutrition.href}"${active === 'max-nutrition' ? ' aria-current="page"' : ''}>
+                      <span class="nav__promo-text">
+                        <span class="nav__promo-tag">${maxNutrition.eyebrow}</span>
+                        <b>${maxNutrition.name}</b>
+                        <span class="nav__promo-sub">${maxNutrition.short}</span>
+                      </span>
+                      <span class="nav__promo-go" aria-hidden="true">${icon.arrow}</span>
+                    </a>
+                  </li>
 ${programs.map(p => `                  <li><a href="program.html?program=${p.slug}">${p.name}<span>${p.kcal} kcal · ${p.meals} jedál</span></a></li>`).join('\n')}
                 </ul>
               </div>
@@ -261,6 +310,7 @@ function footer() {
           <ul>
 ${programs.slice(0, 6).map(p => `            <li><a href="program.html?program=${p.slug}">${p.name}</a></li>`).join('\n')}
             <li><a href="programy.html">Všetky programy</a></li>
+            <li><a href="${maxNutrition.href}">${maxNutrition.name}</a></li>
           </ul>
         </div>
         <div>
@@ -350,6 +400,39 @@ ${list.map(p => programCard(p)).join('\n')}
       ${limit ? `<div class="cluster" style="margin-top:32px">
         <a class="btn btn--secondary" href="programy.html">Zobraziť všetkých 9 programov</a>
       </div>` : ''}
+    </div>
+  </section>`;
+}
+
+/* Homepage teaser. Deliberately dark: the nine box programs above it sit on
+   light cards, so the only way this reads as a separate line rather than a
+   tenth program is to change the ground under it. */
+function sectionMaxNutrition() {
+  const m = maxNutrition;
+  return `  <section class="maxn" id="max-nutrition">
+    <div class="container">
+      <div class="maxn__grid on-dark">
+        <div class="maxn__body">
+          <p class="label maxn__eyebrow">${m.eyebrow}</p>
+          <h2 class="maxn__title">${m.name}</h2>
+          <p class="maxn__lede">${m.lede}</p>
+          <ul class="maxn__sizes">
+${m.sizes.map(s => `            <li><b>${s.code}</b><span>${s.desc}</span></li>`).join('\n')}
+          </ul>
+          <div class="cluster">
+            <a class="btn btn--primary btn--lg" href="${m.href}">Zobraziť MAX NUTRITION</a>
+            <a class="btn btn--secondary btn--lg" href="kontakt.html#contact-form">Opýtať sa na program</a>
+          </div>
+          <p class="maxn__note">${icon.truck}<span>Rozvoz <strong>3× týždenne</strong> — ${m.days.join(', ').toLowerCase()}.</span></p>
+        </div>
+        <div class="maxn__media">
+          <img src="${img(m.photoTeaser)}" alt="Výber jedál z programu MAX NUTRITION" loading="lazy" width="800" height="600">
+          <div class="maxn__chip">
+            <b>M · L · XL</b>
+            <span>tri veľkosti porcií</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>`;
 }
@@ -456,7 +539,8 @@ ${reels.map((r, i) => `            <article class="reel${i === 0 ? ' is-active' 
 }
 
 module.exports = {
-  icon, programs, deliveryCities, pickupPoints, reels,
+  icon, programs, deliveryCities, pickupPoints, reels, maxNutrition,
   page, bandDelivery, sectionPrograms, programCard, reelsSlider,
+  sectionMaxNutrition,
   img, imageWarnings, imageIndex, newsletter, payMethods
 };
