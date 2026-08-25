@@ -247,13 +247,23 @@ p:last-child{margin-bottom:0;}
 @media(max-width:900px){.utilbar__claims{display:none;}
   .utilbar__inner{justify-content:center;}}
 @media(max-width:520px){
-  /* the labels collapse to icons here, so grow the hit area to 40px —
-     a bare 15px icon is not a usable phone link */
-  .utilbar__contact a span{display:none;}
-  .utilbar__contact{gap:4px;}
-  .utilbar__contact a{width:40px;height:40px;justify-content:center;border-radius:var(--r-sm);}
-  .utilbar__contact svg{width:18px;height:18px;color:var(--text-2);}
-  .utilbar__inner{min-height:44px;}
+  /* Phone and e-mail stay as TEXT here. Two bare icons said nothing about
+     what they dialled or mailed, so the type shrinks instead: at 11.5px the
+     number and the address still fit side by side down to a 320px screen. */
+  .utilbar{font-size:11.5px;}
+  .utilbar__inner{min-height:44px;gap:10px;}
+  .utilbar__contact{gap:11px;}
+  .utilbar__contact a{gap:5px;padding-block:8px;}
+  .utilbar__contact svg{width:13px;height:13px;color:var(--text-3);}
+}
+@media(max-width:359px){
+  /* Below this the number and the address stop fitting on one line together.
+     The icons go rather than the text — a phone glyph is decoration once the
+     number itself is written out, and a wrapped two-line bar costs more
+     screen than it is worth. */
+  .utilbar__contact svg{display:none;}
+  .utilbar__contact a{gap:0;}
+  .utilbar__contact{gap:14px;}
 }
 
 .masthead{
@@ -403,6 +413,11 @@ p:last-child{margin-bottom:0;}
   .nav__panel .label--gold{color:var(--gold);}
   .nav-toggle{display:grid;}
   .masthead__cta{display:none;}
+  /* .nav goes position:fixed for the drawer, so it leaves the flex flow and
+     its margin-right:auto stops pushing anything. Without this the burger,
+     account and cart bunch up against the logo instead of sitting at the
+     right edge. */
+  .masthead__actions{margin-left:auto;}
 }
 
 /* ---------- 8. CARD — ONE language, five uses ---------- */
