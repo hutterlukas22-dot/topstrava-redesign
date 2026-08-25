@@ -1033,3 +1033,61 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .hero .breadcrumb,.hero .breadcrumb a{color:rgba(255,255,255,.62);}
 .hero .breadcrumb a:hover{color:var(--gold);}
 .hero .breadcrumb svg{opacity:.5;}
+
+/* ---------- 20. BACKGROUND VIDEO ----------
+   A muted clip running full-bleed behind a whole section, text included.
+
+   Two things make it safe rather than decorative-at-any-cost:
+
+   1. The scrim. White text over raw video is unreadable the moment a bright
+      frame comes up, so ::after lays a gradient over the clip — heaviest
+      under the text column, lightest where the picture is meant to show.
+      Worst case (a pure white frame) the text column composites to about
+      #262626, which keeps white body text above 4.5:1.
+   2. The clip never carries meaning. It is aria-hidden and tabindex="-1",
+      the poster stands in until the first frame decodes, and site.js stops
+      it outright for prefers-reduced-motion. */
+.vbg{position:absolute;inset:0;z-index:0;overflow:hidden;background:var(--ink);}
+.vbg__video{
+  width:100%;height:100%;object-fit:cover;display:block;
+  /* the source clips are vertical 9:16 reels; in a wide band object-fit
+     crops to the middle, which is where the subject of a reel sits */
+  object-position:center;
+}
+.vbg::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(90deg,
+      rgba(18,18,18,.90) 0%,
+      rgba(18,18,18,.84) 40%,
+      rgba(18,18,18,.60) 66%,
+      rgba(18,18,18,.44) 100%),
+    linear-gradient(180deg,
+      rgba(18,18,18,.30) 0%,
+      rgba(18,18,18,.10) 40%,
+      rgba(18,18,18,.48) 100%);
+}
+/* Stacked layouts put text over the middle of the frame, where a horizontal
+   gradient has already faded out — so the scrim turns vertical with it. */
+@media(max-width:900px){
+  .vbg::after{
+    background:linear-gradient(180deg,
+      rgba(18,18,18,.72) 0%,
+      rgba(18,18,18,.80) 45%,
+      rgba(18,18,18,.90) 100%);
+  }
+}
+/* Sections hosting a .vbg must establish a stacking context and lift their
+   own content above it. */
+.maxn,.hero--video{position:relative;isolation:isolate;}
+.maxn > .container,.hero--video > .container{position:relative;z-index:1;}
+
+/* the teaser hands its right-hand column to the video, so the copy is capped
+   instead of sharing a two-column grid with an image tile */
+.maxn__grid{grid-template-columns:1fr;}
+.maxn__body{max-width:min(600px,100%);}
+
+/* same on the subpage hero: one column of copy, video filling the rest */
+.hero--video .hero__grid{grid-template-columns:1fr;}
+.hero--video .hero__grid > div{max-width:min(640px,100%);}
+.hero--video .breadcrumb{position:relative;z-index:1;}

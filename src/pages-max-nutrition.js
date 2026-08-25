@@ -19,7 +19,8 @@ const maxNutritionPage = {
   title: 'MAX NUTRITION — obedy a večere aj pre profesionálnych športovcov | TopStrava',
   description: 'Nutrične vyvážené obedy a večere v troch veľkostiach porcií M, L a XL. ' +
                'Rozvoz 3× týždenne — v nedeľu, utorok a štvrtok.',
-  body: `  <section class="hero">
+  body: `  <section class="hero hero--video">
+${L.videoBg('reel-3', M.photoHero)}
     <div class="container">
       <ul class="breadcrumb">
         <li><a href="index.html">Domov</a></li>
@@ -44,9 +45,6 @@ const maxNutritionPage = {
           <div><b>3×</b><span>rozvoz týždenne</span></div>
           <div><b>72 h</b><span>garancia čerstvosti</span></div>
         </div>
-      </div>
-      <div class="hero__media">
-        <img src="${L.img(M.photoHero)}" alt="Jedlo z programu MAX NUTRITION" width="800" height="600">
       </div>
     </div>
   </section>

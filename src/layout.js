@@ -93,6 +93,53 @@ function img(name) {
   return `assets/img/${hit.file}?v=${hit.hash}`;
 }
 
+/* ---------------------------------------------------------------------------
+   Background video.
+
+   Same cache-busting rule as the images: the URL carries a hash of the file,
+   so replacing the clip cannot serve a stale copy from cache. Sources are
+   listed best-first — a browser picks the first type it can decode, so
+   dropping a converted .mp4 next to the .mov makes every browser use it
+   without touching the markup.
+   --------------------------------------------------------------------------- */
+const VIDEO_DIR = path.join(__dirname, '..', 'assets', 'video');
+/* A <source> whose declared type the browser cannot play is skipped without
+   ever being fetched, and canPlayType('video/quicktime') is "" in Chrome —
+   so declaring a .mov honestly guarantees it is ignored. Omitting the type
+   instead makes the browser sniff the file, and a .mov carrying H.264/AAC
+   then decodes fine in Chrome and Safari. Firefox still will not touch the
+   QuickTime container, which is why a real .mp4 belongs here. */
+const VIDEO_TYPES = { '.mp4': 'video/mp4', '.webm': 'video/webm', '.mov': null };
+/* order matters: first playable wins, and .mov is the last resort */
+const VIDEO_PREFERENCE = ['.webm', '.mp4', '.mov'];
+
+function videoSources(base) {
+  const out = [];
+  for (const ext of VIDEO_PREFERENCE) {
+    const file = base + ext;
+    let buf;
+    try { buf = fs.readFileSync(path.join(VIDEO_DIR, file)); } catch (e) { continue; }
+    const hash = crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8);
+    out.push({ src: `assets/video/${file}?v=${hash}`, type: VIDEO_TYPES[ext], bytes: buf.length });
+  }
+  if (!out.length) imageWarnings.push(`Chýba video "${base}" — v assets/video/ nie je žiadny ${base}.*`);
+  return out;
+}
+
+/* Full-bleed muted background clip with a darkening scrim over it.
+   `poster` is a still shown until the first frame decodes — and the only
+   thing visitors on prefers-reduced-motion ever see, because site.js stops
+   the clip for them. */
+function videoBg(base, poster) {
+  const sources = videoSources(base);
+  return `    <div class="vbg" aria-hidden="true">
+      <video class="vbg__video" data-bgvideo autoplay muted loop playsinline
+             preload="metadata" poster="${img(poster)}" tabindex="-1">
+${sources.map(s => `        <source src="${s.src}"${s.type ? ` type="${s.type}"` : ''}>`).join('\n')}
+      </video>
+    </div>`;
+}
+
 const icon = {
   check: '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8 14.2 4.3 10.5l1.4-1.4L8 11.4l6.3-6.3 1.4 1.4z"/></svg>',
   arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"/></svg>',
@@ -406,10 +453,13 @@ ${list.map(p => programCard(p)).join('\n')}
 
 /* Homepage teaser. Deliberately dark: the nine box programs above it sit on
    light cards, so the only way this reads as a separate line rather than a
-   tenth program is to change the ground under it. */
+   tenth program is to change the ground under it. The clip runs full-bleed
+   behind everything, which is why the text column carries its own scrim —
+   white on raw video is not readable. */
 function sectionMaxNutrition() {
   const m = maxNutrition;
   return `  <section class="maxn" id="max-nutrition">
+${videoBg('reel-3', m.photoTeaser)}
     <div class="container">
       <div class="maxn__grid on-dark">
         <div class="maxn__body">
@@ -424,13 +474,6 @@ ${m.sizes.map(s => `            <li><b>${s.code}</b><span>${s.desc}</span></li>`
             <a class="btn btn--secondary btn--lg" href="kontakt.html#contact-form">Opýtať sa na program</a>
           </div>
           <p class="maxn__note">${icon.truck}<span>Rozvoz <strong>3× týždenne</strong> — ${m.days.join(', ').toLowerCase()}.</span></p>
-        </div>
-        <div class="maxn__media">
-          <img src="${img(m.photoTeaser)}" alt="Výber jedál z programu MAX NUTRITION" loading="lazy" width="800" height="600">
-          <div class="maxn__chip">
-            <b>M · L · XL</b>
-            <span>tri veľkosti porcií</span>
-          </div>
         </div>
       </div>
     </div>
@@ -542,5 +585,5 @@ module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels, maxNutrition,
   page, bandDelivery, sectionPrograms, programCard, reelsSlider,
   sectionMaxNutrition,
-  img, imageWarnings, imageIndex, newsletter, payMethods
+  img, imageWarnings, imageIndex, newsletter, payMethods, videoBg
 };

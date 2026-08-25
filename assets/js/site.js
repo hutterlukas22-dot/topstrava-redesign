@@ -360,3 +360,59 @@
 
   go(0);
 })();
+
+/* ---------------------------------------------------------------------------
+   Background videos (.vbg)
+
+   Decorative clips behind a section. Three things are handled here that the
+   HTML attributes alone cannot:
+
+   1. prefers-reduced-motion — autoplay is an attribute, so the only way to
+      honour the setting is to stop the clip in script. The poster stays on
+      screen, which is exactly the still image the section was designed for.
+   2. Off-screen sections — a looping clip nobody can see still costs decode
+      time and battery, so it only runs while it is actually in view.
+   3. Autoplay refusal — some browsers reject autoplay even when muted. The
+      promise rejection is swallowed deliberately: the poster is a perfectly
+      good fallback and a console error helps nobody.
+   --------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+
+  var vids = [].slice.call(document.querySelectorAll('[data-bgvideo]'));
+  if (!vids.length) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    vids.forEach(function (v) {
+      v.removeAttribute('autoplay');
+      v.removeAttribute('loop');
+      try { v.pause(); } catch (e) {}
+    });
+    return;
+  }
+
+  var play = function (v) {
+    var p = v.play();
+    if (p && typeof p.catch === 'function') p.catch(function () {});
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    vids.forEach(play);
+    return;
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) play(e.target);
+      else try { e.target.pause(); } catch (err) {}
+    });
+  }, { rootMargin: '200px 0px' });
+
+  vids.forEach(function (v) { io.observe(v); });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      vids.forEach(function (v) { try { v.pause(); } catch (e) {} });
+    }
+  });
+})();
