@@ -225,7 +225,7 @@ const programyPage = {
         <a class="chip" href="#max-energy">Naberanie</a>
         <a class="chip" href="#3-chody-zena">3 chody</a>
       </div>
-      <div class="grid grid--3">
+      <div class="grid grid--programs">
 ${programs.map(p => L.programCard(p)).join('\n')}
       </div>
     </div>

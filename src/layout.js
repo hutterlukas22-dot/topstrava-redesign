@@ -161,6 +161,9 @@ const icon = {
   chevronLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>',
   soundOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="m16 9.5 4 5M20 9.5l-4 5"/></svg>',
   soundOn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
+  /* meal-box mark from the Figma card badge — recoloured through currentColor
+     so the same path can be a filled box or an empty slot */
+  mealBox: '<svg viewBox="0 0 21 15" fill="currentColor" aria-hidden="true"><path d="M19.3108 5.5035L1.8864 5.50698C1.71683 5.50698 1.65389 5.48432 1.50879 5.47212L2.29373 1.49572C2.48429 0.53867 3.42832 0 4.37934 0L16.449 0.00348653C17.657 -0.026149 18.4611 0.852458 18.6692 1.99255L19.3108 5.50524V5.5035Z"/><path d="M16.5663 14.1117H4.2414C3.32534 14.1117 2.45124 13.4475 2.28341 12.5741L1.32015 7.59189C1.00547 7.5762 0.67331 7.63373 0.363877 7.564C0.0981497 7.50298 -0.00849087 7.2659 0.000250159 7.01835C0.00724299 6.84228 0.13661 6.53198 0.423316 6.53198H20.4088C20.72 6.53198 20.8389 6.87541 20.8336 7.07588C20.8249 7.33389 20.6553 7.58666 20.3686 7.5884L19.5015 7.59189L18.6571 12.1715C18.4666 13.2035 17.7271 14.11 16.568 14.11L16.5663 14.1117ZM11.7849 9.69253C12.1485 9.69253 12.3618 9.43278 12.3461 9.15037C12.3304 8.86796 12.1258 8.64308 11.8199 8.64308H9.00876C8.68359 8.64308 8.46856 8.90806 8.4843 9.20964C8.49653 9.45893 8.70807 9.68904 9.0175 9.68904H11.7867L11.7849 9.69253Z"/></svg>',
   instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.1" cy="6.9" r="1.1" fill="currentColor" stroke="none"/></svg>'
 };
 
@@ -176,25 +179,43 @@ const reels = [
   { file: 'reel-5.mp4', poster: 'meal9.webp', title: 'Čo dostanete v jednom dni', tag: 'Unboxing' }
 ];
 
-/* The nine programs — names, calories and prices as published on the live site. */
+/* The nine programs — names, calories and prices as published on the live site.
+   Card artwork is layered, not baked:
+     `art`    food cut-out with alpha, from assets/img/programy_karty/
+     `figure` the gold silhouette behind it — its head deliberately overhangs
+              the top edge of the card, which is why .pcard cannot clip
+     `g1/g2`  the card's gradient stops
+   `img` stays because the mega-menu, the checkout rail and the program detail
+   page still use the old flat pictures. */
 const programs = [
   { slug: '3-chody-zena', name: '3 chody Žena', kcal: 1200, price: '87,50 €', meals: 3, img: 'meal1.webp',
+    art: '3_chody_zena', figure: 'woman', g1: '#8E5BD0', g2: '#5B2E9E',
     desc: 'Praktická voľba pre tých, ktorí preferujú menej jedál denne. Raňajky, obed, večera.' },
   { slug: '3-chody-muz', name: '3 chody Muž', kcal: 1600, price: '98,50 €', meals: 3, img: 'meal2.webp',
+    art: '3_chody_muz', figure: 'man', g1: '#4A8FD4', g2: '#12327A',
     desc: 'Praktická voľba pre tých, ktorí preferujú menej jedál denne. Raňajky, obed, večera.' },
   { slug: 'slim', name: 'Slim', kcal: 1200, price: '94,50 €', meals: 5, img: 'meal3.webp',
+    art: 'slim', figure: 'woman', g1: '#7DC65A', g2: '#1F7A3D',
     desc: 'Ideálne pre rýchle chudnutie, detox či veľmi nízku fyzickú aktivitu. Vhodné pre drobnejšie postavy alebo ako štart.' },
   { slug: 'slim-plus', name: 'Slim+', kcal: 1400, price: '99,50 €', meals: 5, img: 'meal4.webp',
+    art: 'slim+', figure: 'woman', g1: '#C3D96B', g2: '#5C8A2A',
     desc: 'Častá voľba žien pri redukcii váhy. Pomáha schudnúť bez hladovania, ak je aktivita nízka až stredná.' },
   { slug: 'balance', name: 'Balance', kcal: 1600, price: '104,50 €', meals: 5, img: 'meal5.webp',
+    art: 'balance', figure: 'woman', g1: '#F2718D', g2: '#B01E4B',
     desc: 'Vyvážený program pre ženy s bežným denným pohybom alebo pre mužov, ktorí chcú redukovať váhu.' },
   { slug: 'balance-plus', name: 'Balance+', kcal: 1800, price: '109,50 €', meals: 5, img: 'meal6.webp',
+    art: 'balance+', figure: 'man', g1: '#F0A868', g2: '#B4541C',
     desc: 'Univerzálny variant pre udržiavanie hmotnosti. Vhodné pre aktívne ženy alebo menej aktívnych mužov.' },
   { slug: 'active-body', name: 'Active body', kcal: 2000, price: '114,50 €', meals: 5, img: 'meal7.webp',
+    art: 'active_body', figure: 'man', g1: '#5AC8C0', g2: '#136E74',
     desc: 'Štandardný príjem pre väčšinu populácie pri bežnom dennom režime. Podporuje stabilnú energiu počas dňa.' },
+  /* TODO obrázok: active_body+.png a max_energy.png zatiaľ nedodané —
+     dočasne bežia na cut-oute susedného programu. */
   { slug: 'active-body-plus', name: 'Active body+', kcal: 2200, price: '119,50 €', meals: 5, img: 'meal8.webp',
+    art: 'active_body', figure: 'man', g1: '#5AA6E0', g2: '#134C8C',
     desc: 'Vhodné pre mužov s vyššou fyzickou aktivitou alebo pre ženy s náročnými tréningmi.' },
   { slug: 'max-energy', name: 'Max energy', kcal: 2500, price: '124,50 €', meals: 5, img: 'meal9.webp',
+    art: '3_chody_muz', figure: 'man', g1: '#F0563C', g2: '#9E0F1E',
     desc: 'Najvyšší program – ideálny pre športovcov, fyzicky pracujúcich alebo na naberanie svalovej hmoty.' }
 ];
 
@@ -441,7 +462,7 @@ function sectionPrograms(limit) {
         <h2>Vyberte si svoj obľúbený program</h2>
         <p>Deväť jedálničkov od 1 200 do 2 500 kcal. Každý na 5 pracovných dní, pripravený čerstvo a doručený deň vopred.</p>
       </div>
-      <div class="grid grid--3">
+      <div class="grid grid--programs">
 ${list.map(p => programCard(p)).join('\n')}
       </div>
       ${limit ? `<div class="cluster" style="margin-top:32px">
@@ -480,15 +501,44 @@ ${m.sizes.map(s => `            <li><b>${s.code}</b><span>${s.desc}</span></li>`
   </section>`;
 }
 
+/* Program card.
+
+   Its own component rather than a .card variant: nothing of the shared card
+   survives here — no white body, no 16:10 media well, and above all no
+   `overflow:hidden`, because the whole point is that the silhouette's head
+   breaks out over the top edge. Bending .card into this would have meant
+   unpicking the four other places that rely on it clipping.
+
+   Layering, back to front: .pcard__plate (gradient + watermark, the only
+   part that clips) → figure → food → badges and copy.
+
+   MEAL_SLOTS is 5 because that is the largest program; a 3-meal program
+   shows three filled boxes and two empty ones, so the badges stay
+   comparable at a glance instead of just being shorter. */
+const MEAL_SLOTS = 5;
+
 function programCard(p) {
-  return `        <a class="card" href="program.html?program=${p.slug}" id="${p.slug}">
-          <div class="card__media"><img src="${img(p.img)}" alt="${p.name} — ukážka jedál" loading="lazy" width="600" height="375"></div>
-          <div class="card__body">
-            <p class="card__meta"><span class="hi">Program</span><span class="dot"></span>${p.kcal} kcal<span class="dot"></span>${p.meals} jedál denne</p>
-            <h3 class="card__title">${p.name}</h3>
-            <p class="card__text">${p.desc}</p>
-            <div class="card__price"><b>${p.price}</b><span>/ týždeň s DPH</span></div>
-            <span class="card__cta">Zobraziť program ${icon.arrow}</span>
+  const boxes = Array.from({ length: MEAL_SLOTS }, (_, i) =>
+    `<span class="pcard__box${i < p.meals ? ' is-on' : ''}">${icon.mealBox}</span>`).join('');
+  /* the watermark is the calorie figure repeated behind the artwork */
+  const wm = Array.from({ length: 12 }, () => p.kcal).join(' ');
+
+  return `        <a class="pcard" href="program.html?program=${p.slug}" id="${p.slug}"
+           style="--g1:${p.g1};--g2:${p.g2}">
+          <span class="pcard__plate" aria-hidden="true"><span class="pcard__wm">${wm}</span></span>
+          <div class="pcard__art">
+            <img class="pcard__figure" src="${img('programy_karty/' + p.figure)}" alt="" aria-hidden="true" loading="lazy">
+            <img class="pcard__food" src="${img('programy_karty/' + p.art)}" alt="${p.name} — ukážka jedál" loading="lazy">
+            <p class="pcard__meals"><b>${p.meals} ×</b><span class="pcard__boxes">${boxes}</span></p>
+            <p class="pcard__kcal">${p.kcal} kcal</p>
+          </div>
+          <div class="pcard__body">
+            <h3 class="pcard__title">${p.name}</h3>
+            <p class="pcard__text">${p.desc}</p>
+            <div class="pcard__foot">
+              <p class="pcard__price"><b>${p.price}</b><span>/ týždeň s DPH</span></p>
+              <span class="pcard__cta">Viac o programu ${icon.arrow}</span>
+            </div>
           </div>
         </a>`;
 }

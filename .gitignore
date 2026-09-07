@@ -2,3 +2,9 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Figma source files. Design sources, not site assets — and far over GitHub's
+# 100 MB per-file limit (TOPstrava.sk.fig alone is ~273 MB). They stay on
+# disk; what the site needs are exports, which belong in assets/img/.
+assets/fig_files/
+*.fig

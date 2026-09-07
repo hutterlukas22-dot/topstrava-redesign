@@ -1110,3 +1110,143 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .hero--video .hero__grid{grid-template-columns:1fr;}
 .hero--video .hero__grid > div{max-width:min(640px,100%);}
 .hero--video .breadcrumb{position:relative;z-index:1;}
+
+
+/* ---------- 21. PROGRAM CARD ----------
+   The gold silhouette's head overhangs the top edge of the card, and that one
+   requirement shapes everything here:
+
+   - .pcard carries no background and does NOT clip.
+   - .pcard__plate is what reads as the card — gradient, radius, and the only
+     overflow:hidden, so the watermark stays inside the rounded rect while the
+     figure standing above it does not.
+   - .pcard reserves padding-top for the overhang, and the grid's row-gap has
+     to clear it or a head pokes into the card in the row above.
+   - Hovered cards raise z-index, else a neighbour's plate paints over the
+     lifted head.
+
+   All artwork geometry is in cqw (percent of the CARD's own width) rather
+   than px. The first cut mixed fixed px offsets with percentage widths, which
+   only lined up at the 398px width the design was drawn at — one and two
+   column layouts made the card wider and dropped the food onto the title.
+   Typography stays in px: max-width caps the card at 420, so the type never
+   has enough range to need scaling. */
+/* The 420px cap lives on the COLUMN, not on the card. The card capping itself
+   made its width smaller than its grid cell, and then the two units used for
+   the overhang stopped agreeing: padding-top:13% resolves against the cell
+   while 13cqw resolves against the card, leaving dead space above the plate.
+   Capping the track keeps card width == cell width, so both resolve alike. */
+.grid--programs{
+  grid-template-columns:repeat(3,minmax(0,420px));
+  justify-content:center;
+  column-gap:var(--sp-grid);
+  /* max overhang (13% of 420 ≈ 55) plus the usual gap */
+  row-gap:80px;
+}
+
+.pcard{
+  position:relative;
+  /* flex, not block: whitespace between the child elements would otherwise
+     form an anonymous line box and push .pcard__art off the padding edge */
+  display:flex;flex-direction:column;
+  container-type:inline-size;
+  padding:13% 0 0;
+  text-decoration:none;color:#fff;
+  transition:transform var(--dur) var(--ease);
+}
+.pcard:hover{transform:translateY(-4px);z-index:2;}
+.pcard:focus-visible{z-index:2;}
+
+.pcard__plate{
+  position:absolute;inset:13% 0 0 0;z-index:0;
+  border-radius:20px;overflow:hidden;
+  background:linear-gradient(157deg,var(--g1) 0%,var(--g2) 100%);
+  box-shadow:var(--shadow-md);
+  transition:box-shadow var(--dur) ease;
+}
+.pcard:hover .pcard__plate{box-shadow:var(--shadow-lg);}
+/* the calorie figure, repeated huge and faint behind the artwork */
+.pcard__wm{
+  position:absolute;inset:-4% -4% auto -4%;
+  font-size:15cqw;font-weight:800;line-height:1.02;letter-spacing:-.02em;
+  color:#fff;opacity:.07;word-spacing:.04em;
+  -webkit-user-select:none;user-select:none;
+}
+
+/* Sits in normal flow and owns the artwork's height, so .pcard__body simply
+   follows it instead of being pushed down by a hand-tuned margin. */
+.pcard__art{position:relative;z-index:1;aspect-ratio:398/236;}
+.pcard__figure{
+  /* .pcard__art begins below the card's reserved padding, so top:0 would sit
+     the figure flush on the plate. Pulling it up by exactly that reserve
+     (13cqw) puts its top on the card's outer edge — which is the overhang. */
+  position:absolute;top:-13cqw;left:50%;translate:-50% 0;
+  height:56cqw;width:auto;pointer-events:none;
+}
+/* Boxed on all four sides with object-fit rather than sized by width alone.
+   The source cut-outs do not share an aspect ratio (some are 16:9, some
+   1.55:1), so a percentage width let the taller ones run down over the
+   title. A fixed box makes every program occupy the same footprint. */
+/* A definite box plus object-fit, rather than a width and `auto` height.
+   Two reasons: the source cut-outs do not share an aspect ratio (some 16:9,
+   some 1.55:1), and on a replaced element `height:auto` beats a top/bottom
+   stretch — so an inset box silently kept each image's intrinsic height and
+   the taller ones ran down over the title. */
+.pcard__food{
+  position:absolute;top:13cqw;left:4%;z-index:2;
+  width:92%;height:46cqw;
+  object-fit:contain;object-position:center bottom;
+  filter:drop-shadow(0 3cqw 4cqw rgba(0,0,0,.34));
+  pointer-events:none;
+}
+
+/* --- badges --- */
+.pcard__meals,.pcard__kcal{position:absolute;z-index:3;margin:0;}
+.pcard__meals{
+  top:17cqw;left:5cqw;
+  display:flex;align-items:center;gap:8px;
+}
+.pcard__meals b{font-size:18px;font-weight:800;letter-spacing:-.01em;}
+.pcard__boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:15cqw;}
+.pcard__box{display:block;line-height:0;color:var(--ink);opacity:.32;}
+.pcard__box.is-on{opacity:1;}
+.pcard__box svg{width:100%;height:auto;}
+.pcard__kcal{
+  top:17cqw;right:5cqw;
+  background:var(--ink);color:#fff;
+  padding:7px 12px;border-radius:var(--r-pill);
+  font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  white-space:nowrap;
+}
+
+/* --- copy --- */
+.pcard__body{position:relative;z-index:3;padding:0 22px 24px;}
+.pcard__title{
+  font-size:26px;line-height:1.1;font-weight:800;letter-spacing:-.02em;
+  text-transform:uppercase;margin:0 0 9px;color:#fff;
+}
+.pcard__text{
+  font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.88);margin:0 0 16px;
+  /* the blurbs differ a lot in length; clamping keeps the price row on one
+     baseline across a row of cards */
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.pcard__foot{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.pcard__price{margin:0;}
+.pcard__price b{display:block;font-size:20px;font-weight:800;letter-spacing:-.015em;}
+.pcard__price span{font-size:11px;color:rgba(255,255,255,.78);}
+.pcard__cta{
+  display:inline-flex;align-items:center;gap:7px;flex:none;
+  padding:11px 16px;border-radius:var(--r-btn);
+  background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.30);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  font-size:13px;font-weight:700;color:#fff;
+  transition:background-color var(--dur) ease,border-color var(--dur) ease;
+}
+.pcard__cta svg{width:14px;height:14px;}
+.pcard:hover .pcard__cta{background:rgba(255,255,255,.26);border-color:rgba(255,255,255,.5);}
+
+@media(max-width:1000px){.grid--programs{grid-template-columns:repeat(2,minmax(0,420px));}}
+@media(max-width:680px){.grid--programs{grid-template-columns:minmax(0,420px);row-gap:72px;}}
+@media(prefers-reduced-motion:reduce){.pcard:hover{transform:none;}}
