@@ -120,46 +120,7 @@ ${pickupPoints.map(c => `              <li>${c}</li>`).join('\n')}
     </div>
   </section>
 
-  <section class="section" id="referencie">
-    <div class="container">
-      <div class="section-head">
-        <p class="label label--gold">Referencie</p>
-        <h2>Čo hovoria naši zákazníci</h2>
-      </div>
-      <div class="grid grid--3">
-        <div class="card">
-          <div class="card__body">
-            <div class="card__stars" aria-label="5 z 5 hviezdičiek">${icon.star.repeat(5)}</div>
-            <p class="card__quote">„Schudla som 12 kg a konečne neriešim, čo budem variť. Chuťovo je to úplne inde, než som čakala.“</p>
-            <div class="card__who">
-              <img class="card__avatar" src="${L.img('profile_pics/zuzana')}" alt="" loading="lazy" width="38" height="38">
-              <span><b>Zuzana K.</b><span>Žilina · program Slim+</span></span>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card__body">
-            <div class="card__stars" aria-label="5 z 5 hviezdičiek">${icon.star.repeat(5)}</div>
-            <p class="card__quote">„Pracujem na zmeny a nikdy som nestíhal jesť poriadne. Teraz mám celý deň vyriešený dopredu.“</p>
-            <div class="card__who">
-              <img class="card__avatar" src="${L.img('profile_pics/martin')}" alt="" loading="lazy" width="38" height="38">
-              <span><b>Martin H.</b><span>Trenčín · program Active body</span></span>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card__body">
-            <div class="card__stars" aria-label="5 z 5 hviezdičiek">${icon.star.repeat(5)}</div>
-            <p class="card__quote">„Naberám svalovú hmotu a Max energy mi presne sadol. Oceňujem, že si viem vyradiť potraviny, ktoré nejem.“</p>
-            <div class="card__who">
-              <img class="card__avatar" src="${L.img('profile_pics/peter')}" alt="" loading="lazy" width="38" height="38">
-              <span><b>Peter B.</b><span>Košice · program Max energy</span></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+${L.sectionReviews()}
 
 ${L.bandDelivery()}
 

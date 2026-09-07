@@ -550,6 +550,88 @@ ${list.map(p => programCard(p)).join('\n')}
   </section>`;
 }
 
+/* ---------------------------------------------------------------------------
+   GOOGLE REVIEWS — PROTOTYPE CONTENT, NOT REAL REVIEWS.
+
+   Every name, rating, date and quote below is invented, so the client can see
+   the layout. Nothing here came from the Google Business Profile.
+
+   Before this goes anywhere public it MUST be replaced with the real feed:
+   publishing invented reviews under the Google mark is a misleading commercial
+   practice under the EU Omnibus rules, quite apart from Google's own terms.
+   The site is static, so the real feed needs either a server-side fetch of the
+   Places API (the key cannot sit in client code) or a licensed widget — the
+   constraint flagged with client point 4.
+   --------------------------------------------------------------------------- */
+const googleReviews = {
+  rating: 4.9,
+  count: 187,
+  profileUrl: 'https://www.google.com/maps',
+  items: [
+    { name: 'Zuzana K.', when: 'pred 2 týždňami', stars: 5,
+      text: 'Objednávam už pol roka a stále ma to baví. Jedlá sú chutné, ' +
+            'porcie sedia a rozvoz chodí presne. Konečne neriešim, čo budem variť.' },
+    { name: 'Martin H.', when: 'pred mesiacom', stars: 5,
+      text: 'Pracujem na zmeny a toto mi vyriešilo obedy aj večere. Krabičky ' +
+            'vydržia čerstvé a chuťovo je to úplne inde než konkurencia.' },
+    { name: 'Peter B.', when: 'pred 3 týždňami', stars: 5,
+      text: 'Beriem Max energy pri naberaní. Oceňujem, že si viem vyradiť ' +
+            'potraviny, ktoré nejem, a že je všetko navážené.' },
+    { name: 'Lucia M.', when: 'pred 2 mesiacmi', stars: 4,
+      text: 'Veľmi spokojná s jedlom aj s prístupom. Jedinú hviezdičku ' +
+            'uberám za to, že vo väčšom meste by som privítala viac odberných miest.' }
+  ]
+};
+
+function starRow(n) {
+  return Array.from({ length: 5 }, (_, i) =>
+    `<span class="gstar${i < n ? ' is-on' : ''}">${icon.star}</span>`).join('');
+}
+
+/* Homepage section. Kept visually quiet — the point is the reviews, and a
+   Google-coloured block would fight everything around it. */
+function sectionReviews() {
+  const g = googleReviews;
+  return `  <section class="section section--tint" id="recenzie">
+    <div class="container">
+      <div class="reviews__head">
+        <div>
+          <p class="label label--gold">Referencie</p>
+          <h2>Čo o nás hovoria zákazníci</h2>
+        </div>
+        <div class="gbadge">
+          <img class="gbadge__logo" src="${img('google-logo')}" alt="Google" width="80" height="27" loading="lazy">
+          <div class="gbadge__score">
+            <b>${String(g.rating).replace('.', ',')}</b>
+            <span class="gbadge__stars" aria-hidden="true">${starRow(5)}</span>
+          </div>
+          <p class="gbadge__count">${g.count} hodnotení</p>
+        </div>
+      </div>
+
+      <ul class="reviews">
+${g.items.map(r => `        <li class="review">
+          <div class="review__top">
+            <span class="review__avatar" aria-hidden="true">${r.name.charAt(0)}</span>
+            <div>
+              <b>${r.name}</b>
+              <span>${r.when}</span>
+            </div>
+          </div>
+          <p class="review__stars" aria-label="${r.stars} z 5 hviezdičiek">${starRow(r.stars)}</p>
+          <p class="review__text">${r.text}</p>
+        </li>`).join('\n')}
+      </ul>
+
+      <div class="cluster" style="margin-top:30px">
+        <a class="btn btn--secondary" href="${g.profileUrl}" target="_blank" rel="noopener noreferrer">
+          Všetky hodnotenia na Google ${icon.arrow}
+        </a>
+      </div>
+    </div>
+  </section>`;
+}
+
 /* Homepage teaser. Deliberately dark: the nine box programs above it sit on
    light cards, so the only way this reads as a separate line rather than a
    tenth program is to change the ground under it. The clip runs full-bleed
@@ -713,6 +795,6 @@ module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels, maxNutrition,
   maxCourses, maxMeals, MAX_SIZES,
   page, bandDelivery, sectionPrograms, programCard, reelsSlider,
-  sectionMaxNutrition,
+  sectionMaxNutrition, sectionReviews, googleReviews,
   img, imageWarnings, imageIndex, newsletter, payMethods, videoBg
 };
