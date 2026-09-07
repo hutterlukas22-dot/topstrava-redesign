@@ -258,6 +258,80 @@ const maxNutrition = {
   photoTeaser: 'band-menu'
 };
 
+/* ---------------------------------------------------------------------------
+   MAX NUTRITION menu — courses and dishes.
+
+   Shaped so that ADDING A COURSE IS ONE ENTRY IN THIS ARRAY. The client plans
+   to add snacks and breakfasts later; the page renders whatever it finds here,
+   so a new course needs no layout work and no new page — which was the whole
+   reason they preferred this concept.
+
+   Only dishes TopStrava actually publishes are listed. The client's mock-up
+   invented fitness meals (protein pancakes, burger bowls); inventing menu
+   items is exactly what they complained about elsewhere, so the four real
+   dishes from topstrava.sk/max-nutrition are all that ship until they send
+   more.
+
+   `nutri` values are SAMPLE figures, flagged as such in the UI the same way
+   the client's own mock-up flagged them. Neither the live page nor anything
+   they sent carries real per-dish macros.
+   --------------------------------------------------------------------------- */
+const MAX_SIZES = [
+  { code: 'M', note: 'ľahšia porcia' },
+  { code: 'L', note: 'štandardná porcia' },
+  { code: 'XL', note: 'väčšia porcia' }
+];
+
+const maxCourses = [
+  {
+    id: 'hlavne-jedla',
+    label: 'Hlavné jedlá',
+    title: 'Obedy a večere',
+    lede: 'Jedlá, ktoré sa v programe objavujú pravidelne. Ku každému si vyberáte veľkosť porcie.',
+    meals: [
+      {
+        slug: 'kuraci-steak-kurkumova-ryza',
+        name: 'Kurací steak s kurkumovou ryžou a grilovaným ananásom',
+        desc: 'Grilovaný kurací steak, kurkumová ryža a grilovaný ananás.',
+        /* the one dish we hold a truthful photograph of */
+        photo: 'blog1',
+        zlozenie: 'kuracie prsia, ryža, kurkuma, ananás, olivový olej, korenie',
+        alergeny: [],
+        nutri: { M: [390, 34, 38, 9], L: [520, 45, 51, 12], XL: [690, 60, 68, 16] }
+      },
+      {
+        slug: 'turkey-meatballs',
+        name: 'Turkey meatballs, paradajková omáčka s opekaným zemiakom',
+        desc: 'Morčacie guľky v paradajkovej omáčke s opekaným zemiakom.',
+        zlozenie: 'morčacie mäso, paradajky, zemiaky, cibuľa, cesnak, bylinky',
+        alergeny: ['1', '3'],
+        nutri: { M: [410, 32, 40, 11], L: [545, 43, 53, 15], XL: [720, 57, 70, 20] }
+      },
+      {
+        slug: 'teriyaki-rezancky',
+        name: 'Teriyaki rezančeky z roštenky s brokolicou a ryžou',
+        desc: 'Hovädzia roštenka v teriyaki omáčke s brokolicou a ryžou.',
+        zlozenie: 'hovädzia roštenka, brokolica, ryža, teriyaki omáčka, sezam',
+        alergeny: ['1', '6', '11'],
+        nutri: { M: [430, 36, 41, 12], L: [575, 48, 55, 16], XL: [760, 63, 73, 21] }
+      },
+      {
+        slug: 'beef-bolognese-rice-pasta',
+        name: 'Beef bolognese rice pasta',
+        desc: 'Hovädzie ragú s ryžovými cestovinami.',
+        zlozenie: 'hovädzie mäso, ryžové cestoviny, paradajky, mrkva, zeler, bylinky',
+        alergeny: ['9'],
+        nutri: { M: [400, 33, 42, 10], L: [535, 44, 56, 13], XL: [705, 58, 74, 18] }
+      }
+    ]
+  }
+  /* Ďalšie chody (raňajky, snacky, dezerty) sa pridávajú sem ako nová položka.
+     Stránka aj detail jedla sa vykreslia samy, netreba meniť šablónu. */
+];
+
+/* flat lookup for the detail page */
+const maxMeals = maxCourses.flatMap(c => c.meals.map(m => ({ ...m, course: c.label })));
+
 const deliveryCities = ['Žilina', 'Považská Bystrica', 'Púchov', 'Kysucké Nové Mesto', 'Bytča',
   'Martin', 'Čadca', 'Spišská Nová Ves', 'Levoča', 'Liptovský Mikuláš', 'Poprad', 'Trenčín', 'Košice'];
 
@@ -633,6 +707,7 @@ ${reels.map((r, i) => `            <article class="reel${i === 0 ? ' is-active' 
 
 module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels, maxNutrition,
+  maxCourses, maxMeals, MAX_SIZES,
   page, bandDelivery, sectionPrograms, programCard, reelsSlider,
   sectionMaxNutrition,
   img, imageWarnings, imageIndex, newsletter, payMethods, videoBg

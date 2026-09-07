@@ -1,31 +1,82 @@
 const L = require('./layout');
-const { icon, maxNutrition: M } = L;
+const { icon, maxNutrition: M, maxCourses, maxMeals, MAX_SIZES } = L;
 
 /* ===========================================================================
-   MAX NUTRITION — the à-la-carte line.
+   MAX NUTRITION — menu and dish detail.
 
-   Kept in its own module because it is the one page that does not describe a
-   weekly box: no calorie program, no five-day cycle, no configurator. The
-   facts here (portion sizes, the three delivery days, the four signature
-   dishes) come from topstrava.sk/max-nutrition. That page publishes no prices
-   and no per-meal calorie values, so neither does this one — the ordering CTA
-   goes to the contact form rather than inventing a checkout that has nothing
-   behind it.
+   Rebuilt to the structure the client sent (menu.html + product page), but in
+   this site's design language rather than theirs. Their files are wireframes:
+   Arial, Unsplash placeholders, pure black and gold. Copied literally, the
+   page would have read as a different website bolted onto this one — so what
+   is taken from them is the INFORMATION ARCHITECTURE:
+
+     menu     hero → one section per course → dish cards with M/L/XL
+     detail   photo + size picker + macro table + composition + allergens
+              + delivery calendar + CTA
+
+   The first version of this page was the opposite shape — long explanatory
+   prose and almost no food — which is what the client rejected.
+
+   Courses come from L.maxCourses, so adding breakfasts or snacks later is a
+   data entry, not a template change.
    =========================================================================== */
+
+/* Only one dish has a truthful photograph so far. The rest get a deliberate
+   placeholder rather than a borrowed picture of something else — a named dish
+   under the wrong photo is the kind of thing the client called out. */
+function mealMedia(meal) {
+  if (meal.photo) {
+    return `<div class="meal__media"><img src="${L.img(meal.photo)}" alt="${meal.name}" loading="lazy" width="600" height="420"></div>`;
+  }
+  return `<div class="meal__media meal__media--empty" aria-hidden="true">
+              <span class="meal__ph">${icon.box}<b>Foto pripravujeme</b></span>
+            </div>`;
+}
+
+function mealCard(meal) {
+  return `          <article class="meal">
+            ${mealMedia(meal)}
+            <div class="meal__body">
+              <h3 class="meal__title"><a href="max-nutrition-jedlo.html?jedlo=${meal.slug}">${meal.name}</a></h3>
+              <p class="meal__text">${meal.desc}</p>
+              <p class="meal__sizes">
+                <span class="sr-only">Dostupné veľkosti:</span>
+${MAX_SIZES.map(s => `                <span class="meal__size">${s.code}</span>`).join('\n')}
+              </p>
+              <a class="btn btn--secondary btn--sm meal__cta" href="max-nutrition-jedlo.html?jedlo=${meal.slug}">
+                Vybrať jedlo ${icon.arrow}
+              </a>
+            </div>
+          </article>`;
+}
+
+function courseSection(course, i) {
+  return `  <section class="section${i % 2 ? ' section--tint' : ''}" id="${course.id}">
+    <div class="container">
+      <div class="section-head">
+        <p class="label label--gold">${course.label}</p>
+        <h2>${course.title}</h2>
+        <p>${course.lede}</p>
+      </div>
+      <div class="grid grid--meals">
+${course.meals.map(mealCard).join('\n')}
+      </div>
+    </div>
+  </section>`;
+}
 
 const maxNutritionPage = {
   file: 'max-nutrition.html',
   active: 'max-nutrition',
-  title: 'MAX NUTRITION — obedy a večere aj pre profesionálnych športovcov | TopStrava',
-  description: 'Nutrične vyvážené obedy a večere v troch veľkostiach porcií M, L a XL. ' +
-               'Rozvoz 3× týždenne — v nedeľu, utorok a štvrtok.',
+  title: 'MAX NUTRITION — vyskladajte si jedlá podľa svojich cieľov | TopStrava',
+  description: 'Nutrične vyvážené jedlá v troch veľkostiach porcií M, L a XL. ' +
+               'Vyberte si konkrétne jedlá a nechajte si ich doviezť.',
+  js: ['max-nutrition.js'],
   body: `  <section class="hero hero--video">
 ${L.videoBg('reel-3', M.photoHero)}
     <div class="container">
       <ul class="breadcrumb">
         <li><a href="index.html">Domov</a></li>
-        <li>${icon.chevron}</li>
-        <li><a href="programy.html">Krabičky</a></li>
         <li>${icon.chevron}</li>
         <li>MAX NUTRITION</li>
       </ul>
@@ -33,15 +84,15 @@ ${L.videoBg('reel-3', M.photoHero)}
     <div class="container hero__grid on-dark">
       <div>
         <p class="label">${M.eyebrow}</p>
-        <h1>MAX NUTRITION — aj pre profesionálnych športovcov</h1>
-        <p class="hero__lede">${M.claim}. Obedy a večere navrhnuté tak, aby pokryli všetky nutričné potreby — vy si vyberáte jedlá aj veľkosť porcie.</p>
+        <h1>Vyskladajte si jedlá podľa svojich cieľov</h1>
+        <p class="hero__lede">${M.claim}. Vyberáte si konkrétne jedlá aj veľkosť porcie — M, L alebo XL podľa toho, koľko energie potrebujete.</p>
         <div class="hero__actions">
-          <a class="btn btn--primary btn--lg" href="kontakt.html#contact-form">${icon.cart}Mám záujem o program</a>
-          <a class="btn btn--secondary btn--lg" href="#jedla">Pozrieť jedlá</a>
+          <a class="btn btn--primary btn--lg" href="#${maxCourses[0].id}">${icon.cart}Vybrať jedlá</a>
+          <a class="btn btn--secondary btn--lg" href="#velkosti">Ako fungujú veľkosti</a>
         </div>
         <div class="hero__proof">
-          <div><b>2</b><span>chody denne</span></div>
-          <div><b>3</b><span>veľkosti porcií</span></div>
+          <div><b>${MAX_SIZES.length}</b><span>veľkosti porcií</span></div>
+          <div><b>${maxMeals.length}</b><span>jedál v ponuke</span></div>
           <div><b>3×</b><span>rozvoz týždenne</span></div>
           <div><b>72 h</b><span>garancia čerstvosti</span></div>
         </div>
@@ -49,35 +100,7 @@ ${L.videoBg('reel-3', M.photoHero)}
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="split">
-        <div>
-          <p class="label label--gold">Čo to je</p>
-          <h2>Nutrične vyvážené jedlá pre každého, kto to myslí vážne</h2>
-          <p>MAX NUTRITION nie je týždenný balík krabičiek. Sú to <strong>obedy a večere</strong>, ktoré si skladáte sami — vyberiete si konkrétne jedlá aj veľkosť porcie a my ich pripravíme a dovezieme.</p>
-          <p>Zloženie každého jedla je navrhnuté tak, aby pokrylo všetky nutričné potreby — vrátane tých, ktoré má profesionálny športovec. Rovnaká kuchyňa, rovnaké suroviny a rovnaké šokové schladenie ako pri našich týždenných programoch.</p>
-          <ul class="steps" style="margin-top:26px">
-            <li>
-              <span class="steps__n">1</span>
-              <div><b>Vyberiete si jedlá</b><p>Z aktuálnej ponuky obedov a večerí.</p></div>
-            </li>
-            <li>
-              <span class="steps__n">2</span>
-              <div><b>Zvolíte veľkosť porcie</b><p>M, L alebo XL — podľa vášho energetického výdaja.</p></div>
-            </li>
-            <li>
-              <span class="steps__n">3</span>
-              <div><b>Dovezieme vám ich</b><p>Trikrát do týždňa, v nedeľu, utorok a štvrtok.</p></div>
-            </li>
-          </ul>
-        </div>
-        <div class="split__media">
-          <img src="${L.img(M.photoWide)}" alt="Pripravené jedlá MAX NUTRITION" loading="lazy" width="800" height="600">
-        </div>
-      </div>
-    </div>
-  </section>
+${maxCourses.map(courseSection).join('\n\n')}
 
   <section class="section section--tint" id="velkosti">
     <div class="container">
@@ -96,86 +119,8 @@ ${M.sizes.map(s => `        <div class="card card--tint">
         </div>`).join('\n')}
       </div>
       <div class="notice" style="margin-top:32px;max-width:70ch">
-        ${icon.info}
-        <span>Neviete, ktorá veľkosť je tá vaša? Napíšte nám a prejdeme to spolu — alebo si najprv spočítajte svoj denný príjem v <a href="ako-vybrat-program.html">kalorickej kalkulačke</a>.</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="jedla">
-    <div class="container">
-      <div class="section-head">
-        <p class="label label--gold">Ukážka jedál</p>
-        <h2>Čo v ponuke nájdete</h2>
-        <p>Ponuka sa mení. Toto je výber jedál, ktoré sa v programe objavujú pravidelne.</p>
-      </div>
-      <div class="grid grid--2">
-${M.meals.map(m => `        <div class="card card--tint">
-          <div class="card__body">
-            <span class="card__icon">${icon.box}</span>
-            <p class="card__meta"><span class="hi">Obed alebo večera</span><span class="dot"></span>M / L / XL</p>
-            <h3 class="card__title">${m}</h3>
-          </div>
-        </div>`).join('\n')}
-      </div>
-      <div class="notice" style="margin-top:32px;max-width:70ch">
-        ${icon.info}
-        <span>Aktuálnu ponuku jedál na najbližší rozvoz vám radi pošleme — <a href="kontakt.html#contact-form">napíšte nám</a> alebo zavolajte na <a href="tel:+421904264951">+421 904 264 951</a>.</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--tint" id="rozvoz-max">
-    <div class="container">
-      <div class="section-head">
-        <p class="label label--gold">Rozvoz</p>
-        <h2>Rozvoz 3× týždenne</h2>
-        <p>MAX NUTRITION nemá päťdňový cyklus ako týždenné programy. Vozíme ho v troch dňoch a vždy čerstvo pripravený.</p>
-      </div>
-
-      <div class="grid grid--3">
-${M.days.map(d => `        <div class="card card--flat">
-          <div class="card__body">
-            <span class="card__icon">${icon.truck}</span>
-            <h3 class="card__title">${d}</h3>
-            <p class="card__text">Doručenie v čase 14:00 – 21:30, domov alebo na odberné miesto.</p>
-          </div>
-        </div>`).join('\n')}
-      </div>
-
-      <div class="notice" style="margin-top:32px;max-width:70ch">
-        ${icon.clock}
-        <span>Rozvážame do rovnakých 13 miest a na rovnakých 12 odberných miest ako pri krabičkách. <a href="ako-to-funguje.html#rozvoz">Pozrieť zoznam miest</a>.</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="porovnanie">
-    <div class="container">
-      <div class="section-head">
-        <p class="label label--gold">Porovnanie</p>
-        <h2>MAX NUTRITION alebo týždenné krabičky?</h2>
-        <p>Dve rôzne veci pre dva rôzne režimy. Toto je rozdiel v skratke.</p>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <caption class="sr-only">Porovnanie programu MAX NUTRITION s týždennými programami krabičiek</caption>
-          <thead>
-            <tr><th scope="col">&nbsp;</th><th scope="col">MAX NUTRITION</th><th scope="col">Týždenné krabičky</th></tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row">Čo dostanete</th><td>Obedy a večere</td><td>Celý deň — 3 alebo 5 jedál</td></tr>
-            <tr><th scope="row">Ako sa vyberá</th><td>Konkrétne jedlá podľa vás</td><td>Hotový jedálniček podľa kalórií</td></tr>
-            <tr><th scope="row">Veľkosť</th><td>M / L / XL</td><td>9 programov, 1 200 – 2 500 kcal</td></tr>
-            <tr><th scope="row">Rozvoz</th><td class="num">3× týždenne</td><td class="num">5× týždenne (nedeľa – štvrtok)</td></tr>
-            <tr><th scope="row">Objednávka</th><td>Podľa výberu jedál</td><td>Minimálne na 5 pracovných dní</td></tr>
-            <tr><th scope="row">Pre koho</th><td>Aktívni ľudia a športovci, ktorí si chcú jedlá vyberať</td><td>Kto chce mať celý týždeň vyriešený dopredu</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="cluster" style="margin-top:30px">
-        <a class="btn btn--primary" href="kontakt.html#contact-form">Mám záujem o MAX NUTRITION</a>
-        <a class="btn btn--secondary" href="programy.html">Zobraziť týždenné programy</a>
+        ${icon.truck}
+        <span>Rozvoz <strong>3× týždenne</strong> — ${M.days.join(', ').toLowerCase()}, v čase 14:00 – 21:30. Do rovnakých miest ako krabičky. <a href="ako-to-funguje.html#rozvoz">Pozrieť zoznam miest</a>.</span>
       </div>
     </div>
   </section>
@@ -184,10 +129,10 @@ ${M.days.map(d => `        <div class="card card--flat">
     <div class="band__bg"><img src="${L.img('band-a')}" alt="" aria-hidden="true"></div>
     <div class="container band__inner on-dark">
       <p class="label" style="color:var(--gold)">${M.eyebrow}</p>
-      <h2>Chcete MAX NUTRITION vyskúšať?</h2>
-      <p>Ozvite sa nám a poradíme vám s veľkosťou porcie aj s výberom jedál.</p>
+      <h2>Nie ste si istí výberom?</h2>
+      <p>Ozvite sa nám a poradíme vám s veľkosťou porcie aj so skladbou jedál.</p>
       <ul>
-        <li>${icon.check}Obedy a večere pripravené na mieru</li>
+        <li>${icon.check}Jedlá si vyberáte sami, nie hotový balík</li>
         <li>${icon.check}Tri veľkosti porcií — M, L a XL</li>
         <li>${icon.check}Rozvoz v nedeľu, utorok a štvrtok</li>
       </ul>
@@ -201,4 +146,89 @@ ${M.days.map(d => `        <div class="card card--flat">
 ${L.newsletter()}`
 };
 
-module.exports = [maxNutritionPage];
+/* ---------------------------------------------------------------------------
+   DISH DETAIL — one template for every dish, filled at runtime from
+   ?jedlo=<slug>, the same pattern program.html already uses. A new dish is a
+   data entry; it never becomes another page.
+   --------------------------------------------------------------------------- */
+const maxMealPage = {
+  file: 'max-nutrition-jedlo.html',
+  active: 'max-nutrition',
+  title: 'Detail jedla | MAX NUTRITION | TopStrava',
+  description: 'Nutričné hodnoty, zloženie a alergény jedla z programu MAX NUTRITION. ' +
+               'Vyberte si veľkosť porcie a termín doručenia.',
+  js: ['max-nutrition.js'],
+  body: `  <section class="section meal-detail" data-meal-detail>
+    <div class="container">
+      <a class="backlink" href="max-nutrition.html">
+        ${icon.chevronLeft}Späť na menu
+      </a>
+
+      <div class="grid grid--meal-detail">
+        <aside class="meal-detail__media">
+          <div class="meal-detail__photo" data-bind="photo"></div>
+          <ul class="meal-detail__facts">
+            <li>${icon.leaf}<span>Nutrične vyvážené</span></li>
+            <li>${icon.box}<span>M / L / XL veľkosti</span></li>
+            <li>${icon.clock}<span>Spotreba do 72 hodín</span></li>
+          </ul>
+        </aside>
+
+        <div>
+          <p class="label label--gold" data-bind="course">Hlavné jedlá</p>
+          <h1 data-bind="name">Jedlo</h1>
+          <p class="lede" data-bind="desc"></p>
+
+          <h2 class="meal-detail__h">Veľkosť porcie</h2>
+          <div class="sizepick" data-bind="sizes" role="radiogroup" aria-label="Veľkosť porcie"></div>
+
+          <h2 class="meal-detail__h">Nutričné hodnoty</h2>
+          <p class="form-note" style="margin:-8px 0 14px">Ukážkové hodnoty na porciu — reálne makrá doplníme podľa podkladov z kuchyne.</p>
+          <div class="table-wrap">
+            <table>
+              <caption class="sr-only">Nutričné hodnoty podľa veľkosti porcie</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Veľkosť</th>
+                  <th scope="col" class="num">Kalórie</th>
+                  <th scope="col" class="num">Bielkoviny</th>
+                  <th scope="col" class="num">Sacharidy</th>
+                  <th scope="col" class="num">Tuky</th>
+                </tr>
+              </thead>
+              <tbody data-bind="nutri"></tbody>
+            </table>
+          </div>
+
+          <div class="grid grid--2" style="margin-top:26px">
+            <div class="card card--flat">
+              <div class="card__body">
+                <h3 class="card__title">Zloženie</h3>
+                <p class="card__text" data-bind="zlozenie"></p>
+              </div>
+            </div>
+            <div class="card card--flat">
+              <div class="card__body">
+                <h3 class="card__title">Alergény a spotreba</h3>
+                <p class="card__text" data-bind="alergeny"></p>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="meal-detail__h">Termín doručenia</h2>
+          <p class="form-note" style="margin:-8px 0 14px">Rozvážame v nedeľu, utorok a štvrtok — ostatné dni sa nedajú zvoliť.</p>
+          <div class="daypick" data-bind="calendar"></div>
+
+          <div class="cluster" style="margin-top:28px">
+            <a class="btn btn--primary btn--lg" href="dokoncenie-objednavky.html">${icon.cart}Pridať do objednávky</a>
+            <a class="btn btn--secondary btn--lg" href="max-nutrition.html">Vybrať ďalšie jedlo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+${L.newsletter()}`
+};
+
+module.exports = [maxNutritionPage, maxMealPage];
