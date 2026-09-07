@@ -1140,8 +1140,8 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
   grid-template-columns:repeat(3,minmax(0,420px));
   justify-content:center;
   column-gap:var(--sp-grid);
-  /* max overhang (13% of 420 ≈ 55) plus the usual gap */
-  row-gap:80px;
+  /* max overhang (8% of 420 ≈ 34) plus the usual gap */
+  row-gap:62px;
 }
 
 .pcard{
@@ -1150,7 +1150,7 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
      form an anonymous line box and push .pcard__art off the padding edge */
   display:flex;flex-direction:column;
   container-type:inline-size;
-  padding:13% 0 0;
+  padding:8% 0 0;
   text-decoration:none;color:#fff;
   transition:transform var(--dur) var(--ease);
 }
@@ -1158,7 +1158,7 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .pcard:focus-visible{z-index:2;}
 
 .pcard__plate{
-  position:absolute;inset:13% 0 0 0;z-index:0;
+  position:absolute;inset:8% 0 0 0;z-index:0;
   border-radius:20px;overflow:hidden;
   background:linear-gradient(157deg,var(--g1) 0%,var(--g2) 100%);
   box-shadow:var(--shadow-md);
@@ -1175,13 +1175,17 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 
 /* Sits in normal flow and owns the artwork's height, so .pcard__body simply
    follows it instead of being pushed down by a hand-tuned margin. */
-.pcard__art{position:relative;z-index:1;aspect-ratio:398/236;}
+.pcard__art{position:relative;z-index:1;aspect-ratio:398/272;}
 .pcard__figure{
   /* .pcard__art begins below the card's reserved padding, so top:0 would sit
      the figure flush on the plate. Pulling it up by exactly that reserve
-     (13cqw) puts its top on the card's outer edge — which is the overhang. */
-  position:absolute;top:-13cqw;left:50%;translate:-50% 0;
-  height:56cqw;width:auto;pointer-events:none;
+     (8cqw) puts its top on the card's outer edge — which is the overhang.
+
+     Sized on HEIGHT, never width: the pair artboard (zena+muz) is wider than
+     the singles, and height keeps every card's heads on the same line while
+     the pair simply spreads. */
+  position:absolute;top:-8cqw;left:50%;translate:-50% 0;
+  height:42cqw;width:auto;pointer-events:none;
 }
 /* Boxed on all four sides with object-fit rather than sized by width alone.
    The source cut-outs do not share an aspect ratio (some are 16:9, some
@@ -1193,8 +1197,8 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
    stretch — so an inset box silently kept each image's intrinsic height and
    the taller ones ran down over the title. */
 .pcard__food{
-  position:absolute;top:13cqw;left:4%;z-index:2;
-  width:92%;height:46cqw;
+  position:absolute;top:13cqw;left:3%;z-index:2;
+  width:94%;height:55cqw;
   object-fit:contain;object-position:center bottom;
   filter:drop-shadow(0 3cqw 4cqw rgba(0,0,0,.34));
   pointer-events:none;
@@ -1361,3 +1365,33 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
 }
 .backlink:hover{color:var(--gold-ink);}
 .backlink svg{width:16px;height:16px;flex:none;}
+
+/* Instagram link in the corner of the video hero. The reels panel that used
+   to occupy the right half is gone, so this is what is left of the link out
+   to the profile — deliberately small, since the hero's job is the CTA. */
+.hero__ig{
+  position:absolute;right:var(--container-pad);bottom:26px;z-index:2;
+  display:inline-flex;align-items:center;gap:11px;
+  padding:11px 16px;border-radius:var(--r-pill);
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.28);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  color:#fff;text-decoration:none;
+  transition:background-color var(--dur) ease,border-color var(--dur) ease;
+}
+.hero__ig:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.5);}
+.hero__ig > svg:first-child{width:22px;height:22px;flex:none;}
+.hero__ig > svg:last-child{width:15px;height:15px;flex:none;opacity:.7;transition:transform var(--dur) var(--ease);}
+.hero__ig:hover > svg:last-child{transform:translateX(3px);}
+.hero__ig span{display:block;line-height:1.25;}
+.hero__ig b{display:block;font-size:14px;font-weight:700;}
+.hero__ig span span{font-size:12px;color:rgba(255,255,255,.75);}
+/* Below this the hero is stacked and tight, so the corner is no longer free —
+   the link joins the flow instead of sitting on top of the proof figures. */
+@media(max-width:760px){
+  .hero__ig{
+    position:static;margin:0 var(--container-pad) 34px;
+    /* margin-top pulls it up against the grid's own bottom padding */
+    margin-top:-18px;
+  }
+}

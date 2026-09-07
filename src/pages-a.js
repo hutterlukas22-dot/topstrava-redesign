@@ -32,6 +32,12 @@ ${L.videoBg('video_hero', 'real-foto/kuchyna-vydaj')}
         </div>
       </div>
     </div>
+
+    <a class="hero__ig" href="https://www.instagram.com/topstrava/" target="_blank" rel="noopener noreferrer">
+      ${icon.instagram}
+      <span><b>@topstrava</b><span>Reels z našej kuchyne</span></span>
+      ${icon.arrow}
+    </a>
   </section>
 
   <section class="section section--tint">

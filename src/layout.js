@@ -203,8 +203,11 @@ const programs = [
   { slug: 'balance', name: 'Balance', kcal: 1600, price: '104,50 €', meals: 5, img: 'meal5.webp',
     art: 'balance', figure: 'woman', g1: '#F2718D', g2: '#B01E4B',
     desc: 'Vyvážený program pre ženy s bežným denným pohybom alebo pre mužov, ktorí chcú redukovať váhu.' },
+  /* the only pair figure — the program is explicitly for both, and the
+     zena+muz artboard is wider than the singles, which the card handles by
+     sizing every figure on height and letting width follow */
   { slug: 'balance-plus', name: 'Balance+', kcal: 1800, price: '109,50 €', meals: 5, img: 'meal6.webp',
-    art: 'balance+', figure: 'man', g1: '#F0A868', g2: '#B4541C',
+    art: 'balance+', figure: 'zena+muz', g1: '#F0A868', g2: '#B4541C',
     desc: 'Univerzálny variant pre udržiavanie hmotnosti. Vhodné pre aktívne ženy alebo menej aktívnych mužov.' },
   { slug: 'active-body', name: 'Active body', kcal: 2000, price: '114,50 €', meals: 5, img: 'meal7.webp',
     art: 'active_body', figure: 'man', g1: '#5AC8C0', g2: '#136E74',
