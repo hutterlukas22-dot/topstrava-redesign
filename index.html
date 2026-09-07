@@ -7,7 +7,7 @@
 <meta name="description" content="Krabičková strava na mieru. Deväť programov od 1 200 do 2 500 kcal, čerstvo pripravené a doručené deň vopred do 13 miest na Slovensku.">
 <link rel="preload" href="assets/fonts/epilogue-regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/epilogue-800.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=9a2f97b4">
+<link rel="stylesheet" href="assets/css/site.css?v=13efff78">
 
 </head>
 <body>
@@ -99,7 +99,13 @@
   </header>
 
 <main id="main">
-  <section class="hero">
+  <section class="hero hero--video">
+    <div class="vbg" aria-hidden="true">
+      <video class="vbg__video" data-bgvideo autoplay muted loop playsinline
+             preload="metadata" poster="assets/img/real-foto/kuchyna-vydaj.jpg?v=5f0227bf" tabindex="-1">
+        <source src="assets/video/video_hero.mp4?v=cd00f54b" type="video/mp4">
+      </video>
+    </div>
     <div class="container hero__grid on-dark">
       <div>
         <p class="label">Pravidelne · Zdravo · Chutne</p>
@@ -114,52 +120,6 @@
           <div><b>13</b><span>miest rozvozu</span></div>
           <div><b>12</b><span>odberných miest</span></div>
           <div><b>72 h</b><span>garancia čerstvosti</span></div>
-        </div>
-      </div>
-      <div class="hero__media hero__media--reels">
-        <div class="reels" data-reels tabindex="-1">
-          <div class="reels__frame">
-            <div class="reels__bars" aria-hidden="true"></div>
-            <article class="reel is-active" data-src="assets/video/reel-1.mp4"
-                     aria-label="Jedálniček: Takto vyzerá týždeň krabičiek">
-              <img class="reel__poster" src="assets/img/real-foto/flatlay-zhora.jpg?v=9e048e3f" alt="" loading="eager" width="1080" height="1920">
-              <video class="reel__video" muted playsinline preload="none" poster="assets/img/real-foto/flatlay-zhora.jpg?v=9e048e3f"></video>
-              <div class="reel__caption"><b>Takto vyzerá týždeň krabičiek</b><span>Jedálniček</span></div>
-            </article>
-            <article class="reel" data-src="assets/video/reel-2.mp4"
-                     aria-label="Zo zákulisia: Ráno v kuchyni: príprava 5 chodov" aria-hidden="true">
-              <img class="reel__poster" src="assets/img/real-foto/kuchyna-tim.jpg?v=f7497dc5" alt="" loading="lazy" width="1080" height="1920">
-              <video class="reel__video" muted playsinline preload="none" poster="assets/img/real-foto/kuchyna-tim.jpg?v=f7497dc5"></video>
-              <div class="reel__caption"><b>Ráno v kuchyni: príprava 5 chodov</b><span>Zo zákulisia</span></div>
-            </article>
-            <article class="reel" data-src="assets/video/reel-3.mp4"
-                     aria-label="Čerstvosť 72 h: Šokové schladenie a vákuové balenie" aria-hidden="true">
-              <img class="reel__poster" src="assets/img/real-foto/kuchyna-vydaj.jpg?v=5f0227bf" alt="" loading="lazy" width="1080" height="1920">
-              <video class="reel__video" muted playsinline preload="none" poster="assets/img/real-foto/kuchyna-vydaj.jpg?v=5f0227bf"></video>
-              <div class="reel__caption"><b>Šokové schladenie a vákuové balenie</b><span>Čerstvosť 72 h</span></div>
-            </article>
-            <article class="reel" data-src="assets/video/reel-4.mp4"
-                     aria-label="Rozvoz: Rozvoz až k dverám, deň vopred" aria-hidden="true">
-              <img class="reel__poster" src="assets/img/real-foto/kuchyna-dezerty.jpg?v=74932a7c" alt="" loading="lazy" width="1080" height="1920">
-              <video class="reel__video" muted playsinline preload="none" poster="assets/img/real-foto/kuchyna-dezerty.jpg?v=74932a7c"></video>
-              <div class="reel__caption"><b>Rozvoz až k dverám, deň vopred</b><span>Rozvoz</span></div>
-            </article>
-            <article class="reel" data-src="assets/video/reel-5.mp4"
-                     aria-label="Unboxing: Čo dostanete v jednom dni" aria-hidden="true">
-              <img class="reel__poster" src="assets/img/real-foto/ranajkovy-box.jpg?v=484b470b" alt="" loading="lazy" width="1080" height="1920">
-              <video class="reel__video" muted playsinline preload="none" poster="assets/img/real-foto/ranajkovy-box.jpg?v=484b470b"></video>
-              <div class="reel__caption"><b>Čo dostanete v jednom dni</b><span>Unboxing</span></div>
-            </article>
-            <button class="reels__nav reels__nav--prev" type="button" data-reels-prev aria-label="Predchádzajúce video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
-            <button class="reels__nav reels__nav--next" type="button" data-reels-next aria-label="Ďalšie video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
-            <button class="reels__sound" type="button" data-reels-sound aria-pressed="false" aria-label="Zapnúť zvuk">
-              <span data-icon-muted><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="m16 9.5 4 5M20 9.5l-4 5"/></svg></span>
-              <span data-icon-loud hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11"/></svg></span>
-            </button>
-          </div>
-          <a class="reels__cta" href="https://www.instagram.com/topstrava/" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.1" cy="6.9" r="1.1" fill="currentColor" stroke="none"/></svg>@topstrava<span>· celý profil</span>
-          </a>
         </div>
       </div>
     </div>
@@ -601,7 +561,7 @@
     </div>
   </footer>
 
-<script src="assets/js/site.js?v=9a2f97b4"></script>
+<script src="assets/js/site.js?v=13efff78"></script>
 
 </body>
 </html>

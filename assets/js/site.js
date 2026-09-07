@@ -391,28 +391,50 @@
     return;
   }
 
+  /* A play() that arrives before the clip has buffered is rejected, and the
+     first attempt fires the moment the section scrolls into view — for the
+     31 MB hero clip that is almost always too early. Swallowing the rejection
+     and stopping there left the video paused for good on a poster that never
+     moved. So each element remembers whether it *should* be running, and
+     retries on the media events that mean "now you can". */
   var play = function (v) {
+    if (!v.dataset.shouldPlay) return;
     var p = v.play();
     if (p && typeof p.catch === 'function') p.catch(function () {});
   };
 
+  vids.forEach(function (v) {
+    ['loadeddata', 'canplay', 'canplaythrough'].forEach(function (ev) {
+      v.addEventListener(ev, function () { play(v); });
+    });
+  });
+
+  var start = function (v) { v.dataset.shouldPlay = '1'; play(v); };
+  var stop = function (v) {
+    delete v.dataset.shouldPlay;
+    try { v.pause(); } catch (e) {}
+  };
+
   if (!('IntersectionObserver' in window)) {
-    vids.forEach(play);
+    vids.forEach(start);
     return;
   }
 
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      if (e.isIntersecting) play(e.target);
-      else try { e.target.pause(); } catch (err) {}
+      if (e.isIntersecting) start(e.target);
+      else stop(e.target);
     });
   }, { rootMargin: '200px 0px' });
 
   vids.forEach(function (v) { io.observe(v); });
 
+  /* Hiding the tab pauses without clearing shouldPlay, so coming back resumes
+     exactly the clips that were running — rather than leaving them frozen. */
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) {
-      vids.forEach(function (v) { try { v.pause(); } catch (e) {} });
-    }
+    vids.forEach(function (v) {
+      if (document.hidden) { try { v.pause(); } catch (e) {} }
+      else play(v);
+    });
   });
 })();

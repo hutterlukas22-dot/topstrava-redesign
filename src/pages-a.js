@@ -7,7 +7,14 @@ const home = {
   active: 'home',
   title: 'Krabičková strava — pravidelne, zdravo a chutne | TopStrava',
   description: 'Krabičková strava na mieru. Deväť programov od 1 200 do 2 500 kcal, čerstvo pripravené a doručené deň vopred do 13 miest na Slovensku.',
-  body: `  <section class="hero">
+  /* Full-bleed kitchen footage behind the whole hero, the same treatment as
+     MAX NUTRITION. This replaces the Instagram reels panel that used to sit
+     on the right: the client asked for the opening to look like MAX NUTRITION
+     and for real production footage instead of a widget. L.reelsSlider() is
+     still exported, so the reels can be dropped into a section further down
+     if the Instagram content is wanted back. */
+  body: `  <section class="hero hero--video">
+${L.videoBg('video_hero', 'real-foto/kuchyna-vydaj')}
     <div class="container hero__grid on-dark">
       <div>
         <p class="label">Pravidelne · Zdravo · Chutne</p>
@@ -23,9 +30,6 @@ const home = {
           <div><b>12</b><span>odberných miest</span></div>
           <div><b>72 h</b><span>garancia čerstvosti</span></div>
         </div>
-      </div>
-      <div class="hero__media hero__media--reels">
-${L.reelsSlider()}
       </div>
     </div>
   </section>
