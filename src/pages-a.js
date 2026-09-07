@@ -161,7 +161,7 @@ ${L.bandDelivery()}
       </div>
       <div class="grid grid--3">
         <a class="card" href="#">
-          <div class="card__media"><img src="${L.img('blog1')}" alt="" loading="lazy" width="600" height="375"></div>
+          <div class="card__media"><img src="${L.img('real-foto/kuchyna-vydaj')}" alt="" loading="lazy" width="600" height="375"></div>
           <div class="card__body">
             <p class="card__meta"><span class="hi">Rozvoz</span><span class="dot"></span>20. 6. 2026<span class="dot"></span>4 min</p>
             <h3 class="card__title">Prečo je pri krabičkovej strave dôležitý chladený rozvoz?</h3>
@@ -170,7 +170,7 @@ ${L.bandDelivery()}
           </div>
         </a>
         <a class="card" href="#">
-          <div class="card__media"><img src="${L.img('blog3')}" alt="" loading="lazy" width="600" height="375"></div>
+          <div class="card__media"><img src="${L.img('real-foto/flatlay-siroky-2')}" alt="" loading="lazy" width="600" height="375"></div>
           <div class="card__body">
             <p class="card__meta"><span class="hi">Jedálničky</span><span class="dot"></span>22. 6. 2026<span class="dot"></span>6 min</p>
             <h3 class="card__title">Koľko jedálničkov máme v TopStrave a prečo ich rozširujeme</h3>
@@ -179,7 +179,7 @@ ${L.bandDelivery()}
           </div>
         </a>
         <a class="card" href="#">
-          <div class="card__media"><img src="${L.img('blog4')}" alt="" loading="lazy" width="600" height="375"></div>
+          <div class="card__media"><img src="${L.img('blog3')}" alt="Zákazníčka pred a po polroku s TopStravou" loading="lazy" width="600" height="375"></div>
           <div class="card__body">
             <p class="card__meta"><span class="hi">Príbeh</span><span class="dot"></span>16. 5. 2026<span class="dot"></span>5 min</p>
             <h3 class="card__title">Schudla 35 kg za 6 mesiacov: skutočná premena vďaka TopStrave</h3>
@@ -317,7 +317,7 @@ ${programs.map(p => {
   <section class="section section--cream" id="poukazy">
     <div class="container">
       <div class="split split--media-first">
-        <div class="split__media"><img src="${L.img('meal2')}" alt="Darčekové poukážky TopStrava" loading="lazy" width="800" height="600"></div>
+        <div class="split__media"><img src="${L.img('real-foto/flatlay-zhora')}" alt="Darčekové poukážky TopStrava" loading="lazy" width="800" height="600"></div>
         <div>
           <p class="label label--gold">🎁 Darčekové poukážky</p>
           <h2 style="margin-bottom:14px">Darujte týždeň bez varenia</h2>

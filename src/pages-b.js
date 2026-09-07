@@ -330,7 +330,7 @@ const oNas = {
   <section class="section">
     <div class="container">
       <div class="split split--media-first">
-        <div class="split__media"><img src="${L.img('band-a')}" alt="Krabičky TopStrava pripravené na rozvoz" loading="lazy" width="800" height="600"></div>
+        <div class="split__media"><img src="${L.img('real-foto/kuchyna-tim')}" alt="Tím TopStravy v kuchyni na Hlinskej v Žiline" loading="lazy" width="800" height="600"></div>
         <div class="prose">
           <p class="label label--gold">Vznik TOPSTRAVA</p>
           <h2 style="margin-bottom:16px">Chutne, zdravo a pravidelne</h2>

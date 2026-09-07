@@ -231,7 +231,7 @@ ${restrictionChips()}
               <a class="btn btn--text" href="faq.html">Časté otázky ${icon.arrow}</a>
             </div>
           </div>
-          <div class="split__media"><img src="${L.img('meal5')}" alt="Ukážka denného menu" loading="lazy" width="800" height="600"></div>
+          <div class="split__media"><img src="${L.img('real-foto/kura-cviklove-rizoto')}" alt="Ukážka denného menu" loading="lazy" width="800" height="600"></div>
         </div>
       </div>
 

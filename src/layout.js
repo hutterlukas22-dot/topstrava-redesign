@@ -172,11 +172,11 @@ const icon = {
    plays. Missing file => the poster shows and the slider advances on a timer.
    Replace `title` with the real caption of each post. */
 const reels = [
-  { file: 'reel-1.mp4', poster: 'blog4.webp', title: 'Takto vyzerá týždeň krabičiek', tag: 'Jedálniček' },
-  { file: 'reel-2.mp4', poster: 'meal6.webp', title: 'Ráno v kuchyni: príprava 5 chodov', tag: 'Zo zákulisia' },
-  { file: 'reel-3.mp4', poster: 'meal7.webp', title: 'Šokové schladenie a vákuové balenie', tag: 'Čerstvosť 72 h' },
-  { file: 'reel-4.mp4', poster: 'blog1.webp', title: 'Rozvoz až k dverám, deň vopred', tag: 'Rozvoz' },
-  { file: 'reel-5.mp4', poster: 'meal9.webp', title: 'Čo dostanete v jednom dni', tag: 'Unboxing' }
+  { file: 'reel-1.mp4', poster: 'real-foto/flatlay-zhora', title: 'Takto vyzerá týždeň krabičiek', tag: 'Jedálniček' },
+  { file: 'reel-2.mp4', poster: 'real-foto/kuchyna-tim', title: 'Ráno v kuchyni: príprava 5 chodov', tag: 'Zo zákulisia' },
+  { file: 'reel-3.mp4', poster: 'real-foto/kuchyna-vydaj', title: 'Šokové schladenie a vákuové balenie', tag: 'Čerstvosť 72 h' },
+  { file: 'reel-4.mp4', poster: 'real-foto/kuchyna-dezerty', title: 'Rozvoz až k dverám, deň vopred', tag: 'Rozvoz' },
+  { file: 'reel-5.mp4', poster: 'real-foto/ranajkovy-box', title: 'Čo dostanete v jednom dni', tag: 'Unboxing' }
 ];
 
 /* The nine programs — names, calories and prices as published on the live site.
@@ -242,18 +242,17 @@ const maxNutrition = {
   ],
   /* delivery runs three times a week instead of the five-day box cycle */
   days: ['Nedeľa', 'Utorok', 'Štvrtok'],
-  /* Named dishes only — no photos. Every meal1..meal9 asset has a calorie
-     figure burned into the artwork ("2000 kcal"), which belongs to a box
-     program and would be plain wrong beside a MAX NUTRITION dish. These are
-     listed as text until real per-dish photography exists. */
+  /* Real kitchen photography now, from assets/img/real-foto/. The meal1..meal9
+     renders could never be used here — each has a calorie figure burned into
+     the artwork ("2000 kcal") belonging to a box program. */
   meals: [
     'Kurací steak s kurkumovou ryžou a grilovaným ananásom',
     'Turkey meatballs, paradajková omáčka s opekaným zemiakom',
     'Teriyaki rezančeky z roštenky s brokolicou a ryžou',
     'Beef bolognese rice pasta'
   ],
-  /* clean, kcal-free photography for the hero and teaser */
-  photoHero: 'blog1',
+  /* real kitchen photography for the hero and teaser */
+  photoHero: 'real-foto/kura-paprikova-ryza',
   photoWide: 'hero-funguje',
   photoTeaser: 'band-menu'
 };
@@ -293,8 +292,7 @@ const maxCourses = [
         slug: 'kuraci-steak-kurkumova-ryza',
         name: 'Kurací steak s kurkumovou ryžou a grilovaným ananásom',
         desc: 'Grilovaný kurací steak, kurkumová ryža a grilovaný ananás.',
-        /* the one dish we hold a truthful photograph of */
-        photo: 'blog1',
+        photo: 'real-foto/kura-kurkumove-rizoto',
         zlozenie: 'kuracie prsia, ryža, kurkuma, ananás, olivový olej, korenie',
         alergeny: [],
         nutri: { M: [390, 34, 38, 9], L: [520, 45, 51, 12], XL: [690, 60, 68, 16] }
@@ -303,6 +301,7 @@ const maxCourses = [
         slug: 'turkey-meatballs',
         name: 'Turkey meatballs, paradajková omáčka s opekaným zemiakom',
         desc: 'Morčacie guľky v paradajkovej omáčke s opekaným zemiakom.',
+        photo: 'real-foto/kura-smotanova-kuskus',
         zlozenie: 'morčacie mäso, paradajky, zemiaky, cibuľa, cesnak, bylinky',
         alergeny: ['1', '3'],
         nutri: { M: [410, 32, 40, 11], L: [545, 43, 53, 15], XL: [720, 57, 70, 20] }
@@ -311,6 +310,7 @@ const maxCourses = [
         slug: 'teriyaki-rezancky',
         name: 'Teriyaki rezančeky z roštenky s brokolicou a ryžou',
         desc: 'Hovädzia roštenka v teriyaki omáčke s brokolicou a ryžou.',
+        photo: 'real-foto/kura-ryzove-rezance',
         zlozenie: 'hovädzia roštenka, brokolica, ryža, teriyaki omáčka, sezam',
         alergeny: ['1', '6', '11'],
         nutri: { M: [430, 36, 41, 12], L: [575, 48, 55, 16], XL: [760, 63, 73, 21] }
@@ -319,6 +319,7 @@ const maxCourses = [
         slug: 'beef-bolognese-rice-pasta',
         name: 'Beef bolognese rice pasta',
         desc: 'Hovädzie ragú s ryžovými cestovinami.',
+        photo: 'real-foto/mlete-hovadzie',
         zlozenie: 'hovädzie mäso, ryžové cestoviny, paradajky, mrkva, zeler, bylinky',
         alergeny: ['9'],
         nutri: { M: [400, 33, 42, 10], L: [535, 44, 56, 13], XL: [705, 58, 74, 18] }
@@ -509,7 +510,7 @@ ${payMethods.map(m => {
 /* Reusable sections shared by several pages. */
 function bandDelivery() {
   return `  <section class="band" id="rozvoz">
-    <div class="band__bg"><img src="${img('band-food')}" alt="" aria-hidden="true"></div>
+    <div class="band__bg"><img src="${img('real-foto/flatlay-siroky')}" alt="" aria-hidden="true"></div>
     <div class="container band__inner on-dark">
       <p class="label" style="color:var(--gold)">Rozvoz</p>
       <h2>Chcete vedieť, kam rozvážame naše krabičky?</h2>
