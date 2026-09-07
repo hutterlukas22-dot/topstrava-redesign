@@ -127,7 +127,7 @@
         <form novalidate>
           <div class="notice" style="margin-bottom:30px">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 1.8"/></svg>
-            <span>Objednávku je potrebné dokončiť <strong>najneskôr do stredy 22:00</strong>, aby sme stihli uvariť na nasledujúci týždeň.</span>
+            <span>Objednávka platí vždy minimálne na <strong>jeden týždeň</strong>, teda 5 pracovných dní nasledujúceho týždňa.</span>
           </div>
 
           <h2 style="margin-bottom:20px">Kontaktné údaje</h2>
@@ -193,7 +193,7 @@
             </div>
           </div>
           <div class="field">
-            <label for="note">Poznámka pre kuriéra</label>
+            <label for="note">Poznámka k objednávke</label>
             <textarea class="textarea" id="note" name="note" rows="3" placeholder="Poschodie, zvonček, kam nechať balíček…"></textarea>
           </div>
 
@@ -213,10 +213,6 @@
           <div class="stack" style="gap:12px;margin-bottom:26px">
             <label class="check"><input type="checkbox" name="lactofree"><span>Bez laktózy <strong>(+1,50 € / deň)</strong></span></label>
             <label class="check"><input type="checkbox" name="vege"><span>Vegetariánska verzia (bez príplatku)</span></label>
-          </div>
-          <div class="field">
-            <label for="allergy">Alergie alebo potraviny, ktoré nejete</label>
-            <textarea class="textarea" id="allergy" name="allergy" rows="3" placeholder="Napríklad: bez húb, bez rýb…"></textarea>
           </div>
 
           <div class="stack" style="gap:12px;margin:26px 0">

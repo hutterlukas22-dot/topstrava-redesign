@@ -35,7 +35,7 @@ ${L.reelsSlider()}
       <div class="section-head">
         <p class="label label--gold">Ako to funguje</p>
         <h2>Objednajte si TOP stravu už dnes</h2>
-        <p>Päť krokov od výberu programu po jedlo v chladničke. Objednávku je potrebné urobiť najneskôr do stredy 22:00.</p>
+        <p>Päť krokov od výberu programu po jedlo v chladničke.</p>
       </div>
       <div class="grid grid--4">
         <div class="card card--tint">
@@ -57,7 +57,7 @@ ${L.reelsSlider()}
           <div class="card__body">
             <span class="card__step">3</span>
             <h3 class="card__title">Kuchári pripravia jedlá</h3>
-            <p class="card__text">V nedeľu pripravíme jedlá na celý týždeň. Šokové schladenie predlžuje čerstvosť na 72 hodín.</p>
+            <p class="card__text">Jedlá pripravujeme čerstvo v našej kuchyni. Šokové schladenie predlžuje čerstvosť na 72 hodín.</p>
           </div>
         </div>
         <div class="card card--tint">
@@ -368,7 +368,7 @@ const checkout = {
         <form novalidate>
           <div class="notice" style="margin-bottom:30px">
             ${icon.clock}
-            <span>Objednávku je potrebné dokončiť <strong>najneskôr do stredy 22:00</strong>, aby sme stihli uvariť na nasledujúci týždeň.</span>
+            <span>Objednávka platí vždy minimálne na <strong>jeden týždeň</strong>, teda 5 pracovných dní nasledujúceho týždňa.</span>
           </div>
 
           <h2 style="margin-bottom:20px">Kontaktné údaje</h2>
@@ -422,7 +422,7 @@ ${deliveryCities.map(c => `              <option>${c}</option>`).join('\n')}
             </div>
           </div>
           <div class="field">
-            <label for="note">Poznámka pre kuriéra</label>
+            <label for="note">Poznámka k objednávke</label>
             <textarea class="textarea" id="note" name="note" rows="3" placeholder="Poschodie, zvonček, kam nechať balíček…"></textarea>
           </div>
 
@@ -442,10 +442,6 @@ ${deliveryCities.map(c => `              <option>${c}</option>`).join('\n')}
           <div class="stack" style="gap:12px;margin-bottom:26px">
             <label class="check"><input type="checkbox" name="lactofree"><span>Bez laktózy <strong>(+1,50 € / deň)</strong></span></label>
             <label class="check"><input type="checkbox" name="vege"><span>Vegetariánska verzia (bez príplatku)</span></label>
-          </div>
-          <div class="field">
-            <label for="allergy">Alergie alebo potraviny, ktoré nejete</label>
-            <textarea class="textarea" id="allergy" name="allergy" rows="3" placeholder="Napríklad: bez húb, bez rýb…"></textarea>
           </div>
 
           <div class="stack" style="gap:12px;margin:26px 0">

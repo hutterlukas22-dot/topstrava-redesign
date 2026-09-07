@@ -183,7 +183,7 @@ ${restrictionChips()}
           </div>
           <span class="sum__save" data-bind="save" hidden></span>
           <a class="btn btn--primary btn--block" href="dokoncenie-objednavky.html">Objednať program</a>
-          <p class="sum__note">Objednávku je potrebné dokončiť do stredy 22:00. Stravu možno pozastaviť 48 hodín vopred.</p>
+          <p class="sum__note">Stravu možno pozastaviť 48 hodín vopred.</p>
         </aside>
       </div>
     </div>

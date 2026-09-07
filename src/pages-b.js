@@ -26,7 +26,7 @@ const akoFunguje = {
       <h2 class="sr-only">Priebeh objednávky</h2>
       <div class="notice" style="margin-bottom:40px;max-width:70ch">
         ${icon.clock}
-        <span>Objednávku je potrebné urobiť <strong>najneskôr do stredy 22:00</strong>. Našu TOP stravu je možné objednať vždy minimálne na jeden týždeň, teda 5 pracovných dní nasledujúceho týždňa.</span>
+        <span>Našu TOP stravu je možné objednať vždy minimálne na jeden týždeň, teda 5 pracovných dní nasledujúceho týždňa.</span>
       </div>
 
       <div class="grid grid--3">
@@ -41,7 +41,7 @@ const akoFunguje = {
           <div class="card__body">
             <span class="card__step">2</span>
             <h3 class="card__title">Príprava jedál</h3>
-            <p class="card__text">V nedeľu sú všetky jedlá na nasledujúci týždeň pripravené v našej kuchyni. Jedlá sú šokovo schladzované, čo predlžuje ich čerstvosť až na 72 hodín.</p>
+            <p class="card__text">Jedlá pripravujeme čerstvo v našej kuchyni. Sú šokovo schladzované, čo predlžuje ich čerstvosť až na 72 hodín.</p>
           </div>
         </div>
         <div class="card card--tint">
