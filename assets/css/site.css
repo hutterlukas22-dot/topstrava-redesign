@@ -1504,16 +1504,24 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
   right:max(var(--container-pad), calc((100% - var(--container)) / 2 + var(--container-pad)));
   display:flex;flex-direction:column;align-items:stretch;gap:10px;
 }
+/* The pill carries its own dark ground rather than a white wash. It used to
+   lighten what was behind it, which worked while the scrim kept the whole
+   hero dark — but the scrim now opens up on exactly this side, so the chips
+   land on lit food and a white wash pushed them towards white-on-white. At
+   .70 the pill survives the worst case (a pure white frame under it): the
+   14px bold line reads 8.4:1 and the 12px .75-alpha sub-line 4.8:1. */
 .hero__chip{
   display:flex;align-items:center;gap:11px;
   padding:10px 15px;border-radius:var(--r-btn);
-  background:rgba(255,255,255,.13);
+  background:rgba(18,18,18,.70);
   border:1px solid rgba(255,255,255,.28);
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   color:#fff;text-decoration:none;
   transition:background-color var(--dur) ease,border-color var(--dur) ease;
 }
-.hero__chip:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.5);}
+/* hover goes more solid, not lighter — on a dark pill that is what reads as
+   "active", and lightening it would give back the contrast just bought */
+.hero__chip:hover{background:rgba(18,18,18,.84);border-color:rgba(255,255,255,.5);}
 .hero__chip > svg:first-child{width:22px;height:22px;flex:none;}
 /* the arrow is always the last child and always the small one */
 .hero__chip > svg:last-child{

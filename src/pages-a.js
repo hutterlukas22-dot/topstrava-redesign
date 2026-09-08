@@ -14,7 +14,7 @@ const home = {
      still exported, so the reels can be dropped into a section further down
      if the Instagram content is wanted back. */
   body: `  <section class="hero hero--video">
-${L.videoBg('video_hero', 'real-foto/kuchyna-vydaj')}
+${L.videoBg('video_hero2', 'real-foto/kuchyna-vydaj')}
     <div class="container hero__grid on-dark">
       <div>
         <p class="label">Pravidelne · Zdravo · Chutne</p>
