@@ -50,6 +50,8 @@ ${L.videoBg('video_hero', 'real-foto/kuchyna-vydaj')}
     </div>
   </section>
 
+${L.sectionGallery()}
+
   <section class="section section--tint">
     <div class="container">
       <div class="section-head">

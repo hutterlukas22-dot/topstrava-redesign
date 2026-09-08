@@ -445,7 +445,7 @@ function header(active) {
                       <span class="nav__promo-go" aria-hidden="true">${icon.arrow}</span>
                     </a>
                   </li>
-${programs.map(p => `                  <li><a href="program.html?program=${p.slug}">${p.name}<span>${p.kcal} kcal · ${p.meals} jedál</span></a></li>`).join('\n')}
+${programs.map(p => `                  <li><a href="program.html?program=${p.slug}" style="--g1:${p.g1};--g2:${p.g2}">${p.name}<span>${p.kcal} kcal · ${p.meals} jedál</span></a></li>`).join('\n')}
                 </ul>
               </div>
               <div class="nav__aside">
@@ -605,6 +605,34 @@ ${list.map(p => programCard(p)).join('\n')}
         <a class="btn btn--secondary" href="programy.html">Zobraziť všetkých 9 programov</a>
       </div>` : ''}
     </div>
+  </section>`;
+}
+
+/* Full-bleed strip of real kitchen photography, sitting straight under the
+   hero. The client asked for a site carrying more pictures of the actual food;
+   this is the cheapest place to put a lot of them without pushing the page
+   structure around. Scrolls horizontally rather than stacking, so it costs one
+   band of height no matter how many photos go in. */
+const galleryShots = [
+  { img: 'real-foto/kura-kurkumove-rizoto', alt: 'Kurací steak s kurkumovou ryžou' },
+  { img: 'real-foto/hovadzie-brusnice', alt: 'Hovädzie na smotane s brusnicami' },
+  { img: 'real-foto/kura-cviklove-rizoto', alt: 'Kuracie prsia s cviklovým rizotom' },
+  { img: 'real-foto/krevety-hraskove-pyre', alt: 'Krevety s hráškovým pyré' },
+  { img: 'real-foto/kuracie-stehno-kapusta', alt: 'Pečené kuracie stehno s červenou kapustou' },
+  { img: 'real-foto/ranajkovy-box', alt: 'Raňajkový box so šunkou a vajcom' },
+  { img: 'real-foto/hovadzie-kuskus-fazulky', alt: 'Hovädzie s kuskusom a fazuľkami' },
+  { img: 'real-foto/kura-slanina-fazulky', alt: 'Kuracie so slaninovými fazuľkami' },
+  { img: 'real-foto/makovnik-visne', alt: 'Makovník s višňami' },
+  { img: 'real-foto/kuchyna-vydaj', alt: 'Výdaj krabičiek v našej kuchyni' },
+  { img: 'real-foto/knedlicky-jahody', alt: 'Tvarohové knedličky s jahodovou omáčkou' },
+  { img: 'real-foto/kura-ryzove-rezance', alt: 'Kuracie s ryžovými rezancami' }
+];
+
+function sectionGallery() {
+  return `  <section class="gallery" aria-label="Galéria jedál">
+    <ul class="gallery__strip">
+${galleryShots.map(s => `      <li><img src="${img(s.img)}" alt="${s.alt}" loading="lazy" width="600" height="450"></li>`).join('\n')}
+    </ul>
   </section>`;
 }
 
@@ -806,7 +834,7 @@ function programCard(p) {
            style="--g1:${p.g1};--g2:${p.g2}">
           <span class="pcard__plate" aria-hidden="true"><span class="pcard__wm">${wm}</span></span>
           <div class="pcard__art">
-            <img class="pcard__figure" src="${img('programy_karty/' + p.figure)}" alt="" aria-hidden="true" loading="lazy">
+            <img class="pcard__figure${p.figure === 'zena+muz' ? ' pcard__figure--pair' : ''}" src="${img('programy_karty/' + p.figure)}" alt="" aria-hidden="true" loading="lazy">
             <img class="pcard__food" src="${img('programy_karty/' + p.art)}" alt="${p.name} — ukážka jedál" loading="lazy">
             <p class="pcard__meals"><b>${p.meals} ×</b><span class="pcard__boxes">${boxes}</span></p>
             <p class="pcard__kcal">${p.kcal} kcal</p>
@@ -914,6 +942,6 @@ module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels, maxNutrition,
   maxCourses, maxMeals, MAX_SIZES,
   page, bandDelivery, sectionPrograms, programCard, reelsSlider,
-  sectionMaxNutrition, sectionReviews, googleReviews, sectionPickupMap,
+  sectionMaxNutrition, sectionReviews, googleReviews, sectionPickupMap, sectionGallery,
   img, imageWarnings, imageIndex, newsletter, payMethods, videoBg
 };

@@ -1203,6 +1203,12 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
   position:absolute;top:-8cqw;left:50%;translate:-50% 0;
   height:42cqw;width:auto;pointer-events:none;
 }
+/* The pair's woman is drawn at coordinates identical to woman.svg, on a taller
+   artboard (217 units vs her 153) whose extra length is body meant to vanish
+   behind the food. Matching apparent size therefore means matching PIXELS PER
+   UNIT, not overall height: 42 x 217/153. Anchoring to the previous pair
+   artboard (161) instead left the heads about 5% small. */
+.pcard__figure--pair{height:59.5cqw;}
 /* Boxed on all four sides with object-fit rather than sized by width alone.
    The source cut-outs do not share an aspect ratio (some are 16:9, some
    1.55:1), so a percentage width let the taller ones run down over the
@@ -1621,4 +1627,42 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
    full-width sheet. */
 @media(max-width:720px){
   .pinpop,.pinpop.is-below{transform:none;}
+}
+
+/* ---------- 26. GALLERY STRIP ----------
+   Full-bleed band of food photography under the hero. Scrolls sideways instead
+   of wrapping, so adding photos costs length in the strip, never height on the
+   page. Snap points make the drag land cleanly; on a trackpad or touch it is
+   an ordinary horizontal scroll, so no JS is involved. */
+.gallery{background:var(--ink);padding:0;}
+.gallery__strip{
+  display:flex;gap:4px;list-style:none;margin:0;padding:0;
+  overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x proximity;
+  /* the scrollbar would cut across the photos on a dark band */
+  scrollbar-width:none;
+}
+.gallery__strip::-webkit-scrollbar{display:none;}
+.gallery__strip li{flex:none;scroll-snap-align:start;}
+.gallery__strip img{
+  display:block;width:clamp(190px,22vw,300px);height:clamp(150px,17vw,225px);
+  object-fit:cover;
+  transition:transform 400ms var(--ease),filter 400ms ease;
+}
+/* a touch of restraint at rest so the band reads as one texture, full colour
+   on hover so a photo can still be looked at */
+.gallery__strip img{filter:saturate(.92);}
+.gallery__strip li:hover img{transform:scale(1.04);filter:saturate(1.06);}
+@media(prefers-reduced-motion:reduce){
+  .gallery__strip{scroll-snap-type:none;}
+  .gallery__strip li:hover img{transform:none;}
+}
+
+/* ---------- 27. PROGRAM COLOUR IN THE MEGA MENU ----------
+   The nine tiles in the Krabičky panel are the same list as the nine cards, so
+   they carry the same colour key — an inset bar rather than a tint, because a
+   filled tile would fight the promo slot above it and drop the label's
+   contrast on the paler programs. */
+.nav__progs li:not(.nav__promo) a{
+  box-shadow:inset 3px 0 0 var(--g1, transparent);
 }
