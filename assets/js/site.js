@@ -557,3 +557,115 @@
     btn.style.removeProperty('--shine-y');
   }, { passive: true });
 })();
+
+/* ---------------------------------------------------------------------------
+   Parallax produce
+
+   Drifts the decorative cut-outs against the page while scrolling. A piece is
+   pinned at its authored position when it passes the middle of the viewport
+   and slides by (distance from that middle x speed) either side.
+
+   The sign of data-parallax is the depth, and it is worth being precise about
+   it. Scrolling by D moves a piece down the document by D x speed, so on
+   screen it travels D x (1 - speed):
+
+     speed > 0   slower than the page   sits behind   — the blurred pieces
+     speed = 0   moves with the page
+     speed < 0   faster than the page   sits in front — the sharp pieces
+
+   Which is why the sharp cut-outs carry negative values. Simply giving them a
+   smaller positive one would only make them approach the page's own speed; it
+   could never put them in front of it.
+
+   The scroll handler does no layout reads at all: every position is measured
+   once up front and again after a resize, and the frame only writes a
+   transform. Writing translate3d rather than top keeps each piece on its own
+   compositor layer, so a drift never costs a reflow.
+   --------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+
+  var els = [].slice.call(document.querySelectorAll('[data-parallax]'));
+  if (!els.length) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var items = [], ticking = false, vh = 0;
+
+  function measure() {
+    vh = window.innerHeight;
+    items = [];
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      /* read the untransformed position, or every resize would compound the
+         offset left over from the previous one */
+      el.style.transform = '';
+      var r = el.getBoundingClientRect();
+      /* the breakpoints hide the whole layer below 900px — a hidden element
+         measures as a zero-height box at the top of the document, which would
+         otherwise get a huge transform and pop into view on the next resize */
+      if (!r.height) continue;
+      var speed = parseFloat(el.getAttribute('data-parallax')) || .12;
+      items.push({
+        el: el,
+        centre: r.top + window.pageYOffset + r.height / 2,
+        speed: speed,
+        /* The offset grows with distance from the middle of the viewport, so
+           a piece far up the page would otherwise accumulate a drift of a
+           thousand pixels and hang over a section it has nothing to do with
+           — and it would win, because a positioned child of an earlier
+           section paints above a later section's background. Capping at the
+           offset the piece has when it is just leaving the viewport changes
+           nothing anyone can see and keeps every piece inside its own
+           section. */
+        cap: (vh + r.height) / 2 * Math.abs(speed),
+        last: null
+      });
+    }
+    apply();
+  }
+
+  function apply() {
+    ticking = false;
+    var mid = window.pageYOffset + vh / 2;
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      var y = (mid - it.centre) * it.speed;
+      if (y > it.cap) y = it.cap; else if (y < -it.cap) y = -it.cap;
+      y = Math.round(y);
+      /* most frames move most pieces by zero or one pixel; skipping the
+         unchanged ones keeps the style writes down */
+      if (y === it.last) continue;
+      it.last = y;
+      it.el.style.transform = 'translate3d(0,' + y + 'px,0)';
+    }
+  }
+
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(apply);
+  }, { passive: true });
+
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(measure, 150);
+  });
+
+  /* The width/height attributes give each piece its box before the lazy
+     bytes arrive, so the first measure is already correct. This is the belt
+     and braces: a decoding image can still nudge the section it sits in, and
+     re-measuring costs one reflow per piece, once. */
+  els.forEach(function (el) {
+    if (el.complete) return;
+    el.addEventListener('load', function () {
+      clearTimeout(rt);
+      rt = setTimeout(measure, 150);
+    }, { once: true });
+  });
+
+  /* Positions depend on the section heights, which are not final until the
+     images above have laid out. */
+  if (document.readyState === 'complete') measure();
+  else window.addEventListener('load', measure);
+})();

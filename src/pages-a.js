@@ -52,7 +52,11 @@ ${L.videoBg('video_hero2', 'real-foto/kuchyna-vydaj')}
 
 ${L.sectionGallery()}
 
-  <section class="section section--tint">
+  <section class="section section--tint has-decor">
+${L.decor([
+  { src: 'zelenina-velka', w: 230, side: 'left',  nudge: '-40px', top: '2%',  speed: -.10 },
+  { src: 'bobule-velke',   w: 340, side: 'right', nudge: '-30px', top: '6%',  speed: .06 }
+])}
     <div class="container">
       <div class="section-head">
         <p class="label label--gold">Ako to funguje</p>
@@ -94,11 +98,31 @@ ${L.sectionGallery()}
     </div>
   </section>
 
-${L.sectionPrograms(6)}
+${L.sectionPrograms(6, [
+  /* sits astride the seam with MAX NUTRITION, half on the cream and half on
+     the dark band — the crossing is the effect, not a side effect */
+  { src: 'bobule-male',        w: 240, side: 'left',  nudge: '-30px', top: '84%', speed: .16 },
+  /* the softest piece on the page, so the slowest and furthest back; it
+     carries on over the dark MAX NUTRITION band that follows */
+  { src: 'chilli-rozostrene',  w: 330, side: 'right', nudge: '-35px', top: '56%', speed: .24 }
+])}
 
 ${L.sectionMaxNutrition()}
 
-  <section class="section section--tint" id="oblasti">
+  <section class="section section--tint has-decor" id="oblasti">
+${L.decor([
+  /* reaches up onto the dark band above, as in the mockup */
+  { src: 'kopr-maly',      w: 140, side: 'right', nudge: '-15px', top: '-6%', speed: .04 },
+  { src: 'zelenina-velka', w: 250, side: 'right', nudge: '-45px',  top: '2%',  speed: -.10, flip: true },
+  /* The one piece inside the text column, in the empty right half of the
+     section head. 53%: the longest of the three head lines reaches 47% at
+     every width the layer is shown at, so this clears it and still reads as
+     part of that line rather than as a stray object. */
+  { src: 'kopr-velky',     w: 140, free: true,     x: '53%',   top: '1%',  speed: -.12 },
+  /* the crispest cut-out of the set: frontmost, fastest, and it carries on
+     down past the seam into the reviews */
+  { src: 'chilli-ostre',   w: 220, side: 'left',  nudge: '-30px', top: '60%', speed: -.16 }
+])}
     <div class="container">
       <div class="section-head">
         <p class="label label--gold">Kam doručujeme</p>
@@ -136,7 +160,12 @@ ${L.sectionReviews()}
 
 ${L.bandDelivery()}
 
-  <section class="section" id="blog">
+  <section class="section has-decor" id="blog">
+${L.decor([
+  { src: 'kopr-velky',  w: 220, side: 'right', nudge: '-15px', top: '10%', speed: -.12 },
+  /* crosses down onto the gold newsletter band */
+  { src: 'bobule-male', w: 250, side: 'left',  nudge: '-35px', top: '72%', speed: .18 }
+])}
     <div class="container">
       <div class="section-head">
         <p class="label label--gold">Blog</p>

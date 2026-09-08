@@ -71,10 +71,19 @@ const imageIndex = (() => {
         if (prev.rank <= rank) continue;
       }
       const buf = fs.readFileSync(path.join(dir, entry.name));
+      /* PNG intrinsic size, straight out of the IHDR the hash already read.
+         Only decor() needs it so far, to write width/height attributes on
+         lazy images — without them the box has no height until the bytes
+         arrive, and anything measuring the page before that sees zero. */
+      const png = ext === '.png' && buf.length > 24 && buf.readUInt32BE(0) === 0x89504E47
+        ? { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) }
+        : null;
       map.set(key, {
         file: rel,
         rank,
-        hash: crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8)
+        hash: crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8),
+        w: png && png.w,
+        h: png && png.h
       });
     }
   };
@@ -589,10 +598,41 @@ function bandDelivery() {
   </section>`;
 }
 
-function sectionPrograms(limit) {
+/* Decorative produce floating at the edges of a section — the "decentné
+   potraviny a ingrediencie" from the client's point 10.
+
+   Every item is one absolutely positioned cut-out. It hangs off the inner
+   edge of the text column on the side `side` names, so it can never reach
+   across the copy whatever the window is doing; `nudge` shifts it further
+   out. `top` is a percentage of the host section's height and may fall
+   outside 0–100%, which is how the composition carries produce over a
+   section seam. `speed` is the depth — positive drifts behind the page,
+   negative in front, see the module in site.js. `flip` mirrors a piece so it
+   leans inward, and `free` opts out of the column anchoring for the one
+   sprig that belongs inside the column.
+
+   The pieces carry no meaning, so they are aria-hidden with an empty alt and
+   never take a click. */
+function decor(items) {
+  return `      <div class="decor" aria-hidden="true">
+${items.map(d => {
+    const meta = imageIndex.get('prvky_paralax/' + d.src) || {};
+    /* the attributes give the box its aspect ratio before the lazy bytes
+       land; CSS still sets the real width */
+    const dim = meta.w ? ` width="${meta.w}" height="${meta.h}"` : '';
+    const cls = [d.side === 'right' ? 'is-right' : '', d.free ? 'is-free' : '', d.flip ? 'is-flip' : '']
+      .filter(Boolean).join(' ');
+    const pos = d.free ? `--x:${d.x}` : `--nudge:${d.nudge || '0px'}`;
+    return `        <img${cls ? ` class="${cls}"` : ''} src="${img('prvky_paralax/' + d.src)}" alt=""${dim} loading="lazy" data-parallax="${d.speed}"
+             style="--w:${d.w}px;${pos};--top:${d.top}${d.op ? `;--op:${d.op}` : ''}">`;
+  }).join('\n')}
+      </div>`;
+}
+
+function sectionPrograms(limit, decorItems) {
   const list = limit ? programs.slice(0, limit) : programs;
-  return `  <section class="section">
-    <div class="container">
+  return `  <section class="section${decorItems ? ' has-decor' : ''}">
+${decorItems ? decor(decorItems) + '\n' : ''}    <div class="container">
       <div class="section-head">
         <p class="label label--gold">Krabičky podľa vášho gusta</p>
         <h2>Vyberte si svoj obľúbený program</h2>
@@ -941,7 +981,7 @@ ${reels.map((r, i) => `            <article class="reel${i === 0 ? ' is-active' 
 module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels, maxNutrition,
   maxCourses, maxMeals, MAX_SIZES,
-  page, bandDelivery, sectionPrograms, programCard, reelsSlider,
+  page, bandDelivery, sectionPrograms, programCard, reelsSlider, decor,
   sectionMaxNutrition, sectionReviews, googleReviews, sectionPickupMap, sectionGallery,
   img, imageWarnings, imageIndex, newsletter, payMethods, videoBg
 };
