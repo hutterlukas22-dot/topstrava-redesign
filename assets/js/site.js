@@ -507,3 +507,53 @@
     if (e.key === 'Escape') close(true);
   });
 })();
+
+/* ---------------------------------------------------------------------------
+   Shine on the gold buttons
+
+   Feeds the pointer's position into --shine-x / --shine-y so the specular
+   spot in .btn--primary::after tracks the cursor. Everything visual lives in
+   the stylesheet; this only supplies two numbers.
+
+   Delegated from the document rather than bound per button: the mega menu and
+   the program pages mount .btn--primary elements after load, and a delegated
+   listener picks those up for free. pointermove fires a lot, so the handler
+   stays cheap — one closest() and, only over a gold button, one rect read —
+   and the write is batched into a rAF so a burst of moves inside one frame
+   costs a single style change.
+   --------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+
+  /* A spot chasing the cursor is motion, and there is nothing to chase on a
+     touch screen — both cases fall back to the centred glow the CSS defaults
+     already give, so there is no work to do here at all. */
+  if (!window.matchMedia) return;
+  if (!matchMedia('(hover: hover)').matches) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var pending = null;
+
+  document.addEventListener('pointermove', function (e) {
+    var btn = e.target.closest && e.target.closest('.btn--primary');
+    if (!btn) return;
+    var r = btn.getBoundingClientRect();
+    var x = e.clientX - r.left;
+    var y = e.clientY - r.top;
+    if (pending) cancelAnimationFrame(pending);
+    pending = requestAnimationFrame(function () {
+      pending = null;
+      btn.style.setProperty('--shine-x', x + 'px');
+      btn.style.setProperty('--shine-y', y + 'px');
+    });
+  }, { passive: true });
+
+  /* Leaving clears the inline values so the next hover starts from the
+     centre instead of resuming wherever the pointer left off. */
+  document.addEventListener('pointerout', function (e) {
+    var btn = e.target.closest && e.target.closest('.btn--primary');
+    if (!btn || (e.relatedTarget && btn.contains(e.relatedTarget))) return;
+    btn.style.removeProperty('--shine-x');
+    btn.style.removeProperty('--shine-y');
+  }, { passive: true });
+})();

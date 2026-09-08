@@ -189,9 +189,39 @@ p:last-child{margin-bottom:0;}
 }
 .btn svg{width:17px;height:17px;flex:none;}
 .btn:active{transform:translateY(1px);}
-/* tier 1 — one per screen */
-.btn--primary{background:var(--gold);border-color:var(--gold);color:var(--ink);}
+/* tier 1 — one per screen.
+
+   Hover lights the gold up: the base darkens to gold-600 and a warm specular
+   spot follows the pointer across the face, so the button reads as polished
+   metal catching a light rather than as a flat colour swap. site.js feeds the
+   pointer position in as --shine-x / --shine-y; with no JS, no pointer, or
+   reduced motion the custom properties keep their 50% defaults and the spot
+   simply fades in centred, which still looks deliberate.
+
+   The glow is a ::after at z-index:-1. Within the button's own stacking
+   context that paints ABOVE the element's background but BELOW its inline
+   content, which is the only way to get a layer between the gold and the
+   label here — the label is a bare text node, so it cannot be lifted with a
+   selector of its own. Hence the explicit z-index:0: without a stacking
+   context the -1 layer would escape and paint behind the button entirely.
+
+   No contrast risk: every step of this only lightens the ground under dark
+   ink text, so #121212 on gold can only improve on its resting 8.6:1. */
+.btn--primary{
+  position:relative;z-index:0;overflow:hidden;
+  background:var(--gold);border-color:var(--gold);color:var(--ink);
+}
+.btn--primary::after{
+  content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;
+  background:radial-gradient(circle 130px at var(--shine-x,50%) var(--shine-y,50%),
+    rgba(255,255,255,.78) 0%,
+    rgba(255,240,205,.40) 34%,
+    rgba(255,255,255,0) 68%);
+  opacity:0;transition:opacity 220ms ease;
+}
 .btn--primary:hover{background:var(--gold-600);border-color:var(--gold-600);}
+.btn--primary:hover::after,
+.btn--primary:focus-visible::after{opacity:1;}
 /* tier 2 */
 .btn--secondary{border-color:var(--ink);color:var(--ink);}
 .btn--secondary:hover{background:var(--ink);color:#fff;}
@@ -280,13 +310,52 @@ p:last-child{margin-bottom:0;}
   /* containing block for the mega menu, so it stays inside the container */
   position:relative;
 }
-.masthead__logo{flex:none;display:block;}
+.masthead__logo{flex:none;display:block;position:relative;}
 /* The logo artwork is gold + white on a transparent ground — it is drawn FOR
    dark backgrounds. No white plate behind it: on white the gold loses contrast
    and the white parts of the mark vanish completely. */
 .masthead__logo img{
   width:177px;height:auto;
   transition:width var(--dur) ease;
+}
+
+/* A glint crossing the mark every few seconds, the same idea as the gold
+   button but running on its own instead of on hover.
+
+   The band has to be masked by the logo itself. The artwork is mostly
+   transparent, so an unmasked sweep would drag a lit rectangle across the
+   dark bar — the light has to land on the letterforms and nowhere else,
+   which is what mask-image with the same PNG buys. That does hardcode the
+   asset path here; it is the one place in the stylesheet that has to agree
+   with what layout.js puts in the <img>, so the two move together.
+
+   Geometry: the gradient is 3× the box, with the bright band at its middle.
+   background-position 100% parks that band just off the left edge and 0%
+   just off the right, so one sweep is 100% -> 0% and the jump back at the
+   end of the cycle happens while the band is out of sight. */
+.masthead__logo::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(100deg,
+    transparent 42%,
+    rgba(255,255,255,.9) 50%,
+    transparent 58%);
+  background-size:300% 100%;background-repeat:no-repeat;
+  -webkit-mask-image:url(../img/logo.png);mask-image:url(../img/logo.png);
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  animation:logo-shine 3s ease-in-out infinite;
+}
+@keyframes logo-shine{
+  0%{background-position:100% 0;}
+  /* the sweep itself takes ~0.8s, the rest of the 3s is the pause */
+  27%{background-position:0 0;}
+  100%{background-position:0 0;}
+}
+/* An endless loop in the corner of every page is exactly what this setting
+   is meant to stop. */
+@media(prefers-reduced-motion:reduce){
+  .masthead__logo::after{display:none;}
 }
 .nav{margin-right:auto;}
 /* 18, not 26: the 50%-larger logo takes 59px more of a bar whose container
