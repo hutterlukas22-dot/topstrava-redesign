@@ -66,8 +66,10 @@
   --container-pad:clamp(20px, 4vw, 40px);
   --measure:68ch;
   --topbar-h:38px;
-  --header-h:72px;
-  --header-h-stuck:60px;
+  /* grown with the logo: a 70px mark needs more than a 72px bar or it
+     touches both edges */
+  --header-h:86px;
+  --header-h-stuck:72px;
 
   /* motion */
   --dur:200ms;
@@ -283,17 +285,20 @@ p:last-child{margin-bottom:0;}
    dark backgrounds. No white plate behind it: on white the gold loses contrast
    and the white parts of the mark vanish completely. */
 .masthead__logo img{
-  width:118px;height:auto;
+  width:177px;height:auto;
   transition:width var(--dur) ease;
 }
 .nav{margin-right:auto;}
-.nav__list{display:flex;gap:26px;list-style:none;margin:0;padding:0;align-items:center;}
+/* 18, not 26: the 50%-larger logo takes 59px more of a bar whose container
+   is capped at 1320, so the nav had to give the space back — otherwise the
+   actions ate into the right padding and the CTA sat 1px from the edge. */
+.nav__list{display:flex;gap:18px;list-style:none;margin:0;padding:0;align-items:center;}
 /* static, so the mega menu below resolves against .masthead__inner (the
    container) instead of the narrow <li> it hangs off */
 .nav__list > li{position:static;}
 .nav__link{
   display:flex;align-items:center;gap:5px;
-  padding:8px 0;font-size:15px;font-weight:500;
+  padding:8px 0;font-size:14.5px;font-weight:500;
   color:rgba(255,255,255,.86);text-decoration:none;white-space:nowrap;
   border-bottom:2px solid transparent;
   transition:color var(--dur) ease,border-color var(--dur) ease;
@@ -372,23 +377,28 @@ p:last-child{margin-bottom:0;}
   transition:opacity var(--dur) ease;
 }
 .nav-backdrop.is-open{opacity:1;pointer-events:auto;}
-@media(min-width:981px){.nav-backdrop{display:none;}}
+@media(min-width:1151px){.nav-backdrop{display:none;}}
 
 /* stuck state — compress, don't jump */
 .masthead.is-stuck{box-shadow:var(--shadow-header);}
 .masthead.is-stuck .masthead__inner{height:var(--header-h-stuck);}
-.masthead.is-stuck .masthead__logo img{width:98px;}
+.masthead.is-stuck .masthead__logo img{width:147px;}
 
 /* 1300, not 1180: logo 118 + nav 724 + actions 321 + gaps and padding needs
    1300px, so between 1181 and 1300 the bar overflowed and the order button
    ran off the right edge — 1280x800 laptops included. */
-@media(max-width:1300px){
+/* 1360: the wider logo added ~59px to what the bar needs */
+@media(max-width:1360px){
   .nav__list{gap:18px;}
   .nav__link{font-size:14px;}
   .masthead__cta span{display:none;}
   .masthead__cta{padding:0 16px;}
 }
-@media(max-width:980px){
+/* 1150, not 980: with the 50% larger logo the seven-item bar needs about
+   1130px even with the CTA compressed to an icon. Below that the drawer is
+   the honest answer — squeezing the nav further would shrink the links past
+   a comfortable tap target. */
+@media(max-width:1150px){
   .nav{
     position:fixed;inset:var(--header-h) 0 0 auto;width:min(360px,86vw);
     background:var(--ink);padding:22px;overflow-y:auto;
@@ -1039,7 +1049,7 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 /* The mobile drawer is itself --ink, so an ink promo on it would be a gold
    outline and nothing else. Fill it instead — it still has to be the loudest
    thing in the panel. */
-@media(max-width:980px){
+@media(max-width:1150px){
   .nav__progs .nav__promo a{background:var(--gold);border-color:var(--gold);color:var(--ink);}
   .nav__progs .nav__promo a:hover{background:var(--gold-600);border-color:var(--gold-600);}
   .nav__progs .nav__promo .nav__promo-tag{color:rgba(30,30,30,.72);}
@@ -1070,9 +1080,15 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
 
    1. The scrim. White text over raw video is unreadable the moment a bright
       frame comes up, so ::after lays a gradient over the clip — heaviest
-      under the text column, lightest where the picture is meant to show.
-      Worst case (a pure white frame) the text column composites to about
-      #262626, which keeps white body text above 4.5:1.
+      under the text column, then off almost entirely past the middle so the
+      food keeps its own colour instead of turning grey. The falloff is steep
+      between 52% and 70% because the copy is capped at 640px: the longest
+      line ends near 51% of the viewport, so nothing readable reaches the
+      light half. Checked against a pure white frame — the theoretical worst,
+      not just the frames this clip happens to contain — at the far end of
+      each line, where the scrim is thinnest under text: the h1 holds 4.9:1
+      (46px needs 3), the lede 5.2:1 and the 13.5px proof labels 6.9:1 (both
+      need 4.5). On the real footage the tightest point measures 4.9:1.
    2. The clip never carries meaning. It is aria-hidden and tabindex="-1",
       the poster stands in until the first frame decodes, and site.js stops
       it outright for prefers-reduced-motion. */
@@ -1087,23 +1103,30 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
   content:"";position:absolute;inset:0;pointer-events:none;
   background:
     linear-gradient(90deg,
-      rgba(18,18,18,.90) 0%,
-      rgba(18,18,18,.84) 40%,
-      rgba(18,18,18,.60) 66%,
-      rgba(18,18,18,.44) 100%),
+      rgba(18,18,18,.82) 0%,
+      rgba(18,18,18,.78) 30%,
+      rgba(18,18,18,.52) 52%,
+      rgba(18,18,18,.18) 70%,
+      rgba(18,18,18,.06) 100%),
+    /* a whisper of vertical shading only — it seats the header against the
+       clip and the section against what follows; any more and it undoes the
+       horizontal falloff on the picture side */
     linear-gradient(180deg,
-      rgba(18,18,18,.30) 0%,
-      rgba(18,18,18,.10) 40%,
-      rgba(18,18,18,.48) 100%);
+      rgba(18,18,18,.22) 0%,
+      rgba(18,18,18,.04) 35%,
+      rgba(18,18,18,.18) 100%);
 }
 /* Stacked layouts put text over the middle of the frame, where a horizontal
-   gradient has already faded out — so the scrim turns vertical with it. */
+   gradient has already faded out — so the scrim turns vertical with it. It
+   cannot open up the way the desktop one does (the copy spans the full width
+   here, so there is no clear side to give back), but it is pulled down to the
+   readability floor rather than sitting well above it. */
 @media(max-width:900px){
   .vbg::after{
     background:linear-gradient(180deg,
-      rgba(18,18,18,.72) 0%,
-      rgba(18,18,18,.80) 45%,
-      rgba(18,18,18,.90) 100%);
+      rgba(18,18,18,.58) 0%,
+      rgba(18,18,18,.70) 45%,
+      rgba(18,18,18,.84) 100%);
   }
 }
 /* Sections hosting a .vbg must establish a stacking context and lift their
@@ -1665,4 +1688,16 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
    contrast on the paler programs. */
 .nav__progs li:not(.nav__promo) a{
   box-shadow:inset 3px 0 0 var(--g1, transparent);
+}
+
+/* The 177px logo does not fit a phone bar: 177 + the 28px gap + 142px of icon
+   buttons is 347, against 335 of content width at 375px — the cart button was
+   pushed past the padding and clipped. It steps down instead. */
+@media(max-width:760px){
+  .masthead__logo img{width:150px;}
+  .masthead.is-stuck .masthead__logo img{width:132px;}
+}
+@media(max-width:430px){
+  .masthead__logo img{width:132px;}
+  .masthead.is-stuck .masthead__logo img{width:118px;}
 }

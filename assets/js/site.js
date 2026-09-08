@@ -53,7 +53,7 @@
       }
     });
     /* leaving mobile width resets everything */
-    window.matchMedia('(min-width: 981px)').addEventListener('change', function (ev) {
+    window.matchMedia('(min-width: 1151px)').addEventListener('change', function (ev) {
       if (ev.matches) setNav(false);
     });
   }
