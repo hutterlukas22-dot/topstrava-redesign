@@ -571,7 +571,7 @@ ${payMethods.map(m => {
 /* Reusable sections shared by several pages. */
 function bandDelivery() {
   return `  <section class="band" id="rozvoz">
-    <div class="band__bg"><img src="${img('real-foto/flatlay-siroky')}" alt="" aria-hidden="true"></div>
+    <div class="band__bg"><img src="${img('band-food')}" alt="" aria-hidden="true"></div>
     <div class="container band__inner on-dark">
       <p class="label" style="color:var(--gold)">Rozvoz</p>
       <h2>Chcete vedieť, kam rozvážame naše krabičky?</h2>

@@ -520,10 +520,15 @@ a.card:hover .card__cta svg,.card--link:hover .card__cta svg{transform:translate
 .breadcrumb a:hover{color:var(--gold-ink);text-decoration:underline;}
 .breadcrumb svg{width:12px;height:12px;opacity:.6;}
 
-.hero{background:var(--ink);color:#fff;overflow:hidden;}
+.hero{
+  background:var(--ink);color:#fff;overflow:hidden;
+  /* One source for the hero's vertical inset. The corner chips align their
+     baseline to it, so they cannot drift away from the proof figures. */
+  --hero-pad-block:clamp(44px,6vw,84px);
+}
 .hero__grid{
   display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,64px);
-  align-items:center;padding-block:clamp(44px,6vw,84px);
+  align-items:center;padding-block:var(--hero-pad-block);
 }
 .hero h1{margin-bottom:20px;}
 .hero__lede{font-size:19px;line-height:1.6;font-weight:300;color:rgba(255,255,255,.8);margin-bottom:28px;max-width:52ch;}
@@ -544,7 +549,9 @@ a.card:hover .card__cta svg,.card--link:hover .card__cta svg{transform:translate
   display:flex;justify-content:center;
 }
 @media(max-width:900px){
-  .hero__grid{grid-template-columns:1fr;padding-block:40px;}
+  /* set the variable, not the padding, so the corner chips follow it too */
+  .hero{--hero-pad-block:40px;}
+  .hero__grid{grid-template-columns:1fr;}
   .hero__media{order:-1;}
   .hero__media > img{aspect-ratio:16/10;}
 }
@@ -1461,7 +1468,10 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
    the viewport left them 282px adrift on a wide screen. max() falls back to
    the plain padding once the viewport is narrower than the container. */
 .hero__side{
-  position:absolute;bottom:26px;z-index:2;
+  position:absolute;z-index:2;
+  /* Same inset as .hero__grid's padding, so the stack ends on exactly the
+     line the proof figures end on — they used to sit 58px lower. */
+  bottom:var(--hero-pad-block);
   right:max(var(--container-pad), calc((100% - var(--container)) / 2 + var(--container-pad)));
   display:flex;flex-direction:column;align-items:stretch;gap:10px;
 }
