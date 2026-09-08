@@ -379,7 +379,10 @@ p:last-child{margin-bottom:0;}
 .masthead.is-stuck .masthead__inner{height:var(--header-h-stuck);}
 .masthead.is-stuck .masthead__logo img{width:98px;}
 
-@media(max-width:1180px){
+/* 1300, not 1180: logo 118 + nav 724 + actions 321 + gaps and padding needs
+   1300px, so between 1181 and 1300 the bar overflowed and the order button
+   ran off the right edge — 1280x800 laptops included. */
+@media(max-width:1300px){
   .nav__list{gap:18px;}
   .nav__link{font-size:14px;}
   .masthead__cta span{display:none;}
@@ -1452,8 +1455,14 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
 
    Both chips share one class and stretch to the widest of the two, so their
    edges line up instead of stepping. */
+/* Aligned to the CONTAINER's right edge, not the viewport's. The hero section
+   is full-bleed but everything else on the page — the header CTA directly
+   above these chips included — stops at the 1320px container, so anchoring to
+   the viewport left them 282px adrift on a wide screen. max() falls back to
+   the plain padding once the viewport is narrower than the container. */
 .hero__side{
-  position:absolute;right:var(--container-pad);bottom:26px;z-index:2;
+  position:absolute;bottom:26px;z-index:2;
+  right:max(var(--container-pad), calc((100% - var(--container)) / 2 + var(--container-pad)));
   display:flex;flex-direction:column;align-items:stretch;gap:10px;
 }
 .hero__chip{
