@@ -121,7 +121,7 @@ ${deliveryCities.map(c => `              <li>${c}</li>`).join('\n')}
             <p class="card__meta"><span class="hi">Odberné miesta</span><span class="dot"></span>1,56 €/deň</p>
             <h3 class="card__title">Vyzdvihnite si krabičky cestou domov</h3>
             <ul class="card__taglist">
-${pickupPoints.map(c => `              <li>${c}</li>`).join('\n')}
+${pickupPoints.map(c => `              <li>${c.name} ${c.city}</li>`).join('\n')}
             </ul>
             <a class="card__cta" href="ako-to-funguje.html#rozvoz">Zobraziť miesta ${icon.arrow}</a>
           </div>

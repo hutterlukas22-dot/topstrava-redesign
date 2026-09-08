@@ -66,7 +66,7 @@ const programPage = {
 
       <div class="prog-hero__grid">
         <div class="prog-visual">
-          <img src="${L.img('meal1')}" alt="" data-bind="image" width="800" height="1000">
+          <img src="${L.img('real-foto/kura-kurkumove-rizoto')}" alt="" data-bind="image" width="800" height="1000">
         </div>
 
         <div class="prog-head">

@@ -339,10 +339,68 @@ const maxMeals = maxCourses.flatMap(c => c.meals.map(m => ({ ...m, course: c.lab
 const deliveryCities = ['Žilina', 'Považská Bystrica', 'Púchov', 'Kysucké Nové Mesto', 'Bytča',
   'Martin', 'Čadca', 'Spišská Nová Ves', 'Levoča', 'Liptovský Mikuláš', 'Poprad', 'Trenčín', 'Košice'];
 
-const pickupPoints = ['Repeat Crossfit Považská Bystrica', 'Zauko Fitness Púchov', 'Mestská Kaviareň Bytča',
-  'MM Aréna Krásno Nad Kysucou', 'Imperia fitness Trenčín', 'City Gym Košice', 'Fit Factory Liptovský Mikuláš',
-  'Riecky fitness Kysucké Nové Mesto', 'Olympia fit Ilava', 'Pro Fitness LK Čadca', 'Life Studio Gym Žilina',
-  'Big Fitness Martin'];
+/* ---------------------------------------------------------------------------
+   Pickup points.
+
+   Names are real — they are the twelve partners already published on the live
+   site. ADDRESSES, OPENING HOURS AND NOTES ARE PROTOTYPE FILLER so the client
+   can see the map and the popup working; they must come from the kitchen
+   before this is public. Same for `x`/`y`, which are percentage positions on
+   the static map image and were placed by eye, not by geocoding.
+
+   When the real Google map goes in, `x`/`y` are dropped and lat/lng take over
+   — the popup content stays exactly as it is.
+   --------------------------------------------------------------------------- */
+const pickupPoints = [
+  { name: 'Repeat Crossfit', city: 'Považská Bystrica', x: 36.7, y: 27.8,
+    address: 'Robotnícka 2158, 017 01 Považská Bystrica',
+    hours: 'Po – Pi 6:00 – 21:00 · So 8:00 – 12:00',
+    note: 'Krabičky nájdete v chladničke hneď pri recepcii.' },
+  { name: 'Zauko Fitness', city: 'Púchov', x: 35.0, y: 31.3,
+    address: 'Námestie slobody 1400, 020 01 Púchov',
+    hours: 'Po – Pi 6:00 – 22:00 · So – Ne 9:00 – 20:00',
+    note: 'Vyzdvihnutie na recepcii, stačí povedať meno.' },
+  { name: 'Mestská Kaviareň', city: 'Bytča', x: 37.5, y: 24.9,
+    address: 'Námestie SR 1, 014 01 Bytča',
+    hours: 'Po – Pi 7:00 – 20:00 · So 8:00 – 14:00',
+    note: 'Chladnička je vzadu za barom.' },
+  { name: 'MM Aréna', city: 'Krásno nad Kysucou', x: 38.8, y: 17.9,
+    address: 'Struhy 2172, 023 02 Krásno nad Kysucou',
+    hours: 'Po – Pi 8:00 – 21:00 · So 9:00 – 18:00',
+    note: 'Odber pri vstupe do haly.' },
+  { name: 'Imperia fitness', city: 'Trenčín', x: 32.0, y: 37.3,
+    address: 'Bratislavská 6688, 911 05 Trenčín',
+    hours: 'Po – Pi 6:00 – 22:00 · So – Ne 8:00 – 20:00',
+    note: 'Chladnička hneď vedľa turniketu.' },
+  { name: 'City Gym', city: 'Košice', x: 68.8, y: 44.0,
+    address: 'Štúrova 27, 040 01 Košice',
+    hours: 'Po – Pi 6:00 – 22:00 · So – Ne 9:00 – 20:00',
+    note: 'Rozvoz sem chodí v nedeľu a v stredu večer.' },
+  { name: 'Fit Factory', city: 'Liptovský Mikuláš', x: 52.0, y: 29.5,
+    address: 'Kamenné pole 4554, 031 01 Liptovský Mikuláš',
+    hours: 'Po – Pi 6:00 – 21:30 · So 9:00 – 19:00',
+    note: 'Vyzdvihnutie na recepcii fitka.' },
+  { name: 'Riecky fitness', city: 'Kysucké Nové Mesto', x: 39.0, y: 20.8,
+    address: 'Belanského 2725, 024 01 Kysucké Nové Mesto',
+    hours: 'Po – Pi 7:00 – 21:00 · So 9:00 – 13:00',
+    note: 'Chladnička je pri šatniach.' },
+  { name: 'Olympia fit', city: 'Ilava', x: 33.5, y: 34.7,
+    address: 'Mierové námestie 81, 019 01 Ilava',
+    hours: 'Po – Pi 7:00 – 21:00 · So 9:00 – 12:00',
+    note: 'Odber cez recepciu, parkovanie pred budovou.' },
+  { name: 'Pro Fitness LK', city: 'Čadca', x: 38.0, y: 18.5,
+    address: 'Palárikova 966, 022 01 Čadca',
+    hours: 'Po – Pi 6:30 – 21:00 · So 9:00 – 14:00',
+    note: 'Krabičky pripravené v chladničke pri vstupe.' },
+  { name: 'Life Studio Gym', city: 'Žilina', x: 39.5, y: 24.1,
+    address: 'Vysokoškolákov 8556, 010 08 Žilina',
+    hours: 'Po – Pi 6:00 – 22:00 · So – Ne 8:00 – 20:00',
+    note: 'Najbližšie k našej kuchyni na Hlinskej.' },
+  { name: 'Big Fitness', city: 'Martin', x: 41.8, y: 30.3,
+    address: 'Jilemnického 3, 036 01 Martin',
+    hours: 'Po – Pi 6:00 – 21:30 · So 9:00 – 18:00',
+    note: 'Chladnička hneď za dverami vpravo.' }
+];
 
 /* Primary navigation: 7 items. Everything retired from the old third bar
    lives in the mega-menu aside — regrouped, never removed. */
@@ -636,6 +694,55 @@ ${g.items.map(r => `        <li class="review">
   </section>`;
 }
 
+/* ---------------------------------------------------------------------------
+   Pickup-point map.
+
+   A STATIC SCREENSHOT with pins positioned on top, standing in for the real
+   embedded Google map. That is deliberate: the live map needs a Maps
+   JavaScript API key, which cannot sit in client code on a static site, so it
+   waits for the backend — the constraint flagged with client point 5.
+
+   The swap is contained: the <img> and the percentage-positioned buttons go,
+   markers take lat/lng, and everything inside .pinpop stays as it is, because
+   Google's InfoWindow takes arbitrary HTML.
+   --------------------------------------------------------------------------- */
+function sectionPickupMap() {
+  return `  <section class="section" id="odberne-miesta">
+    <div class="container">
+      <div class="section-head">
+        <p class="label label--gold">Odberné miesta</p>
+        <h2>Kde si môžete krabičky vyzdvihnúť</h2>
+        <p>Dvanásť partnerských miest po celom Slovensku. Kliknite na značku a uvidíte adresu, otváracie hodiny aj to, kde presne je chladnička.</p>
+      </div>
+
+      <div class="pinmap" data-pinmap>
+        <img class="pinmap__img" src="${img('mapa_svk')}" alt="Mapa odberných miest TopStravy na Slovensku" loading="lazy" width="2418" height="1045">
+${pickupPoints.map((p, i) => `        <button class="pin" type="button" style="--x:${p.x}%;--y:${p.y}%"
+                data-pin="${i}" aria-expanded="false" aria-controls="pinpop-${i}">
+          <span class="pin__dot" aria-hidden="true">${icon.pin}</span>
+          <span class="sr-only">${p.name}, ${p.city}</span>
+        </button>
+        <div class="pinpop" id="pinpop-${i}" data-pop="${i}" hidden>
+          <button class="pinpop__x" type="button" data-pin-close aria-label="Zavrieť">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <p class="pinpop__city">${p.city}</p>
+          <h3 class="pinpop__name">${p.name}</h3>
+          <dl class="pinpop__rows">
+            <div><dt>${icon.pin}<span class="sr-only">Adresa</span></dt><dd>${p.address}</dd></div>
+            <div><dt>${icon.clock}<span class="sr-only">Otváracie hodiny</span></dt><dd>${p.hours}</dd></div>
+            <div><dt>${icon.info}<span class="sr-only">Poznámka</span></dt><dd>${p.note}</dd></div>
+          </dl>
+          <a class="pinpop__nav" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(p.name + ' ' + p.address)}"
+             target="_blank" rel="noopener noreferrer">Navigovať ${icon.arrow}</a>
+        </div>`).join('\n')}
+      </div>
+
+      <p class="form-note" style="margin-top:14px">Rozvoz na adresu funguje do 13 miest. Osobný odber v našej kuchyni na Hlinskej v Žiline je zadarmo.</p>
+    </div>
+  </section>`;
+}
+
 /* Homepage teaser. Deliberately dark: the nine box programs above it sit on
    light cards, so the only way this reads as a separate line rather than a
    tenth program is to change the ground under it. The clip runs full-bleed
@@ -807,6 +914,6 @@ module.exports = {
   icon, programs, deliveryCities, pickupPoints, reels, maxNutrition,
   maxCourses, maxMeals, MAX_SIZES,
   page, bandDelivery, sectionPrograms, programCard, reelsSlider,
-  sectionMaxNutrition, sectionReviews, googleReviews,
+  sectionMaxNutrition, sectionReviews, googleReviews, sectionPickupMap,
   img, imageWarnings, imageIndex, newsletter, payMethods, videoBg
 };

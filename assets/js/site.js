@@ -438,3 +438,72 @@
     });
   });
 })();
+
+/* ---------------------------------------------------------------------------
+   Pickup-point map
+
+   Prototype stand-in for an embedded Google map: a static screenshot with
+   percentage-positioned pins. Only one popup is open at a time, Escape and an
+   outside click close it, and focus returns to the pin that opened it — the
+   same contract a real InfoWindow would need.
+   --------------------------------------------------------------------------- */
+(function () {
+  'use strict';
+
+  var map = document.querySelector('[data-pinmap]');
+  if (!map) return;
+
+  var pins = [].slice.call(map.querySelectorAll('[data-pin]'));
+  var open = null;
+
+  function close(refocus) {
+    if (!open) return;
+    var pin = map.querySelector('[data-pin="' + open + '"]');
+    var pop = map.querySelector('[data-pop="' + open + '"]');
+    pin.setAttribute('aria-expanded', 'false');
+    pop.hidden = true;
+    open = null;
+    if (refocus) pin.focus();
+  }
+
+  function show(id) {
+    if (open === id) { close(true); return; }
+    close(false);
+    var pin = map.querySelector('[data-pin="' + id + '"]');
+    var pop = map.querySelector('[data-pop="' + id + '"]');
+    /* the popup is positioned from the pin's own coordinates */
+    pop.style.setProperty('--x', pin.style.getPropertyValue('--x'));
+    pop.style.setProperty('--y', pin.style.getPropertyValue('--y'));
+    pin.setAttribute('aria-expanded', 'true');
+    pop.hidden = false;
+    open = id;
+
+    /* Most pins sit in the north of the map, where there is no room for a
+       bubble above them — flip those below rather than letting them run off
+       the top of the section. */
+    pop.classList.remove('is-below');
+    var mr = map.getBoundingClientRect();
+    if (pop.getBoundingClientRect().top < mr.top) pop.classList.add('is-below');
+  }
+
+  pins.forEach(function (pin) {
+    pin.addEventListener('click', function (e) {
+      e.stopPropagation();
+      show(pin.dataset.pin);
+    });
+  });
+
+  map.addEventListener('click', function (e) {
+    if (e.target.closest('[data-pin-close]')) { close(true); return; }
+    /* clicks inside an open popup must not close it */
+    if (!e.target.closest('.pinpop')) close(false);
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!map.contains(e.target)) close(false);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') close(true);
+  });
+})();

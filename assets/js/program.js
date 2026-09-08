@@ -16,23 +16,23 @@
   /* Everything that differs between the nine programs. Adding a program is a
      line here, not another page. */
   var PROGRAMS = {
-    '3-chody-zena':     { name: '3 chody Žena',  kcal: 1200, meals: 3, price: 87.50,  img: 'meal1',
+    '3-chody-zena':     { name: '3 chody Žena',  kcal: 1200, meals: 3, price: 87.50,  img: 'real-foto/kura-kurkumove-rizoto.jpg',
       desc: 'Praktická voľba pre tých, ktorí preferujú menej jedál denne.' },
-    '3-chody-muz':      { name: '3 chody Muž',   kcal: 1600, meals: 3, price: 98.50,  img: 'meal2',
+    '3-chody-muz':      { name: '3 chody Muž',   kcal: 1600, meals: 3, price: 98.50,  img: 'real-foto/hovadzie-brusnice.jpg',
       desc: 'Praktická voľba pre tých, ktorí preferujú menej jedál denne.' },
-    'slim':             { name: 'Slim',          kcal: 1200, meals: 5, price: 94.50,  img: 'meal3',
+    'slim':             { name: 'Slim',          kcal: 1200, meals: 5, price: 94.50,  img: 'real-foto/ranajkovy-box.jpg',
       desc: 'Ideálne pre rýchle chudnutie, detox či veľmi nízku fyzickú aktivitu. Odporúčané len krátkodobo a pri dohľade odborníka.' },
-    'slim-plus':        { name: 'Slim+',         kcal: 1400, meals: 5, price: 99.50,  img: 'meal4',
+    'slim-plus':        { name: 'Slim+',         kcal: 1400, meals: 5, price: 99.50,  img: 'real-foto/krevety-hraskove-pyre.jpg',
       desc: 'Častá voľba žien pri redukcii váhy. Pomáha schudnúť bez hladovania, ak je aktivita nízka až stredná.' },
-    'balance':          { name: 'Balance',       kcal: 1600, meals: 5, price: 104.50, img: 'meal5',
+    'balance':          { name: 'Balance',       kcal: 1600, meals: 5, price: 104.50, img: 'real-foto/kura-cviklove-rizoto.jpg',
       desc: 'Vyvážený program pre ženy s bežným denným pohybom alebo pre mužov, ktorí chcú redukovať váhu.' },
-    'balance-plus':     { name: 'Balance+',      kcal: 1800, meals: 5, price: 109.50, img: 'meal6',
+    'balance-plus':     { name: 'Balance+',      kcal: 1800, meals: 5, price: 109.50, img: 'real-foto/hovadzie-mrkvove-pyre.jpg',
       desc: 'Univerzálny variant pre udržiavanie hmotnosti. Vhodné pre aktívne ženy alebo menej aktívnych mužov.' },
-    'active-body':      { name: 'Active body',   kcal: 2000, meals: 5, price: 114.50, img: 'meal7',
+    'active-body':      { name: 'Active body',   kcal: 2000, meals: 5, price: 114.50, img: 'real-foto/kura-slanina-fazulky.jpg',
       desc: 'Štandardný príjem pre väčšinu populácie pri bežnom dennom režime.' },
-    'active-body-plus': { name: 'Active body+',  kcal: 2200, meals: 5, price: 119.50, img: 'meal8',
+    'active-body-plus': { name: 'Active body+',  kcal: 2200, meals: 5, price: 119.50, img: 'real-foto/kuracie-stehno-pomaranc.jpg',
       desc: 'Vhodné pre mužov s vyššou fyzickou aktivitou alebo pre ženy s náročnými tréningmi.' },
-    'max-energy':       { name: 'Max energy',    kcal: 2500, meals: 5, price: 124.50, img: 'meal9',
+    'max-energy':       { name: 'Max energy',    kcal: 2500, meals: 5, price: 124.50, img: 'real-foto/kuracie-stehno-kapusta.jpg',
       desc: 'Najvyšší program – ideálny pre športovcov, fyzicky pracujúcich alebo na naberanie svalovej hmoty.' }
   };
 
@@ -94,9 +94,12 @@
       ? 'Tri chody denne sú praktická voľba, ak nechcete jesť každé dve hodiny alebo vám počas dňa nevyhovuje desiata a olovrant. Rovnaký denný príjem, rozdelený do menšieho počtu väčších porcií.'
       : 'Päť menších chodov drží stabilnú hladinu energie počas celého dňa a nemusíte riešiť, čo si dať medzi hlavnými jedlami.';
 
-    /* the picture follows the program, same crop language as the cards */
+    /* The picture follows the program. p.img carries its own extension now —
+       the real photographs are .jpg, not the .webp the illustrations were —
+       and the query goes with it, since the old cache-buster hash belonged to
+       a different file entirely. */
     var im = bind('image');
-    im.src = im.src.replace(/assets\/img\/[^?"]+/, 'assets/img/' + p.img + '.webp');
+    im.src = 'assets/img/' + p.img;
     im.alt = p.name + ' — ukážka jedál';
 
     /* title and URL follow, so the page can be shared as it is being viewed */

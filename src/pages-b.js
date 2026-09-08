@@ -98,13 +98,15 @@ ${deliveryCities.map(c => `              <li>${c}</li>`).join('\n')}
             <h3 class="card__title">Vyzdvihnite si krabičky cestou domov</h3>
             <p class="card__text">Po vyložení balíčkov do chladničky vás kuriér kontaktuje SMS správou. Osobný odber v kuchyni na Hlinskej v Žiline je zadarmo.</p>
             <ul class="card__taglist">
-${pickupPoints.map(c => `              <li>${c}</li>`).join('\n')}
+${pickupPoints.map(c => `              <li>${c.name} ${c.city}</li>`).join('\n')}
             </ul>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+${L.sectionPickupMap()}
 
   <section class="section">
     <div class="container">

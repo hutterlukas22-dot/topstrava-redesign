@@ -1503,3 +1503,103 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
 /* Reviewer portrait, where one exists. Same 38px circle as the initial
    fallback, so a mixed set still lines up. */
 .review__avatar--photo{object-fit:cover;background:var(--surface-3);}
+
+/* ---------- 25. PICKUP MAP ----------
+   Static map screenshot with pins on top, standing in for the embedded Google
+   map (which needs an API key this static site cannot hold). Pins are placed
+   in PERCENTAGES so they stay put as the image scales. */
+/* No overflow:hidden here — it clipped every popup that reached past an edge,
+   which is most of them, since the pins cluster near the top. The radius sits
+   on the image instead, so the popup can escape the frame. */
+.pinmap{
+  position:relative;border-radius:var(--r-card);
+  border:1px solid var(--line);box-shadow:var(--shadow-md);
+  background:var(--surface-2);
+}
+.pinmap__img{width:100%;height:auto;display:block;border-radius:inherit;}
+
+.pin{
+  position:absolute;left:var(--x);top:var(--y);
+  transform:translate(-50%,-100%);
+  width:34px;height:34px;padding:0;border:0;background:none;cursor:pointer;
+  z-index:2;
+}
+.pin__dot{
+  display:grid;place-items:center;width:34px;height:34px;
+  border-radius:var(--r-pill) var(--r-pill) 2px var(--r-pill);
+  rotate:45deg;
+  background:var(--gold);border:2px solid #fff;
+  box-shadow:0 3px 10px rgba(30,30,30,.35);
+  color:var(--ink);
+  transition:transform var(--dur) var(--ease),background-color var(--dur) ease;
+}
+.pin__dot svg{width:17px;height:17px;rotate:-45deg;}
+.pin:hover .pin__dot{transform:scale(1.14);}
+.pin[aria-expanded="true"]{z-index:4;}
+.pin[aria-expanded="true"] .pin__dot{background:var(--ink);color:var(--gold);transform:scale(1.14);}
+.pin:focus-visible{outline:none;}
+.pin:focus-visible .pin__dot{outline:3px solid var(--ink);outline-offset:3px;}
+
+/* Popup. Anchored to the pin on wide screens; on small ones it becomes a
+   sheet pinned to the bottom of the map, because a 260px bubble beside a pin
+   simply does not fit next to the edge of a phone. */
+.pinpop{
+  position:absolute;z-index:5;
+  /* clamped so a pin near either edge still centres its popup over the map
+     instead of hanging off the side */
+  left:clamp(152px, var(--x), calc(100% - 152px));
+  top:var(--y);
+  transform:translate(-50%,calc(-100% - 42px));
+  width:290px;max-width:calc(100% - 24px);
+  padding:16px 18px 18px;border-radius:var(--r-card);
+  background:var(--surface);border:1px solid var(--line);
+  box-shadow:var(--shadow-lg);
+  text-align:left;
+}
+.pinpop__x{
+  position:absolute;top:8px;right:8px;
+  display:grid;place-items:center;width:28px;height:28px;
+  border:0;border-radius:var(--r-pill);background:var(--surface-2);
+  color:var(--text-2);cursor:pointer;
+}
+.pinpop__x:hover{background:var(--surface-3);color:var(--ink);}
+.pinpop__x svg{width:14px;height:14px;}
+.pinpop__city{
+  margin:0 0 2px;font-size:11.5px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--gold-ink);
+}
+.pinpop__name{margin:0 0 12px;font-size:17px;line-height:1.3;padding-right:26px;}
+.pinpop__rows{margin:0;display:grid;gap:9px;}
+.pinpop__rows > div{display:flex;gap:9px;align-items:flex-start;}
+.pinpop__rows dt{flex:none;margin:0;line-height:0;}
+.pinpop__rows dt svg{width:15px;height:15px;color:var(--text-3);margin-top:2px;}
+.pinpop__rows dd{margin:0;font-size:13.5px;line-height:1.5;color:var(--text-2);}
+.pinpop__nav{
+  display:inline-flex;align-items:center;gap:7px;margin-top:14px;
+  font-size:13.5px;font-weight:700;color:var(--ink);text-decoration:none;
+  text-underline-offset:4px;
+}
+.pinpop__nav:hover{text-decoration:underline;text-decoration-color:var(--gold);}
+.pinpop__nav svg{width:14px;height:14px;}
+
+@media(max-width:720px){
+  .pin{width:28px;height:28px;}
+  .pin__dot{width:28px;height:28px;}
+  .pin__dot svg{width:14px;height:14px;}
+  .pinpop{
+    left:12px;right:12px;top:auto;bottom:12px;
+    transform:none;width:auto;max-width:none;
+  }
+}
+
+/* Pins cluster in the north of the map, so most popups have no room above
+   them. site.js flips those below the pin. */
+.pinpop.is-below{transform:translate(-50%,14px);}
+
+/* Must come after .is-below, not inside the earlier media block: two classes
+   beat one, so the flipped popup kept its translate(-50%) on mobile and slid
+   a full half-width off the left edge of a layout that is already a
+   full-width sheet. */
+@media(max-width:720px){
+  .pinpop,.pinpop.is-below{transform:none;}
+}
