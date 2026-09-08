@@ -1165,17 +1165,23 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
   transition:box-shadow var(--dur) ease;
 }
 .pcard:hover .pcard__plate{box-shadow:var(--shadow-lg);}
-/* the calorie figure, repeated huge and faint behind the artwork */
+/* The calorie figure tiled huge and faint behind the artwork. Rows overrun
+   the plate on both sides on purpose and are clipped by it — that is what
+   carries the pattern all the way to the right edge, which a wrapping
+   paragraph could never do. */
 .pcard__wm{
-  position:absolute;inset:-4% -4% auto -4%;
+  position:absolute;inset:-3% 0 auto 0;
   font-size:15cqw;font-weight:800;line-height:1.02;letter-spacing:-.02em;
   color:#fff;opacity:.07;word-spacing:.04em;
   -webkit-user-select:none;user-select:none;
 }
+.pcard__wm span{display:block;white-space:nowrap;margin-left:-4%;}
+.pcard__wm .is-off{margin-left:-32%;}
 
 /* Sits in normal flow and owns the artwork's height, so .pcard__body simply
    follows it instead of being pushed down by a hand-tuned margin. */
-.pcard__art{position:relative;z-index:1;aspect-ratio:398/272;}
+/* tall enough for the food box: 11cqw top + 64cqw = 75% of the card width */
+.pcard__art{position:relative;z-index:1;aspect-ratio:398/300;}
 .pcard__figure{
   /* .pcard__art begins below the card's reserved padding, so top:0 would sit
      the figure flush on the plate. Pulling it up by exactly that reserve
@@ -1196,10 +1202,16 @@ td.num,th.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
    some 1.55:1), and on a replaced element `height:auto` beats a top/bottom
    stretch — so an inset box silently kept each image's intrinsic height and
    the taller ones ran down over the title. */
+/* Box ratio matters as much as box size. At 94%/55cqw the box was 1.71 wide,
+   but three of the cut-outs are 1.54 — object-fit:contain therefore fitted
+   those to the HEIGHT and left bars down both sides, which is why they looked
+   small next to the 1.78 ones. Keeping the box at or below the narrowest
+   source ratio makes every image width-limited, so they all fill the card. */
 .pcard__food{
-  position:absolute;top:13cqw;left:3%;z-index:2;
-  width:94%;height:55cqw;
-  object-fit:contain;object-position:center bottom;
+  position:absolute;top:11cqw;left:2%;z-index:2;
+  /* 96 / 64 = 1.50, under the narrowest source ratio of 1.54 */
+  width:96%;height:64cqw;
+  object-fit:contain;object-position:center;
   filter:drop-shadow(0 3cqw 4cqw rgba(0,0,0,.34));
   pointer-events:none;
 }
@@ -1369,36 +1381,6 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
 .backlink:hover{color:var(--gold-ink);}
 .backlink svg{width:16px;height:16px;flex:none;}
 
-/* Instagram link in the corner of the video hero. The reels panel that used
-   to occupy the right half is gone, so this is what is left of the link out
-   to the profile — deliberately small, since the hero's job is the CTA. */
-.hero__ig{
-  position:absolute;right:var(--container-pad);bottom:26px;z-index:2;
-  display:inline-flex;align-items:center;gap:11px;
-  padding:11px 16px;border-radius:var(--r-pill);
-  background:rgba(255,255,255,.13);
-  border:1px solid rgba(255,255,255,.28);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  color:#fff;text-decoration:none;
-  transition:background-color var(--dur) ease,border-color var(--dur) ease;
-}
-.hero__ig:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.5);}
-.hero__ig > svg:first-child{width:22px;height:22px;flex:none;}
-.hero__ig > svg:last-child{width:15px;height:15px;flex:none;opacity:.7;transition:transform var(--dur) var(--ease);}
-.hero__ig:hover > svg:last-child{transform:translateX(3px);}
-.hero__ig span{display:block;line-height:1.25;}
-.hero__ig b{display:block;font-size:14px;font-weight:700;}
-.hero__ig span span{font-size:12px;color:rgba(255,255,255,.75);}
-/* Below this the hero is stacked and tight, so the corner is no longer free —
-   the link joins the flow instead of sitting on top of the proof figures. */
-@media(max-width:760px){
-  .hero__ig{
-    position:static;margin:0 var(--container-pad) 34px;
-    /* margin-top pulls it up against the grid's own bottom padding */
-    margin-top:-18px;
-  }
-}
-
 /* ---------- 23. GOOGLE REVIEWS ----------
    The content is prototype filler (see layout.js). The design stays in this
    site's palette apart from the Google wordmark itself and the review stars —
@@ -1461,3 +1443,63 @@ tbody tr.is-picked th,tbody tr.is-picked td{font-weight:700;}
     padding-block:12px;text-align:left;line-height:1.35;
   }
 }
+
+/* ---------- 24. HERO CORNER CHIPS ----------
+   Instagram and the Google rating, stacked in the corner of the video hero.
+   The reels panel that used to fill the right half is gone, so these are what
+   is left of the social proof — deliberately small, since the hero's job is
+   the CTA.
+
+   Both chips share one class and stretch to the widest of the two, so their
+   edges line up instead of stepping. */
+.hero__side{
+  position:absolute;right:var(--container-pad);bottom:26px;z-index:2;
+  display:flex;flex-direction:column;align-items:stretch;gap:10px;
+}
+.hero__chip{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 15px;border-radius:var(--r-btn);
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.28);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  color:#fff;text-decoration:none;
+  transition:background-color var(--dur) ease,border-color var(--dur) ease;
+}
+.hero__chip:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.5);}
+.hero__chip > svg:first-child{width:22px;height:22px;flex:none;}
+/* the arrow is always the last child and always the small one */
+.hero__chip > svg:last-child{
+  width:15px;height:15px;flex:none;margin-left:auto;opacity:.7;
+  transition:transform var(--dur) var(--ease);
+}
+.hero__chip:hover > svg:last-child{transform:translateX(3px);}
+.hero__chip > span{display:block;line-height:1.25;}
+.hero__chip b{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700;}
+.hero__chip span span{display:block;font-size:12px;color:rgba(255,255,255,.75);}
+
+/* Google chip: the wordmark is a wide logo, not a square icon — sizing it
+   like the Instagram glyph would squash it. */
+.hero__chip-g{width:54px;height:auto;flex:none;}
+/* Qualified: the stars sit in a span inside a span, so `.hero__chip span span`
+   (one class, two elements) outranked a bare `.hero__chip-stars` and forced
+   display:block on it — which stacked the five stars into a column, since the
+   global reset makes every svg a block. */
+.hero__chip .hero__chip-stars{display:inline-flex;gap:1px;}
+.hero__chip .hero__chip-stars svg{width:12px;height:12px;flex:none;color:#FBBC04;}
+
+/* Below this the hero is stacked and tight, so the corner is no longer free —
+   the chips join the flow instead of sitting on top of the proof figures. */
+@media(max-width:760px){
+  .hero__side{
+    position:static;
+    /* fit-content keeps the stack as wide as its widest chip, and stretch
+       then pulls the narrower one out to match — align-items:flex-start let
+       each shrink to its own text and the right edges stopped lining up */
+    width:fit-content;max-width:100%;align-items:stretch;
+    margin:-18px var(--container-pad) 34px;
+  }
+}
+
+/* Reviewer portrait, where one exists. Same 38px circle as the initial
+   fallback, so a mixed set still lines up. */
+.review__avatar--photo{object-fit:cover;background:var(--surface-3);}

@@ -567,14 +567,16 @@ const googleReviews = {
   rating: 4.9,
   count: 187,
   profileUrl: 'https://www.google.com/maps',
+  /* `photo` is optional — a reviewer without one falls back to an initial in
+     a tinted circle. Only three portraits exist, so the fourth uses that. */
   items: [
-    { name: 'Zuzana K.', when: 'pred 2 týždňami', stars: 5,
+    { name: 'Zuzana K.', when: 'pred 2 týždňami', stars: 5, photo: 'profile_pics/zuzana',
       text: 'Objednávam už pol roka a stále ma to baví. Jedlá sú chutné, ' +
             'porcie sedia a rozvoz chodí presne. Konečne neriešim, čo budem variť.' },
-    { name: 'Martin H.', when: 'pred mesiacom', stars: 5,
+    { name: 'Martin H.', when: 'pred mesiacom', stars: 5, photo: 'profile_pics/martin',
       text: 'Pracujem na zmeny a toto mi vyriešilo obedy aj večere. Krabičky ' +
             'vydržia čerstvé a chuťovo je to úplne inde než konkurencia.' },
-    { name: 'Peter B.', when: 'pred 3 týždňami', stars: 5,
+    { name: 'Peter B.', when: 'pred 3 týždňami', stars: 5, photo: 'profile_pics/peter',
       text: 'Beriem Max energy pri naberaní. Oceňujem, že si viem vyradiť ' +
             'potraviny, ktoré nejem, a že je všetko navážené.' },
     { name: 'Lucia M.', when: 'pred 2 mesiacmi', stars: 4,
@@ -612,7 +614,9 @@ function sectionReviews() {
       <ul class="reviews">
 ${g.items.map(r => `        <li class="review">
           <div class="review__top">
-            <span class="review__avatar" aria-hidden="true">${r.name.charAt(0)}</span>
+            ${r.photo
+              ? `<img class="review__avatar review__avatar--photo" src="${img(r.photo)}" alt="" loading="lazy" width="38" height="38">`
+              : `<span class="review__avatar" aria-hidden="true">${r.name.charAt(0)}</span>`}
             <div>
               <b>${r.name}</b>
               <span>${r.when}</span>
@@ -680,8 +684,16 @@ const MEAL_SLOTS = 5;
 function programCard(p) {
   const boxes = Array.from({ length: MEAL_SLOTS }, (_, i) =>
     `<span class="pcard__box${i < p.meals ? ' is-on' : ''}">${icon.mealBox}</span>`).join('');
-  /* the watermark is the calorie figure repeated behind the artwork */
-  const wm = Array.from({ length: 12 }, () => p.kcal).join(' ');
+  /* Watermark: the calorie figure tiled behind the artwork.
+
+     Emitted as explicit non-wrapping ROWS rather than one wrapping
+     paragraph. Wrapped text breaks where it happens to fit, which left a
+     ragged gap down the right-hand side of every card; rows that deliberately
+     overrun the width get clipped by the plate instead, so the pattern reaches
+     both edges. Odd rows are offset, so the columns do not line up in a grid. */
+  const wmRow = (p.kcal + ' ').repeat(5);
+  const wm = Array.from({ length: 9 }, (_, i) =>
+    `<span${i % 2 ? ' class="is-off"' : ''}>${wmRow}</span>`).join('');
 
   return `        <a class="pcard" href="program.html?program=${p.slug}" id="${p.slug}"
            style="--g1:${p.g1};--g2:${p.g2}">

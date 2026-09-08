@@ -33,11 +33,21 @@ ${L.videoBg('video_hero', 'real-foto/kuchyna-vydaj')}
       </div>
     </div>
 
-    <a class="hero__ig" href="https://www.instagram.com/topstrava/" target="_blank" rel="noopener noreferrer">
-      ${icon.instagram}
-      <span><b>@topstrava</b><span>Reels z našej kuchyne</span></span>
-      ${icon.arrow}
-    </a>
+    <div class="hero__side">
+      <a class="hero__chip" href="https://www.instagram.com/topstrava/" target="_blank" rel="noopener noreferrer">
+        ${icon.instagram}
+        <span><b>@topstrava</b><span>Reels z našej kuchyne</span></span>
+        ${icon.arrow}
+      </a>
+      <a class="hero__chip hero__chip--google" href="#recenzie">
+        <img class="hero__chip-g" src="${L.img('google-logo')}" alt="Google" width="54" height="18" loading="lazy">
+        <span>
+          <b>${String(L.googleReviews.rating).replace('.', ',')}<span class="hero__chip-stars" aria-hidden="true">${icon.star.repeat(5)}</span></b>
+          <span>${L.googleReviews.count} hodnotení</span>
+        </span>
+        ${icon.arrow}
+      </a>
+    </div>
   </section>
 
   <section class="section section--tint">
