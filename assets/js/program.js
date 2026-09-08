@@ -16,23 +16,23 @@
   /* Everything that differs between the nine programs. Adding a program is a
      line here, not another page. */
   var PROGRAMS = {
-    '3-chody-zena':     { name: '3 chody Žena',  kcal: 1200, meals: 3, price: 87.50,  img: 'real-foto/kura-kurkumove-rizoto.jpg',
+    '3-chody-zena':     { name: '3 chody Žena',  kcal: 1200, meals: 3, price: 87.50,  img: 'real-foto/kura-kurkumove-rizoto.jpg', g1: '#8E5BD0', g2: '#5B2E9E',
       desc: 'Praktická voľba pre tých, ktorí preferujú menej jedál denne.' },
-    '3-chody-muz':      { name: '3 chody Muž',   kcal: 1600, meals: 3, price: 98.50,  img: 'real-foto/hovadzie-brusnice.jpg',
+    '3-chody-muz':      { name: '3 chody Muž',   kcal: 1600, meals: 3, price: 98.50,  img: 'real-foto/hovadzie-brusnice.jpg', g1: '#4A8FD4', g2: '#12327A',
       desc: 'Praktická voľba pre tých, ktorí preferujú menej jedál denne.' },
-    'slim':             { name: 'Slim',          kcal: 1200, meals: 5, price: 94.50,  img: 'real-foto/ranajkovy-box.jpg',
+    'slim':             { name: 'Slim',          kcal: 1200, meals: 5, price: 94.50,  img: 'real-foto/ranajkovy-box.jpg', g1: '#7DC65A', g2: '#1F7A3D',
       desc: 'Ideálne pre rýchle chudnutie, detox či veľmi nízku fyzickú aktivitu. Odporúčané len krátkodobo a pri dohľade odborníka.' },
-    'slim-plus':        { name: 'Slim+',         kcal: 1400, meals: 5, price: 99.50,  img: 'real-foto/krevety-hraskove-pyre.jpg',
+    'slim-plus':        { name: 'Slim+',         kcal: 1400, meals: 5, price: 99.50,  img: 'real-foto/krevety-hraskove-pyre.jpg', g1: '#C3D96B', g2: '#5C8A2A',
       desc: 'Častá voľba žien pri redukcii váhy. Pomáha schudnúť bez hladovania, ak je aktivita nízka až stredná.' },
-    'balance':          { name: 'Balance',       kcal: 1600, meals: 5, price: 104.50, img: 'real-foto/kura-cviklove-rizoto.jpg',
+    'balance':          { name: 'Balance',       kcal: 1600, meals: 5, price: 104.50, img: 'real-foto/kura-cviklove-rizoto.jpg', g1: '#F2718D', g2: '#B01E4B',
       desc: 'Vyvážený program pre ženy s bežným denným pohybom alebo pre mužov, ktorí chcú redukovať váhu.' },
-    'balance-plus':     { name: 'Balance+',      kcal: 1800, meals: 5, price: 109.50, img: 'real-foto/hovadzie-mrkvove-pyre.jpg',
+    'balance-plus':     { name: 'Balance+',      kcal: 1800, meals: 5, price: 109.50, img: 'real-foto/hovadzie-mrkvove-pyre.jpg', g1: '#F0A868', g2: '#B4541C',
       desc: 'Univerzálny variant pre udržiavanie hmotnosti. Vhodné pre aktívne ženy alebo menej aktívnych mužov.' },
-    'active-body':      { name: 'Active body',   kcal: 2000, meals: 5, price: 114.50, img: 'real-foto/kura-slanina-fazulky.jpg',
+    'active-body':      { name: 'Active body',   kcal: 2000, meals: 5, price: 114.50, img: 'real-foto/kura-slanina-fazulky.jpg', g1: '#5AC8C0', g2: '#136E74',
       desc: 'Štandardný príjem pre väčšinu populácie pri bežnom dennom režime.' },
-    'active-body-plus': { name: 'Active body+',  kcal: 2200, meals: 5, price: 119.50, img: 'real-foto/kuracie-stehno-pomaranc.jpg',
+    'active-body-plus': { name: 'Active body+',  kcal: 2200, meals: 5, price: 119.50, img: 'real-foto/kuracie-stehno-pomaranc.jpg', g1: '#5AA6E0', g2: '#134C8C',
       desc: 'Vhodné pre mužov s vyššou fyzickou aktivitou alebo pre ženy s náročnými tréningmi.' },
-    'max-energy':       { name: 'Max energy',    kcal: 2500, meals: 5, price: 124.50, img: 'real-foto/kuracie-stehno-kapusta.jpg',
+    'max-energy':       { name: 'Max energy',    kcal: 2500, meals: 5, price: 124.50, img: 'real-foto/kuracie-stehno-kapusta.jpg', g1: '#F0563C', g2: '#9E0F1E',
       desc: 'Najvyšší program – ideálny pre športovcov, fyzicky pracujúcich alebo na naberanie svalovej hmoty.' }
   };
 
@@ -101,6 +101,14 @@
     var im = bind('image');
     im.src = 'assets/img/' + p.img;
     im.alt = p.name + ' — ukážka jedál';
+
+    /* The card's own gradient follows the program onto this page, so clicking
+       a purple tile opens a purple detail. Published as custom properties on
+       the root, which lets the CSS decide where the colour is allowed to go —
+       surfaces only, never text: these are mid-tone hues and several of them
+       would fail contrast as type on white. */
+    document.documentElement.style.setProperty('--g1', p.g1);
+    document.documentElement.style.setProperty('--g2', p.g2);
 
     /* title and URL follow, so the page can be shared as it is being viewed */
     document.title = p.name + ' — ' + num(p.kcal) + ' kcal, ' + p.meals + ' jedlá denne | TopStrava';
